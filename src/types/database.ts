@@ -291,6 +291,162 @@ export type Database = {
           }
         ]
       }
+      units: {
+        Row: {
+          id: string; subject_id: string; title_ar: string; description_ar: string | null
+          order_num: number; is_published: boolean; created_at: string
+        }
+        Insert: {
+          id?: string; subject_id: string; title_ar: string; description_ar?: string | null
+          order_num?: number; is_published?: boolean
+        }
+        Update: {
+          subject_id?: string; title_ar?: string; description_ar?: string | null
+          order_num?: number; is_published?: boolean
+        }
+        Relationships: [{ foreignKeyName: "units_subject_id_fkey"; columns: ["subject_id"]; isOneToOne: false; referencedRelation: "subjects"; referencedColumns: ["id"] }]
+      }
+      lessons: {
+        Row: {
+          id: string; unit_id: string; title_ar: string; content_type: string
+          content_url: string | null; content_text: string | null; duration_min: number | null
+          order_num: number; is_published: boolean; created_at: string
+        }
+        Insert: {
+          id?: string; unit_id: string; title_ar: string; content_type: string
+          content_url?: string | null; content_text?: string | null; duration_min?: number | null
+          order_num?: number; is_published?: boolean
+        }
+        Update: {
+          unit_id?: string; title_ar?: string; content_type?: string
+          content_url?: string | null; content_text?: string | null; duration_min?: number | null
+          order_num?: number; is_published?: boolean
+        }
+        Relationships: [{ foreignKeyName: "lessons_unit_id_fkey"; columns: ["unit_id"]; isOneToOne: false; referencedRelation: "units"; referencedColumns: ["id"] }]
+      }
+      lesson_progress: {
+        Row: { id: string; lesson_id: string; student_id: string; completed_at: string }
+        Insert: { id?: string; lesson_id: string; student_id: string; completed_at?: string }
+        Update: { lesson_id?: string; student_id?: string; completed_at?: string }
+        Relationships: []
+      }
+      announcements: {
+        Row: {
+          id: string; school_id: string; subject_id: string | null; author_id: string
+          title_ar: string; body_ar: string; grade_year: number | null; section: string | null
+          is_pinned: boolean; created_at: string
+        }
+        Insert: {
+          id?: string; school_id: string; subject_id?: string | null; author_id: string
+          title_ar: string; body_ar: string; grade_year?: number | null; section?: string | null
+          is_pinned?: boolean
+        }
+        Update: {
+          title_ar?: string; body_ar?: string; is_pinned?: boolean
+        }
+        Relationships: [{ foreignKeyName: "announcements_school_id_fkey"; columns: ["school_id"]; isOneToOne: false; referencedRelation: "schools"; referencedColumns: ["id"] }]
+      }
+      quizzes: {
+        Row: {
+          id: string; subject_id: string; lesson_id: string | null; created_by: string
+          title_ar: string; instructions_ar: string | null; duration_min: number | null
+          max_attempts: number; pass_score: number; is_published: boolean
+          due_date: string | null; grade_year: number; section: string; created_at: string
+        }
+        Insert: {
+          id?: string; subject_id: string; lesson_id?: string | null; created_by: string
+          title_ar: string; instructions_ar?: string | null; duration_min?: number | null
+          max_attempts?: number; pass_score?: number; is_published?: boolean
+          due_date?: string | null; grade_year: number; section: string
+        }
+        Update: {
+          title_ar?: string; instructions_ar?: string | null; duration_min?: number | null
+          max_attempts?: number; pass_score?: number; is_published?: boolean
+          due_date?: string | null; grade_year?: number; section?: string
+        }
+        Relationships: [{ foreignKeyName: "quizzes_subject_id_fkey"; columns: ["subject_id"]; isOneToOne: false; referencedRelation: "subjects"; referencedColumns: ["id"] }]
+      }
+      quiz_questions: {
+        Row: {
+          id: string; quiz_id: string; question_ar: string; question_type: string
+          options: Json | null; correct_answer: string | null; points: number; order_num: number
+        }
+        Insert: {
+          id?: string; quiz_id: string; question_ar: string; question_type: string
+          options?: Json | null; correct_answer?: string | null; points?: number; order_num?: number
+        }
+        Update: {
+          question_ar?: string; question_type?: string; options?: Json | null
+          correct_answer?: string | null; points?: number; order_num?: number
+        }
+        Relationships: [{ foreignKeyName: "quiz_questions_quiz_id_fkey"; columns: ["quiz_id"]; isOneToOne: false; referencedRelation: "quizzes"; referencedColumns: ["id"] }]
+      }
+      quiz_attempts: {
+        Row: {
+          id: string; quiz_id: string; student_id: string; score: number | null
+          max_score: number | null; is_complete: boolean; started_at: string; submitted_at: string | null
+        }
+        Insert: {
+          id?: string; quiz_id: string; student_id: string; score?: number | null
+          max_score?: number | null; is_complete?: boolean; submitted_at?: string | null
+        }
+        Update: {
+          score?: number | null; max_score?: number | null; is_complete?: boolean; submitted_at?: string | null
+        }
+        Relationships: [
+          { foreignKeyName: "quiz_attempts_quiz_id_fkey"; columns: ["quiz_id"]; isOneToOne: false; referencedRelation: "quizzes"; referencedColumns: ["id"] },
+          { foreignKeyName: "quiz_attempts_student_id_fkey"; columns: ["student_id"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] }
+        ]
+      }
+      quiz_attempt_answers: {
+        Row: { id: string; attempt_id: string; question_id: string; answer_text: string | null; is_correct: boolean | null }
+        Insert: { id?: string; attempt_id: string; question_id: string; answer_text?: string | null; is_correct?: boolean | null }
+        Update: { answer_text?: string | null; is_correct?: boolean | null }
+        Relationships: [
+          { foreignKeyName: "quiz_attempt_answers_attempt_id_fkey"; columns: ["attempt_id"]; isOneToOne: false; referencedRelation: "quiz_attempts"; referencedColumns: ["id"] },
+          { foreignKeyName: "quiz_attempt_answers_question_id_fkey"; columns: ["question_id"]; isOneToOne: false; referencedRelation: "quiz_questions"; referencedColumns: ["id"] }
+        ]
+      }
+      discussion_threads: {
+        Row: {
+          id: string; subject_id: string; author_id: string; title_ar: string; body_ar: string
+          is_pinned: boolean; is_locked: boolean; reply_count: number; created_at: string
+        }
+        Insert: {
+          id?: string; subject_id: string; author_id: string; title_ar: string; body_ar: string
+          is_pinned?: boolean; is_locked?: boolean
+        }
+        Update: { title_ar?: string; body_ar?: string; is_pinned?: boolean; is_locked?: boolean }
+        Relationships: [
+          { foreignKeyName: "discussion_threads_subject_id_fkey"; columns: ["subject_id"]; isOneToOne: false; referencedRelation: "subjects"; referencedColumns: ["id"] },
+          { foreignKeyName: "discussion_threads_author_id_fkey"; columns: ["author_id"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] }
+        ]
+      }
+      discussion_replies: {
+        Row: { id: string; thread_id: string; author_id: string; body_ar: string; created_at: string }
+        Insert: { id?: string; thread_id: string; author_id: string; body_ar: string }
+        Update: { body_ar?: string }
+        Relationships: [
+          { foreignKeyName: "discussion_replies_thread_id_fkey"; columns: ["thread_id"]; isOneToOne: false; referencedRelation: "discussion_threads"; referencedColumns: ["id"] },
+          { foreignKeyName: "discussion_replies_author_id_fkey"; columns: ["author_id"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] }
+        ]
+      }
+      meeting_sessions: {
+        Row: {
+          id: string; subject_id: string; teacher_id: string; title_ar: string
+          meeting_url: string; scheduled_at: string; duration_min: number
+          grade_year: number; section: string; created_at: string
+        }
+        Insert: {
+          id?: string; subject_id: string; teacher_id: string; title_ar: string
+          meeting_url: string; scheduled_at: string; duration_min?: number
+          grade_year: number; section: string
+        }
+        Update: {
+          title_ar?: string; meeting_url?: string; scheduled_at?: string; duration_min?: number
+        }
+        Relationships: []
+      }
       assignment_submissions: {
         Row: {
           id: string; assignment_id: string; student_id: string; status: string
