@@ -5,38 +5,17 @@ export function useAuth() {
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState<string | null>(null)
 
-  async function sendOTP(phone: string): Promise<boolean> {
+  async function signIn(email: string, password: string): Promise<boolean> {
     setLoading(true)
     setError(null)
 
-    // Normalize Egyptian phone: 01XXXXXXXXX → +201XXXXXXXXX
-    const normalized = phone.startsWith('+2')
-      ? phone
-      : '+2' + phone.replace(/^0/, '')
-
-    const { error: err } = await supabase.auth.signInWithOtp({ phone: normalized })
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password })
 
     setLoading(false)
-    if (err) { setError('فشل إرسال الكود — تحقق من الرقم وحاول تاني'); return false }
-    return true
-  }
-
-  async function verifyOTP(phone: string, token: string): Promise<boolean> {
-    setLoading(true)
-    setError(null)
-
-    const normalized = phone.startsWith('+2')
-      ? phone
-      : '+2' + phone.replace(/^0/, '')
-
-    const { error: err } = await supabase.auth.verifyOtp({
-      phone: normalized,
-      token,
-      type: 'sms',
-    })
-
-    setLoading(false)
-    if (err) { setError('الكود غلط أو انتهت صلاحيته — حاول تاني'); return false }
+    if (err) {
+      setError('البريد الإلكتروني أو كلمة المرور غلط — حاول تاني')
+      return false
+    }
     return true
   }
 
@@ -49,5 +28,5 @@ export function useAuth() {
     setLoading(false)
   }
 
-  return { loading, error, sendOTP, verifyOTP, signInWithGoogle }
+  return { loading, error, signIn, signInWithGoogle }
 }
