@@ -40,7 +40,7 @@ export function KGDashboard() {
 
   return (
     <PageWrapper>
-      <AppBar title="مدرستي" subtitle={student?.school_name_ar ?? ''} />
+      <AppBar title="مدرستي" subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
 
       <div className="bg-navy text-white px-4 py-6 flex items-center gap-4">
         <Avatar name={student?.full_name_ar ?? ''} url={student?.avatar_url} size="lg" />

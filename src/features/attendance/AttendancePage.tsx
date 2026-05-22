@@ -87,6 +87,7 @@ export function AttendancePage() {
             الحصة الأولى
           </span>
         }
+        onLogout={auth?.signOut}
       />
 
       <OfflineBanner />

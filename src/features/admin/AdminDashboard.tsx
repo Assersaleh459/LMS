@@ -18,6 +18,7 @@ export function AdminDashboard() {
       <AppBar
         title={school?.name_ar ?? 'لوحة المدير'}
         subtitle={formatDateAr(new Date())}
+        onLogout={auth?.signOut}
       />
 
       {loading ? (

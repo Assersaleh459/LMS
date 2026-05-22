@@ -1,11 +1,12 @@
 interface AppBarProps {
-  title:     string
-  subtitle?: string
-  onBack?:   () => void
-  action?:   React.ReactNode
+  title:      string
+  subtitle?:  string
+  onBack?:    () => void
+  action?:    React.ReactNode
+  onLogout?:  () => void
 }
 
-export function AppBar({ title, subtitle, onBack, action }: AppBarProps) {
+export function AppBar({ title, subtitle, onBack, action, onLogout }: AppBarProps) {
   return (
     <header className="bg-navy text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-40">
       {onBack && (
@@ -28,6 +29,19 @@ export function AppBar({ title, subtitle, onBack, action }: AppBarProps) {
       </div>
 
       {action && <div className="flex-shrink-0">{action}</div>}
+
+      {onLogout && (
+        <button
+          onClick={onLogout}
+          className="p-2 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+          aria-label="تسجيل الخروج"
+          title="تسجيل الخروج"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      )}
     </header>
   )
 }
