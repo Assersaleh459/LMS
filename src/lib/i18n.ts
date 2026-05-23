@@ -231,6 +231,39 @@ const translations: T = {
   present_today:  { ar: 'حاضرون اليوم', en: 'Present today' },
   total_teachers: { ar: 'المعلمون', en: 'Teachers' },
   avg_grade:      { ar: 'متوسط الدرجات', en: 'Avg. grade' },
+
+  // ── Grade analytics ───────────────────────────────────────────
+  analytics:        { ar: 'تحليل الدرجات', en: 'Grade Analytics' },
+  class_avg:        { ar: 'متوسط الفصل', en: 'Class Average' },
+  pass_rate_lbl:    { ar: 'نسبة النجاح', en: 'Pass Rate' },
+  top_score:        { ar: 'أعلى درجة', en: 'Top Score' },
+  low_score:        { ar: 'أدنى درجة', en: 'Lowest Score' },
+  grade_dist:       { ar: 'توزيع الدرجات', en: 'Grade Distribution' },
+  student_grades:   { ar: 'درجات الطلاب', en: 'Student Grades' },
+  export_excel:     { ar: 'تصدير Excel', en: 'Export Excel' },
+  view_analytics:   { ar: 'تحليل', en: 'Analytics' },
+
+  // ── Bulk import ───────────────────────────────────────────────
+  bulk_import:  { ar: 'استيراد', en: 'Import' },
+  paste_help:   { ar: 'الصق بيانات من Excel — عمود الاسم ثم الدرجة (Tab بينهم)', en: 'Paste from Excel — name then grade (Tab-separated)' },
+  paste_ph:     { ar: 'محمد أحمد\t85', en: 'Ahmed Mohamed\t85' },
+  apply:        { ar: 'تطبيق', en: 'Apply' },
+  matched:      { ar: 'تم تطابق', en: 'Matched' },
+  no_match:     { ar: 'لم يتم تطابق أي طالب — تأكد من أسماء العمود', en: 'No students matched — check name column' },
+
+  // ── Student progress ──────────────────────────────────────────
+  student_progress: { ar: 'تقدم الطالب', en: 'Student Progress' },
+  quiz_history:     { ar: 'سجل الاختبارات', en: 'Quiz History' },
+  attend_summary:   { ar: 'ملخص الحضور', en: 'Attendance Summary' },
+  present_days:     { ar: 'حضور', en: 'Present' },
+  absent_days:      { ar: 'غياب', en: 'Absent' },
+  late_days:        { ar: 'تأخر', en: 'Late' },
+  lessons_taken:    { ar: 'درس مكتمل', en: 'Lessons done' },
+  quizzes_taken:    { ar: 'اختبار', en: 'Quizzes' },
+  avg_quiz_score:   { ar: 'متوسط', en: 'Avg' },
+  attend_rate:      { ar: 'معدل الحضور', en: 'Attend. rate' },
+  no_quizzes:       { ar: 'لم يؤدِ أي اختبار بعد', en: 'No quizzes taken yet' },
+  no_attendance:    { ar: 'لا توجد سجلات حضور', en: 'No attendance records' },
 }
 
 export function translate(key: string, lang: Lang): string {

@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthContext } from './providers/AuthProvider'
 import type { UserRole } from '../types/enums'
 
+// Phase 3 — Advanced teacher tools
+import { GradeAnalyticsPage }  from '../features/grades/GradeAnalyticsPage'
+import { StudentProgressPage } from '../features/student/StudentProgressPage'
+
 // Phase 1 pages
 import { LoginPage }           from '../features/auth/LoginPage'
 import { AttendancePage }      from '../features/attendance/AttendancePage'
@@ -76,10 +80,12 @@ export function Router() {
         <Route path="/" element={<RoleRedirect />} />
 
         {/* Teacher — Phase 1 */}
-        <Route path="/teacher/attendance"      element={<RequireAuth><AttendancePage /></RequireAuth>} />
-        <Route path="/teacher/grades"          element={<RequireAuth><GradebookPage /></RequireAuth>} />
-        <Route path="/teacher/assignments"     element={<RequireAuth><AssignmentListPage /></RequireAuth>} />
-        <Route path="/teacher/assignments/new" element={<RequireAuth><CreateAssignmentPage /></RequireAuth>} />
+        <Route path="/teacher/attendance"        element={<RequireAuth><AttendancePage /></RequireAuth>} />
+        <Route path="/teacher/grades"            element={<RequireAuth><GradebookPage /></RequireAuth>} />
+        <Route path="/teacher/grades/analytics"  element={<RequireAuth><GradeAnalyticsPage /></RequireAuth>} />
+        <Route path="/teacher/student/:studentId/progress" element={<RequireAuth><StudentProgressPage /></RequireAuth>} />
+        <Route path="/teacher/assignments"       element={<RequireAuth><AssignmentListPage /></RequireAuth>} />
+        <Route path="/teacher/assignments/new"   element={<RequireAuth><CreateAssignmentPage /></RequireAuth>} />
 
         {/* Students — Phase 1 */}
         <Route path="/student/primary"   element={<RequireAuth><StudentDashboard /></RequireAuth>} />
