@@ -7,6 +7,7 @@ import { PageWrapper }   from '../../components/layout/PageWrapper'
 import { ArabicInput }   from '../../components/forms/ArabicInput'
 import { TypeSelector }  from '../../components/forms/TypeSelector'
 import { useAssignments } from './useAssignments'
+import { triggerAssignmentNotification } from '../../lib/notifications'
 import type { AssignmentType, GradeType } from '../../types/enums'
 
 const ASSIGNMENT_TYPES = [
@@ -85,6 +86,7 @@ export function CreateAssignmentPage() {
 
     setSubmitting(false)
     if (id) {
+      if (waNotify) triggerAssignmentNotification(id)
       navigate('/teacher/assignments', { replace: true })
     }
   }
