@@ -102,7 +102,10 @@ export function StudentDashboard() {
       {/* Upcoming homework */}
       {assignments.length > 0 && (
         <div className="pt-4">
-          <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('today_hw')}</h2>
+          <div className="flex items-center justify-between px-4 mb-2">
+            <h2 className={`font-bold ${fa} text-gray-700 text-sm`}>{t('today_hw')}</h2>
+            <a href="/student/assignments" className={`text-xs text-teal font-bold ${fa}`}>{t('see_all')}</a>
+          </div>
           {assignments.map(a => <HomeworkCard key={a.id} assignment={a} />)}
         </div>
       )}

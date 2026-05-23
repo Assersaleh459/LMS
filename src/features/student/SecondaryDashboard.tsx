@@ -12,7 +12,7 @@ import { toArabicNumerals } from '../../lib/arabic'
 
 export function SecondaryDashboard() {
   const auth = useContext(AuthContext)
-  const { t } = useLang()
+  const { t, fa } = useLang()
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [grades,      setGrades]      = useState<GradeEntry[]>([])
   const [assignments, setAssignments] = useState<Assignment[]>([])
@@ -59,11 +59,11 @@ export function SecondaryDashboard() {
       <div className="bg-navy text-white px-4 py-6 flex items-center gap-4">
         <Avatar name={student?.full_name_ar ?? ''} url={student?.avatar_url} size="lg" />
         <div>
-          <h1 className="font-bold text-xl font-arabic">{student?.full_name_ar}</h1>
-          <p className="text-white/70 text-sm font-arabic mt-0.5">الصف {student?.grade_year} {student?.section}</p>
+          <h1 className={`font-bold text-xl ${fa}`}>{student?.full_name_ar}</h1>
+          <p className={`text-white/70 text-sm ${fa} mt-0.5`}>{t('grade_label')} {student?.grade_year} {student?.section}</p>
           {overallGrade && (
-            <span className="inline-block mt-1 text-xs font-arabic font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">
-              المعدل المرجح: {toArabicNumerals(weighted)}% · {overallGrade.label}
+            <span className={`inline-block mt-1 text-xs ${fa} font-bold px-2 py-0.5 rounded-full bg-white/20 text-white`}>
+              {t('weighted_avg')}: {toArabicNumerals(weighted)}% · {overallGrade.label}
             </span>
           )}
         </div>
@@ -73,17 +73,17 @@ export function SecondaryDashboard() {
       {weighted > 0 && (
         <div className="bg-white border-b border-gray-100 px-4 py-3 flex gap-6 text-center">
           <div className="flex-1">
-            <p className="text-xs text-gray-500 font-arabic">شهري (٤٠%)</p>
+            <p className={`text-xs text-gray-500 ${fa}`}>{t('monthly_40')}</p>
             <p className="font-bold text-lg text-gray-900">{toArabicNumerals(Math.round(monthlyAvg))}</p>
           </div>
           <div className="w-px bg-gray-200" />
           <div className="flex-1">
-            <p className="text-xs text-gray-500 font-arabic">نهائي (٦٠%)</p>
+            <p className={`text-xs text-gray-500 ${fa}`}>{t('final_60')}</p>
             <p className="font-bold text-lg text-gray-900">{toArabicNumerals(Math.round(finalAvg))}</p>
           </div>
           <div className="w-px bg-gray-200" />
           <div className="flex-1">
-            <p className="text-xs text-gray-500 font-arabic">المجموع</p>
+            <p className={`text-xs text-gray-500 ${fa}`}>{t('total_lbl')}</p>
             <p className="font-bold text-lg text-navy">{toArabicNumerals(weighted)}</p>
           </div>
         </div>
@@ -91,7 +91,7 @@ export function SecondaryDashboard() {
 
       {assignments.length > 0 && (
         <div className="pt-4">
-          <h2 className="font-bold font-arabic text-gray-700 px-4 mb-2 text-sm">الواجبات</h2>
+          <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('today_hw')}</h2>
           {assignments.map(a => <HomeworkCard key={a.id} assignment={a} />)}
         </div>
       )}

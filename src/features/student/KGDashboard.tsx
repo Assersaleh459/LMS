@@ -11,7 +11,7 @@ import { KG_GRADES } from '../../lib/moe'
 
 export function KGDashboard() {
   const auth = useContext(AuthContext)
-  const { t } = useLang()
+  const { t, fa } = useLang()
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [loading,     setLoading]     = useState(true)
@@ -47,14 +47,14 @@ export function KGDashboard() {
       <div className="bg-navy text-white px-4 py-6 flex items-center gap-4">
         <Avatar name={student?.full_name_ar ?? ''} url={student?.avatar_url} size="lg" />
         <div>
-          <h1 className="font-bold text-xl font-arabic">{student?.full_name_ar}</h1>
-          <p className="text-white/70 text-sm font-arabic mt-0.5">روضة</p>
+          <h1 className={`font-bold text-xl ${fa}`}>{student?.full_name_ar}</h1>
+          <p className={`text-white/70 text-sm ${fa} mt-0.5`}>{t('stage_kg')}</p>
         </div>
       </div>
 
       {/* KG descriptive grade scale */}
       <div className="px-4 py-4">
-        <h2 className="font-bold font-arabic text-gray-700 mb-3 text-sm">التقييمات</h2>
+        <h2 className={`font-bold ${fa} text-gray-700 mb-3 text-sm`}>{t('assessments')}</h2>
         <div className="grid grid-cols-3 gap-3">
           {KG_GRADES.map(g => (
             <div key={g.value} className="bg-white rounded-2xl border border-gray-100 p-3 text-center">
@@ -67,7 +67,7 @@ export function KGDashboard() {
 
       {assignments.length > 0 && (
         <div>
-          <h2 className="font-bold font-arabic text-gray-700 px-4 mb-2 text-sm">النشاطات</h2>
+          <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('activities')}</h2>
           {assignments.map(a => <HomeworkCard key={a.id} assignment={a} />)}
         </div>
       )}

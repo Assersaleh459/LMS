@@ -19,11 +19,6 @@ const STATUS_STYLE: Record<string, string> = {
   absent:  'bg-red-100 text-red-600',
   late:    'bg-yellow-100 text-yellow-700',
 }
-const STATUS_AR: Record<string, string> = {
-  present: 'حاضر',
-  absent:  'غائب',
-  late:    'متأخر',
-}
 
 export function ClassRosterPage() {
   const { grade, section } = useParams<{ grade: string; section: string }>()
@@ -133,7 +128,7 @@ export function ClassRosterPage() {
                 <div className="flex items-center gap-2">
                   {s.todayStatus && (
                     <span className={`text-xs font-arabic font-bold px-2 py-0.5 rounded-full ${STATUS_STYLE[s.todayStatus] ?? 'bg-gray-100 text-gray-500'}`}>
-                      {STATUS_AR[s.todayStatus] ?? s.todayStatus}
+                      {t(s.todayStatus) ?? s.todayStatus}
                     </span>
                   )}
                   {gradeLabel && (

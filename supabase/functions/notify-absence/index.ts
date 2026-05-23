@@ -25,9 +25,12 @@ serve(async (req) => {
       return new Response(JSON.stringify({ sent: 0 }), { status: 200 })
     }
 
+    // Build a lookup map: student card id → absent_student_id
+    const idSet = new Set(body.absent_student_ids)
+
     let sent = 0
     for (const student of students) {
-      if (!student.parent_whatsapp) continue
+      if (!student.parent_whatsapp || !idSet.has(student.id)) continue
 
       const message = `مدرسة ${student.school_name_ar}\n` +
         `السيد/السيدة ${student.parent_name_ar} المحترم/ة\n\n` +
@@ -49,11 +52,11 @@ serve(async (req) => {
         })
       }
 
-      // Mark as notified in DB
+      // Mark as notified in DB — use student.id (correct), not array index
       await supabase
         .from('attendance_records')
         .update({ parent_notified: true, notified_at: new Date().toISOString() })
-        .eq('student_id', body.absent_student_ids[students.indexOf(student)])
+        .eq('student_id', student.id)
         .eq('attendance_date', body.date)
 
       sent++

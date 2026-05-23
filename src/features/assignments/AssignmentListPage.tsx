@@ -57,8 +57,18 @@ export function AssignmentListPage() {
           </button>
         </div>
       ) : (
-        <div className="py-2">
-          {assignments.map(a => <AssignmentCard key={a.id} assignment={a} />)}
+        <div className="py-2 pb-24 overflow-y-auto">
+          {assignments.map(a => (
+            <div key={a.id} className="relative">
+              <AssignmentCard assignment={a} />
+              <button
+                onClick={() => navigate(`/teacher/assignments/${a.id}/submissions`)}
+                className={`absolute left-6 bottom-5 text-xs ${fa} text-teal font-bold bg-teal/10 px-3 py-1 rounded-full`}
+              >
+                {t('view_submissions')}
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </PageWrapper>

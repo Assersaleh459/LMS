@@ -14,8 +14,10 @@ import { UserManagementPage }  from '../features/admin/UserManagementPage'
 import { LoginPage }           from '../features/auth/LoginPage'
 import { AttendancePage }      from '../features/attendance/AttendancePage'
 import { GradebookPage }       from '../features/grades/GradebookPage'
-import { AssignmentListPage }  from '../features/assignments/AssignmentListPage'
-import { CreateAssignmentPage } from '../features/assignments/CreateAssignmentPage'
+import { AssignmentListPage }     from '../features/assignments/AssignmentListPage'
+import { CreateAssignmentPage }   from '../features/assignments/CreateAssignmentPage'
+import { StudentAssignmentsPage } from '../features/assignments/StudentAssignmentsPage'
+import { SubmissionsPage }        from '../features/assignments/SubmissionsPage'
 import { ParentDashboard }     from '../features/parent/ParentDashboard'
 import { StudentDashboard }    from '../features/student/StudentDashboard'
 import { SecondaryDashboard }  from '../features/student/SecondaryDashboard'
@@ -88,11 +90,13 @@ export function Router() {
         <Route path="/teacher/grades/analytics"  element={<RequireAuth><GradeAnalyticsPage /></RequireAuth>} />
         <Route path="/teacher/student/:studentId/progress" element={<RequireAuth><StudentProgressPage /></RequireAuth>} />
         <Route path="/teacher/report-card/:studentId"      element={<RequireAuth><ReportCardPage /></RequireAuth>} />
-        <Route path="/teacher/assignments"       element={<RequireAuth><AssignmentListPage /></RequireAuth>} />
-        <Route path="/teacher/assignments/new"   element={<RequireAuth><CreateAssignmentPage /></RequireAuth>} />
+        <Route path="/teacher/assignments"                           element={<RequireAuth><AssignmentListPage /></RequireAuth>} />
+        <Route path="/teacher/assignments/new"                       element={<RequireAuth><CreateAssignmentPage /></RequireAuth>} />
+        <Route path="/teacher/assignments/:assignmentId/submissions" element={<RequireAuth><SubmissionsPage /></RequireAuth>} />
 
         {/* Students — Phase 1 */}
-        <Route path="/student/primary"   element={<RequireAuth><StudentDashboard /></RequireAuth>} />
+        <Route path="/student/assignments" element={<RequireAuth><StudentAssignmentsPage /></RequireAuth>} />
+        <Route path="/student/primary"     element={<RequireAuth><StudentDashboard /></RequireAuth>} />
         <Route path="/student/secondary" element={<RequireAuth><SecondaryDashboard /></RequireAuth>} />
         <Route path="/student/kg"        element={<RequireAuth><KGDashboard /></RequireAuth>} />
 
