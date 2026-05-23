@@ -27,7 +27,6 @@ export function GradeAnalyticsPage() {
   const [totalMarks,  setTotalMarks]  = useState(100)
   const [loading,     setLoading]     = useState(true)
   const [sortAsc,     setSortAsc]     = useState(false)
-  const [subjectName2, setSubjectName2] = useState('')  // for xlsx filename
 
   useEffect(() => {
     if (!auth?.profile?.id || !auth?.schoolId) return
@@ -42,7 +41,6 @@ export function GradeAnalyticsPage() {
       const sid = tsRes.data.subject_id
       const subj = tsRes.data.subjects as unknown as { name_ar: string; total_marks: number } | null
       setSubjectName(subj?.name_ar ?? '')
-      setSubjectName2(subj?.name_ar ?? 'grades')
       setTotalMarks(subj?.total_marks ?? 100)
       const tid = termRes.data?.id ?? ''
       const [sRes, eRes] = await Promise.all([
@@ -105,8 +103,8 @@ export function GradeAnalyticsPage() {
       'التقدير':     getMoELetterGrade(s.pct, 100).label,
     })))
     const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, subjectName2.slice(0, 31) || 'Grades')
-    XLSX.writeFile(wb, `grades_${subjectName2}_${new Date().toISOString().split('T')[0]}.xlsx`)
+    XLSX.utils.book_append_sheet(wb, ws, subjectName.slice(0, 31) || 'Grades')
+    XLSX.writeFile(wb, `grades_${subjectName}_${new Date().toISOString().split('T')[0]}.xlsx`)
   }
 
   if (loading) return (

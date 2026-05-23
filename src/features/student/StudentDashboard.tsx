@@ -17,6 +17,7 @@ export function StudentDashboard() {
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [grades,      setGrades]      = useState<GradeEntry[]>([])
   const [assignments, setAssignments] = useState<Assignment[]>([])
+  const [subjectNames, setSubjectNames] = useState<Record<string, string>>({})
   const [loading,     setLoading]     = useState(true)
 
   useEffect(() => {
@@ -27,10 +28,21 @@ export function StudentDashboard() {
       supabase.from('v_student_card').select('*').eq('id', auth.profile.id).single(),
       supabase.from('grade_entries').select('*').eq('student_id', auth.profile.id).limit(20),
       supabase.from('assignments').select('*').gte('due_date', today).order('due_date').limit(5),
-    ]).then(([studentRes, gradesRes, assignRes]) => {
+    ]).then(async ([studentRes, gradesRes, assignRes]) => {
       if (studentRes.data)  setStudent(studentRes.data as StudentCard)
       if (gradesRes.data)   setGrades(gradesRes.data as GradeEntry[])
       if (assignRes.data)   setAssignments(assignRes.data as Assignment[])
+
+      // Fetch subject names for grade display
+      if (gradesRes.data?.length) {
+        const ids = [...new Set((gradesRes.data as GradeEntry[]).map(g => g.subject_id))]
+        const { data: subs } = await supabase.from('subjects').select('id, name_ar').in('id', ids)
+        if (subs) {
+          const map: Record<string, string> = {}
+          subs.forEach(s => { map[s.id] = s.name_ar })
+          setSubjectNames(map)
+        }
+      }
       setLoading(false)
     })
   }, [auth?.profile?.id])
@@ -108,7 +120,7 @@ export function StudentDashboard() {
                     {grade.label}
                   </span>
                   <span className="font-bold text-gray-900 text-sm">{toArabicNumerals(g.total_grade)}</span>
-                  <span className="text-gray-500 text-xs font-arabic">{g.subject_id}</span>
+                  <span className="text-gray-500 text-xs font-arabic">{subjectNames[g.subject_id] ?? g.subject_id}</span>
                 </div>
               )
             })}

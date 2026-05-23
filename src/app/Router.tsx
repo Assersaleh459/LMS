@@ -108,7 +108,8 @@ export function Router() {
         <Route path="/course/:subjectId/unit/:unitId/lesson/:lessonId"                element={<RequireAuth><LessonPage /></RequireAuth>} />
         <Route path="/teacher/course/:subjectId/unit/new"                             element={<RequireAuth><CreateUnitPage /></RequireAuth>} />
         <Route path="/teacher/course/:subjectId/unit/:unitId/lesson/new"              element={<RequireAuth><CreateLessonPage /></RequireAuth>} />
-        <Route path="/teacher/course/:subjectId/quiz/new"                             element={<RequireAuth><CreateQuizPage /></RequireAuth>} />
+        <Route path="/teacher/course/:subjectId/quiz/new"                                              element={<RequireAuth><CreateQuizPage /></RequireAuth>} />
+        <Route path="/teacher/course/:subjectId/unit/:unitId/lesson/:lessonId/quiz/new"              element={<RequireAuth><CreateQuizPage /></RequireAuth>} />
 
         {/* Phase 2 — Quizzes */}
         <Route path="/quiz/:lessonId"                    element={<RequireAuth><QuizPage /></RequireAuth>} />

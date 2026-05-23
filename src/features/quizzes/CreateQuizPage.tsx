@@ -22,7 +22,7 @@ const emptyMCQ = (): QuizQuestion => ({
 
 export function CreateQuizPage() {
   const { t, ta, fa, dir } = useLang()
-  const { subjectId } = useParams<{ subjectId: string }>()
+  const { subjectId, lessonId } = useParams<{ subjectId: string; lessonId?: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -64,6 +64,7 @@ export function CreateQuizPage() {
       .from('quizzes')
       .insert({
         subject_id: subjectId,
+        lesson_id: lessonId || null,
         created_by: auth.profile.id,
         title_ar: title.trim(),
         instructions_ar: instructions.trim() || null,

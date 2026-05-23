@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Avatar }          from '../../components/ui/Avatar'
 import { Card }            from '../../components/ui/Card'
 import { OfflineBanner }   from '../../components/ui/OfflineBanner'
@@ -6,9 +7,22 @@ import { AttendanceCalendar } from './AttendanceCalendar'
 import { GradeSubjectRow } from './GradeSubjectRow'
 import { useParentData }   from './useParentData'
 import { formatLastUpdated } from '../../lib/arabic'
+import { supabase } from '../../lib/supabase'
 
 export function ParentDashboard() {
   const { data, loading, error, absentToday } = useParentData()
+  const [subjectNames, setSubjectNames] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (!data?.grades?.length) return
+    const ids = [...new Set(data.grades.map(g => g.subject_id))]
+    supabase.from('subjects').select('id, name_ar').in('id', ids).then(({ data: subs }) => {
+      if (!subs) return
+      const map: Record<string, string> = {}
+      subs.forEach(s => { map[s.id] = s.name_ar })
+      setSubjectNames(map)
+    })
+  }, [data?.grades])
 
   if (loading) {
     return (
@@ -33,7 +47,7 @@ export function ParentDashboard() {
   const subjectGrades: Record<string, { score: number; max: number; name: string }> = {}
   grades.forEach(g => {
     if (!subjectGrades[g.subject_id]) {
-      subjectGrades[g.subject_id] = { score: g.total_grade, max: 100, name: g.subject_id }
+      subjectGrades[g.subject_id] = { score: g.total_grade, max: 100, name: subjectNames[g.subject_id] ?? g.subject_id }
     }
   })
 

@@ -18,7 +18,7 @@ function getYouTubeEmbed(url: string): string | null {
 
 export function LessonPage() {
   const { t, fa } = useLang()
-  const { lessonId } = useParams<{ subjectId: string; unitId: string; lessonId: string }>()
+  const { subjectId, unitId, lessonId } = useParams<{ subjectId: string; unitId: string; lessonId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
   const [lesson, setLesson] = useState<Lesson | null>(null)
@@ -128,12 +128,22 @@ export function LessonPage() {
               <span className="text-3xl">✅</span>
             </div>
             <p className={`${fa} text-gray-700 font-bold mb-2`}>{lesson.title_ar}</p>
-            <button
-              onClick={() => navigate(`/quiz/${lessonId}`)}
-              className={`px-6 py-3 bg-teal text-white rounded-xl ${fa} font-bold text-sm`}
-            >
-              {t('start_quiz')}
-            </button>
+            <div className="flex flex-col gap-2 items-center">
+              <button
+                onClick={() => navigate(`/quiz/${lessonId}`)}
+                className={`px-6 py-3 bg-teal text-white rounded-xl ${fa} font-bold text-sm`}
+              >
+                {t('start_quiz')}
+              </button>
+              {auth?.role && ['subject_teacher', 'homeroom_teacher', 'school_admin', 'it_admin', 'chain_admin'].includes(auth.role) && (
+                <button
+                  onClick={() => navigate(`/teacher/course/${subjectId}/unit/${unitId}/lesson/${lessonId}/quiz/new`)}
+                  className={`px-6 py-3 bg-white border border-teal text-teal rounded-xl ${fa} font-bold text-sm`}
+                >
+                  {t('create_quiz')}
+                </button>
+              )}
+            </div>
           </div>
         )}
 

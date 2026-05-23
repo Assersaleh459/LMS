@@ -121,6 +121,7 @@ const translations: T = {
   open_file:      { ar: 'فتح الملف', en: 'Open file' },
   open_link:      { ar: 'فتح الرابط', en: 'Open link' },
   start_quiz:     { ar: 'ابدأ الاختبار', en: 'Start quiz' },
+  create_quiz:    { ar: 'إنشاء اختبار', en: 'Create quiz' },
   lessons_done:   { ar: 'درس مكتمل', en: 'lessons done' },
   no_subjects:    { ar: 'لا توجد مواد مسجلة', en: 'No subjects registered' },
 
