@@ -74,7 +74,18 @@ export function StudentProgressPage() {
 
   return (
     <PageWrapper>
-      <AppBar title={t('student_progress')} onBack={() => navigate(-1)} />
+      <AppBar
+        title={t('student_progress')}
+        onBack={() => navigate(-1)}
+        action={
+          <button
+            onClick={() => navigate(`/teacher/report-card/${studentId}`)}
+            className={`text-xs font-bold text-white/90 bg-white/15 hover:bg-white/25 px-2 py-1 rounded-lg ${fa}`}
+          >
+            🖨 {t('report_card')}
+          </button>
+        }
+      />
       <div className="overflow-y-auto">
         {/* Student header */}
         {student && (

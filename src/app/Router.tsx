@@ -6,6 +6,8 @@ import type { UserRole } from '../types/enums'
 // Phase 3 — Advanced teacher tools
 import { GradeAnalyticsPage }  from '../features/grades/GradeAnalyticsPage'
 import { StudentProgressPage } from '../features/student/StudentProgressPage'
+import { ReportCardPage }      from '../features/grades/ReportCardPage'
+import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
 
 // Phase 1 pages
 import { LoginPage }           from '../features/auth/LoginPage'
@@ -84,6 +86,7 @@ export function Router() {
         <Route path="/teacher/grades"            element={<RequireAuth><GradebookPage /></RequireAuth>} />
         <Route path="/teacher/grades/analytics"  element={<RequireAuth><GradeAnalyticsPage /></RequireAuth>} />
         <Route path="/teacher/student/:studentId/progress" element={<RequireAuth><StudentProgressPage /></RequireAuth>} />
+        <Route path="/teacher/report-card/:studentId"      element={<RequireAuth><ReportCardPage /></RequireAuth>} />
         <Route path="/teacher/assignments"       element={<RequireAuth><AssignmentListPage /></RequireAuth>} />
         <Route path="/teacher/assignments/new"   element={<RequireAuth><CreateAssignmentPage /></RequireAuth>} />
 
@@ -93,7 +96,8 @@ export function Router() {
         <Route path="/student/kg"        element={<RequireAuth><KGDashboard /></RequireAuth>} />
 
         {/* Admin */}
-        <Route path="/admin" element={<RequireAuth><AdminDashboard /></RequireAuth>} />
+        <Route path="/admin"                         element={<RequireAuth><AdminDashboard /></RequireAuth>} />
+        <Route path="/admin/class/:grade/:section"   element={<RequireAuth><ClassRosterPage /></RequireAuth>} />
 
         {/* Phase 2 — Subjects & Courses */}
         <Route path="/courses"                                                        element={<RequireAuth><SubjectsListPage /></RequireAuth>} />

@@ -264,6 +264,14 @@ const translations: T = {
   attend_rate:      { ar: 'معدل الحضور', en: 'Attend. rate' },
   no_quizzes:       { ar: 'لم يؤدِ أي اختبار بعد', en: 'No quizzes taken yet' },
   no_attendance:    { ar: 'لا توجد سجلات حضور', en: 'No attendance records' },
+
+  // ── Report card ───────────────────────────────────────────────
+  report_card:      { ar: 'كشف الدرجات', en: 'Report Card' },
+  print_card:       { ar: 'طباعة', en: 'Print' },
+
+  // ── Admin ─────────────────────────────────────────────────────
+  classes:          { ar: 'الفصول الدراسية', en: 'Classes' },
+  class_roster:     { ar: 'كشف الفصل', en: 'Class Roster' },
 }
 
 export function translate(key: string, lang: Lang): string {
