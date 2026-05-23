@@ -2,6 +2,7 @@ import type { Assignment } from '../../types/domain'
 import { Card } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { formatDateShortAr } from '../../lib/arabic'
+import { useLang } from '../../app/providers/LangProvider'
 
 const TYPE_ICONS: Record<string, string> = {
   written:        '📝',
@@ -17,6 +18,7 @@ interface AssignmentCardProps {
 }
 
 export function AssignmentCard({ assignment }: AssignmentCardProps) {
+  const { t } = useLang()
   const dueDate  = new Date(assignment.due_date)
   const isPast   = dueDate < new Date()
 
@@ -31,10 +33,10 @@ export function AssignmentCard({ assignment }: AssignmentCardProps) {
           )}
           <div className="flex items-center gap-2 mt-2">
             <Badge
-              label={`الاستحقاق: ${formatDateShortAr(dueDate)}`}
+              label={`${t('due_label')}: ${formatDateShortAr(dueDate)}`}
               variant={isPast ? 'red' : 'blue'}
             />
-            <Badge label={`${assignment.max_grade} درجة`} variant="gray" />
+            <Badge label={`${assignment.max_grade} ${t('points')}`} variant="gray" />
           </div>
         </div>
       </div>

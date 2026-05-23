@@ -5,6 +5,7 @@ type T = Record<string, { ar: string; en: string }>
 const translations: T = {
   // ── Common ──────────────────────────────────────────────────
   loading:        { ar: 'جاري التحميل...', en: 'Loading...' },
+  offline:        { ar: 'غير متصل', en: 'Offline' },
   save:           { ar: 'حفظ', en: 'Save' },
   saving:         { ar: 'جاري الحفظ...', en: 'Saving...' },
   cancel:         { ar: 'إلغاء', en: 'Cancel' },
