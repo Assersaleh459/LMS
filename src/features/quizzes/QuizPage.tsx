@@ -4,6 +4,7 @@ import { AuthContext } from '../../app/providers/AuthProvider'
 import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface Quiz {
   id: string; title_ar: string; instructions_ar: string | null
@@ -15,6 +16,7 @@ interface Question {
 }
 
 export function QuizPage() {
+  const { t, ta, fa } = useLang()
   const { lessonId } = useParams<{ lessonId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
@@ -104,7 +106,7 @@ export function QuizPage() {
 
   if (loading) return (
     <PageWrapper>
-      <AppBar title="الاختبار" onBack={() => navigate(-1)} />
+      <AppBar title={t('quiz')} onBack={() => navigate(-1)} />
       <div className="flex justify-center py-20">
         <div className="w-8 h-8 rounded-full border-2 border-teal border-t-transparent animate-spin" />
       </div>
@@ -113,8 +115,8 @@ export function QuizPage() {
 
   if (!quiz) return (
     <PageWrapper>
-      <AppBar title="الاختبار" onBack={() => navigate(-1)} />
-      <p className="text-center text-gray-400 font-arabic py-20">لا يوجد اختبار لهذا الدرس</p>
+      <AppBar title={t('quiz')} onBack={() => navigate(-1)} />
+      <p className={`text-center text-gray-400 ${fa} py-20`}>{t('no_quiz')}</p>
     </PageWrapper>
   )
 
@@ -124,7 +126,7 @@ export function QuizPage() {
         title={quiz.title_ar}
         onBack={() => navigate(-1)}
         action={timeLeft !== null ? (
-          <span className={`font-arabic text-sm font-bold ${timeLeft < 60 ? 'text-red-300' : 'text-white/80'}`}>
+          <span className={`${fa} text-sm font-bold ${timeLeft < 60 ? 'text-red-300' : 'text-white/80'}`}>
             {formatTime(timeLeft)}
           </span>
         ) : undefined}
@@ -133,29 +135,29 @@ export function QuizPage() {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6 pb-32">
         {quiz.instructions_ar && (
           <div className="bg-teal/5 rounded-2xl p-4">
-            <p className="font-arabic text-gray-700 text-sm text-right leading-relaxed">{quiz.instructions_ar}</p>
+            <p className={`${fa} text-gray-700 text-sm ${ta} leading-relaxed`}>{quiz.instructions_ar}</p>
           </div>
         )}
 
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500 font-arabic">{answered}/{questions.length} سؤال</span>
-          <span className="text-xs text-gray-500 font-arabic">درجة النجاح: {quiz.pass_score}%</span>
+          <span className={`text-xs text-gray-500 ${fa}`}>{answered}/{questions.length} {t('q_answered')}</span>
+          <span className={`text-xs text-gray-500 ${fa}`}>{t('pass_score_lbl')} {quiz.pass_score}%</span>
         </div>
 
         {questions.map((q, idx) => (
           <div key={q.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-            <p className="font-arabic font-bold text-gray-900 text-sm text-right mb-3">
+            <p className={`${fa} font-bold text-gray-900 text-sm ${ta} mb-3`}>
               {idx + 1}. {q.question_ar}
-              <span className="mr-2 text-xs text-gray-400 font-normal">({q.points} درجة)</span>
+              <span className={`mr-2 text-xs text-gray-400 font-normal`}>({q.points} {t('points')})</span>
             </p>
 
             {q.question_type === 'true_false' ? (
               <div className="flex gap-3 justify-end">
-                {['صح', 'خطأ'].map(opt => (
+                {[t('t_true'), t('t_false')].map(opt => (
                   <button
                     key={opt}
                     onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))}
-                    className={`flex-1 py-3 rounded-xl font-arabic font-bold text-sm transition-colors ${
+                    className={`flex-1 py-3 rounded-xl ${fa} font-bold text-sm transition-colors ${
                       answers[q.id] === opt ? 'bg-teal text-white' : 'bg-gray-100 text-gray-700'
                     }`}
                   >
@@ -169,7 +171,7 @@ export function QuizPage() {
                   <button
                     key={oIdx}
                     onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))}
-                    className={`w-full px-4 py-3 rounded-xl text-right font-arabic text-sm transition-colors ${
+                    className={`w-full px-4 py-3 rounded-xl ${ta} ${fa} text-sm transition-colors ${
                       answers[q.id] === opt
                         ? 'bg-teal text-white font-bold'
                         : 'bg-gray-50 text-gray-700 border border-gray-200'
@@ -188,9 +190,9 @@ export function QuizPage() {
         <button
           onClick={() => handleSubmit()}
           disabled={submitting || answered < questions.length}
-          className="w-full py-4 rounded-xl bg-teal text-white font-bold font-arabic text-base disabled:opacity-50"
+          className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {submitting ? 'جاري التسليم...' : `تسليم الاختبار (${answered}/${questions.length})`}
+          {submitting ? t('submitting') : `${t('submit_quiz')} (${answered}/${questions.length})`}
         </button>
       </div>
     </PageWrapper>

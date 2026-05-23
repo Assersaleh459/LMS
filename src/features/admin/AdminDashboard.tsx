@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { AuthContext }  from '../../app/providers/AuthProvider'
+import { useLang }      from '../../app/providers/LangProvider'
 import { useSchool }    from '../../app/providers/SchoolProvider'
 import { PageWrapper }  from '../../components/layout/PageWrapper'
 import { AppBar }       from '../../components/layout/AppBar'
@@ -10,13 +11,14 @@ import { toArabicNumerals, formatDateAr } from '../../lib/arabic'
 
 export function AdminDashboard() {
   const auth       = useContext(AuthContext)
+  const { t }      = useLang()
   const { school } = useSchool()
   const { stats, loading } = useAdminData()
 
   return (
     <PageWrapper>
       <AppBar
-        title={school?.name_ar ?? 'لوحة المدير'}
+        title={school?.name_ar ?? t('admin_title')}
         subtitle={formatDateAr(new Date())}
         onLogout={auth?.signOut}
       />

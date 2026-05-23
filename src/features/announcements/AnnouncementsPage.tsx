@@ -4,6 +4,7 @@ import { AuthContext } from '../../app/providers/AuthProvider'
 import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface Announcement {
   id: string; title_ar: string; body_ar: string
@@ -23,6 +24,7 @@ function timeAgo(dateStr: string): string {
 export function AnnouncementsPage() {
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
+  const { t, fa } = useLang()
   const [items, setItems] = useState<Announcement[]>([])
   const [loading, setLoading] = useState(true)
   const isTeacher = auth?.role === 'subject_teacher' || auth?.role === 'homeroom_teacher' || auth?.role === 'school_admin'
@@ -44,15 +46,15 @@ export function AnnouncementsPage() {
 
   return (
     <PageWrapper>
-      <AppBar title="الإعلانات" />
+      <AppBar title={t('announcements')} />
 
       {isTeacher && (
         <div className="px-4 py-3 border-b border-gray-100 bg-white">
           <button
             onClick={() => navigate('/announcements/new')}
-            className="w-full py-3 rounded-xl bg-teal text-white font-bold font-arabic text-sm"
+            className={`w-full py-3 rounded-xl bg-teal text-white font-bold ${fa} text-sm`}
           >
-            + إعلان جديد
+            {t('new_announce')}
           </button>
         </div>
       )}
@@ -63,13 +65,13 @@ export function AnnouncementsPage() {
             <div className="w-8 h-8 rounded-full border-2 border-teal border-t-transparent animate-spin" />
           </div>
         ) : items.length === 0 ? (
-          <p className="text-center text-gray-400 font-arabic text-sm py-20">لا توجد إعلانات</p>
+          <p className={`text-center text-gray-400 ${fa} text-sm py-20`}>{t('no_announces')}</p>
         ) : (
           items.map(item => (
             <div key={item.id} className={`px-4 py-4 ${item.is_pinned ? 'bg-gold/5' : 'bg-white'}`}>
               {item.is_pinned && (
-                <span className="inline-flex items-center gap-1 text-xs font-arabic text-gold bg-gold/10 px-2 py-0.5 rounded-full mb-2">
-                  📌 مثبت
+                <span className={`inline-flex items-center gap-1 text-xs ${fa} text-gold bg-gold/10 px-2 py-0.5 rounded-full mb-2`}>
+                  📌 {t('pinned')}
                 </span>
               )}
               <p className="font-bold font-arabic text-gray-900 text-sm">{item.title_ar}</p>

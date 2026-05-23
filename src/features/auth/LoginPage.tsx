@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from './useAuth'
+import { useLang } from '../../app/providers/LangProvider'
 
 export function LoginPage() {
   const [email,    setEmail]    = useState('')
@@ -8,6 +9,7 @@ export function LoginPage() {
   const [showPass, setShowPass] = useState(false)
   const { loading, error, signIn, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
+  const { t, ta, fa } = useLang()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -23,25 +25,25 @@ export function LoginPage() {
         <span className="text-white text-4xl font-bold font-arabic">م</span>
       </div>
 
-      <h1 className="text-white text-2xl font-bold font-arabic mb-1 text-center">
-        أهلاً بك في مدرستي
+      <h1 className={`text-white text-2xl font-bold ${fa} mb-1 text-center`}>
+        {t('login_title')}
       </h1>
-      <p className="text-white/60 text-sm font-arabic mb-10 text-center">
-        مدرسة الفارابي للغات
+      <p className={`text-white/60 text-sm ${fa} mb-10 text-center`}>
+        {t('login_sub')}
       </p>
 
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
 
         {/* Email */}
         <div>
-          <label className="block text-white/80 text-sm font-arabic mb-2 text-right">
-            البريد الإلكتروني
+          <label className={`block text-white/80 text-sm ${fa} mb-2 ${ta}`}>
+            {t('email')}
           </label>
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="example@school.eg"
+            placeholder={t('email_ph')}
             dir="ltr"
             autoComplete="email"
             className="w-full px-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-left focus:outline-none focus:border-teal-light focus:ring-2 focus:ring-teal-light/30"
@@ -51,15 +53,15 @@ export function LoginPage() {
 
         {/* Password */}
         <div>
-          <label className="block text-white/80 text-sm font-arabic mb-2 text-right">
-            كلمة المرور
+          <label className={`block text-white/80 text-sm ${fa} mb-2 ${ta}`}>
+            {t('password')}
           </label>
           <div className="relative">
             <input
               type={showPass ? 'text' : 'password'}
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder={t('password_ph')}
               dir="ltr"
               autoComplete="current-password"
               className="w-full px-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 text-left focus:outline-none focus:border-teal-light focus:ring-2 focus:ring-teal-light/30 pr-12"
@@ -81,15 +83,15 @@ export function LoginPage() {
         </div>
 
         {error && (
-          <p className="text-red-400 text-sm font-arabic text-right">{error}</p>
+          <p className={`text-red-400 text-sm ${fa} ${ta}`}>{t('login_err')}</p>
         )}
 
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full py-4 rounded-xl bg-teal text-white font-bold font-arabic text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-teal-light transition-colors"
+          className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-teal-light transition-colors`}
         >
-          {loading ? 'جاري الدخول...' : 'دخول'}
+          {loading ? t('login_loading') : t('login_btn')}
         </button>
       </form>
 
@@ -97,13 +99,13 @@ export function LoginPage() {
       <div className="mt-6 w-full max-w-sm">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex-1 h-px bg-white/20" />
-          <span className="text-white/40 text-xs font-arabic">أو</span>
+          <span className={`text-white/40 text-xs ${fa}`}>{t('login_or')}</span>
           <div className="flex-1 h-px bg-white/20" />
         </div>
         <button
           onClick={signInWithGoogle}
           disabled={loading}
-          className="w-full py-3 rounded-xl bg-white text-gray-800 font-medium font-arabic flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className={`w-full py-3 rounded-xl bg-white text-gray-800 font-medium ${fa} flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors disabled:opacity-50`}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -111,7 +113,7 @@ export function LoginPage() {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
           </svg>
-          <span>تسجيل الدخول بـ Google</span>
+          <span>{t('login_google')}</span>
         </button>
       </div>
     </div>

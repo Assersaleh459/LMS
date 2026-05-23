@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext }  from '../../app/providers/AuthProvider'
+import { useLang }      from '../../app/providers/LangProvider'
 import { supabase }     from '../../lib/supabase'
 import { PageWrapper }  from '../../components/layout/PageWrapper'
 import { AppBar }       from '../../components/layout/AppBar'
@@ -10,6 +11,7 @@ import { KG_GRADES } from '../../lib/moe'
 
 export function KGDashboard() {
   const auth = useContext(AuthContext)
+  const { t } = useLang()
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [loading,     setLoading]     = useState(true)
@@ -40,7 +42,7 @@ export function KGDashboard() {
 
   return (
     <PageWrapper>
-      <AppBar title="مدرستي" subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
+      <AppBar title={t('app_name')} subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
 
       <div className="bg-navy text-white px-4 py-6 flex items-center gap-4">
         <Avatar name={student?.full_name_ar ?? ''} url={student?.avatar_url} size="lg" />

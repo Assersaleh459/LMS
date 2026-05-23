@@ -4,6 +4,7 @@ import { AuthContext } from '../../app/providers/AuthProvider'
 import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface Reply {
   id: string; body_ar: string; created_at: string
@@ -27,6 +28,7 @@ export function ThreadPage() {
   const { threadId } = useParams<{ subjectId: string; threadId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
+  const { t, ta, fa, dir } = useLang()
   const [thread, setThread] = useState<Thread | null>(null)
   const [replies, setReplies] = useState<Reply[]>([])
   const [newReply, setNewReply] = useState('')
@@ -74,7 +76,7 @@ export function ThreadPage() {
 
   return (
     <PageWrapper>
-      <AppBar title={thread?.title_ar ?? 'النقاش'} onBack={() => navigate(-1)} />
+      <AppBar title={thread?.title_ar ?? t('discussions')} onBack={() => navigate(-1)} />
 
       <div className="flex-1 overflow-y-auto">
         {/* Original post */}
@@ -121,9 +123,9 @@ export function ThreadPage() {
               value={newReply}
               onChange={e => setNewReply(e.target.value)}
               rows={2}
-              dir="rtl"
-              placeholder="اكتب ردك..."
-              className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-right font-arabic text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none"
+              dir={dir}
+              placeholder={t('reply_ph')}
+              className={`flex-1 px-3 py-2 rounded-xl border border-gray-200 ${ta} ${fa} text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none`}
             />
             <button
               onClick={sendReply}

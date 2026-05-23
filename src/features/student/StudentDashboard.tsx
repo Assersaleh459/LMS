@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext }  from '../../app/providers/AuthProvider'
+import { useLang }      from '../../app/providers/LangProvider'
 import { supabase }     from '../../lib/supabase'
 import { PageWrapper }  from '../../components/layout/PageWrapper'
 import { AppBar }       from '../../components/layout/AppBar'
@@ -12,6 +13,7 @@ import { toArabicNumerals } from '../../lib/arabic'
 
 export function StudentDashboard() {
   const auth = useContext(AuthContext)
+  const { t, fa } = useLang()
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [grades,      setGrades]      = useState<GradeEntry[]>([])
   const [assignments, setAssignments] = useState<Assignment[]>([])
@@ -51,15 +53,15 @@ export function StudentDashboard() {
 
   return (
     <PageWrapper>
-      <AppBar title="مدرستي" subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
+      <AppBar title={t('app_name')} subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
 
       {/* Student card */}
       <div className="bg-navy text-white px-4 py-6 flex items-center gap-4">
         <Avatar name={student?.full_name_ar ?? ''} url={student?.avatar_url} size="lg" />
         <div>
-          <h1 className="font-bold text-xl font-arabic">{student?.full_name_ar}</h1>
-          <p className="text-white/70 text-sm font-arabic mt-0.5">
-            الصف {student?.grade_year} {student?.section}
+          <h1 className={`font-bold text-xl ${fa}`}>{student?.full_name_ar}</h1>
+          <p className={`text-white/70 text-sm ${fa} mt-0.5`}>
+            {t('grade_label')} {student?.grade_year} {student?.section}
           </p>
           {avgGrade && (
             <span
@@ -77,8 +79,8 @@ export function StudentDashboard() {
         <div className="bg-green-50 border-b border-green-100 px-4 py-3 flex items-center gap-3">
           <span className="text-2xl">🔥</span>
           <div>
-            <p className="font-bold font-arabic text-green-800 text-sm">
-              {toArabicNumerals(student.attendance_streak_days)} يوم متواصل بلا غياب!
+            <p className={`font-bold ${fa} text-green-800 text-sm`}>
+              {toArabicNumerals(student.attendance_streak_days)} {t('attend_streak')}!
             </p>
             <ProgressBar value={Math.min(student.attendance_streak_days * 3.3, 100)} color="bg-green-500" height="h-1.5" />
           </div>
@@ -88,7 +90,7 @@ export function StudentDashboard() {
       {/* Upcoming homework */}
       {assignments.length > 0 && (
         <div className="pt-4">
-          <h2 className="font-bold font-arabic text-gray-700 px-4 mb-2 text-sm">الواجبات القادمة</h2>
+          <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('today_hw')}</h2>
           {assignments.map(a => <HomeworkCard key={a.id} assignment={a} />)}
         </div>
       )}
@@ -96,7 +98,7 @@ export function StudentDashboard() {
       {/* Recent grades */}
       {grades.length > 0 && (
         <div className="pt-4 pb-6">
-          <h2 className="font-bold font-arabic text-gray-700 px-4 mb-2 text-sm">آخر الدرجات</h2>
+          <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('recent_grades')}</h2>
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mx-4 overflow-hidden">
             {grades.slice(0, 5).map(g => {
               const grade = getMoELetterGrade(g.total_grade, 100)

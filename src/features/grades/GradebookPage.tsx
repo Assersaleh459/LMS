@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../app/providers/AuthProvider'
+import { useLang }     from '../../app/providers/LangProvider'
 import { supabase } from '../../lib/supabase'
 import { AppBar }      from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
@@ -13,6 +14,7 @@ import { GRADE_TYPE_LABELS } from '../../lib/arabic'
 
 export function GradebookPage() {
   const auth = useContext(AuthContext)
+  const { t, fa } = useLang()
   const [activeTab, setActiveTab] = useState<GradeType>('written')
   const [students,  setStudents]  = useState<StudentCard[]>([])
   const [subjectId, setSubjectId] = useState('')
@@ -68,8 +70,8 @@ export function GradebookPage() {
   return (
     <PageWrapper>
       <AppBar
-        title="دفتر الدرجات"
-        subtitle={subjectName || 'جاري التحميل...'}
+        title={t('grade_entry')}
+        subtitle={subjectName || t('loading')}
       />
 
       <OfflineBanner />
@@ -99,9 +101,9 @@ export function GradebookPage() {
           type="button"
           onClick={() => saveAll([activeTab])}
           disabled={saving || isLoading}
-          className="w-full py-4 rounded-xl bg-teal text-white font-bold font-arabic text-base disabled:opacity-50"
+          className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {saving ? 'جاري الحفظ...' : `حفظ درجات ${GRADE_TYPE_LABELS[activeTab]}`}
+          {saving ? t('saving') : `${t('save')} ${GRADE_TYPE_LABELS[activeTab]}`}
         </button>
       </div>
     </PageWrapper>

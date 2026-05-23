@@ -5,11 +5,13 @@ import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 import { ArabicInput } from '../../components/forms/ArabicInput'
+import { useLang } from '../../app/providers/LangProvider'
 
 export function CreateThreadPage() {
   const { subjectId } = useParams<{ subjectId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
+  const { t, ta, fa, dir } = useLang()
   const [title, setTitle] = useState('')
   const [body,  setBody]  = useState('')
   const [saving, setSaving] = useState(false)
@@ -30,32 +32,32 @@ export function CreateThreadPage() {
 
   return (
     <PageWrapper>
-      <AppBar title="موضوع جديد" onBack={() => navigate(-1)} />
+      <AppBar title={t('new_topic')} onBack={() => navigate(-1)} />
       <form onSubmit={handleSubmit} className="p-4 space-y-5">
         <ArabicInput
-          label="عنوان الموضوع"
-          placeholder="اكتب سؤالك أو موضوعك..."
+          label={t('thread_title')}
+          placeholder={t('thread_title_ph')}
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
         <div>
-          <label className="block text-sm font-medium text-gray-700 font-arabic text-right mb-1">التفاصيل</label>
+          <label className={`block text-sm font-medium text-gray-700 ${fa} ${ta} mb-1`}>{t('thread_body')}</label>
           <textarea
             value={body}
             onChange={e => setBody(e.target.value)}
             rows={6}
-            dir="rtl"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-right font-arabic text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none"
-            placeholder="اشرح سؤالك أو فكرتك بالتفصيل..."
+            dir={dir}
+            className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${ta} ${fa} text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none`}
+            placeholder={t('thread_body_ph')}
             required
           />
         </div>
         <button
           type="submit"
           disabled={saving || !title.trim() || !body.trim()}
-          className="w-full py-4 rounded-xl bg-teal text-white font-bold font-arabic text-base disabled:opacity-50"
+          className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {saving ? 'جاري النشر...' : 'نشر الموضوع'}
+          {saving ? t('publishing') : t('publish_thread')}
         </button>
       </form>
     </PageWrapper>

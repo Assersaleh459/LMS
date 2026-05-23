@@ -4,8 +4,10 @@ import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 import { ArabicInput } from '../../components/forms/ArabicInput'
+import { useLang } from '../../app/providers/LangProvider'
 
 export function CreateUnitPage() {
+  const { t, ta, fa, dir } = useLang()
   const { subjectId } = useParams<{ subjectId: string }>()
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
@@ -27,31 +29,31 @@ export function CreateUnitPage() {
 
   return (
     <PageWrapper>
-      <AppBar title="وحدة جديدة" onBack={() => navigate(-1)} />
+      <AppBar title={t('new_unit')} onBack={() => navigate(-1)} />
       <form onSubmit={handleSubmit} className="p-4 space-y-5">
         <ArabicInput
-          label="عنوان الوحدة"
-          placeholder="مثال: الفصل الأول — الأعداد الصحيحة"
+          label={t('unit_title')}
+          placeholder={t('unit_title_ph')}
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
         <div>
-          <label className="block text-sm font-medium text-gray-700 font-arabic text-right mb-1">وصف (اختياري)</label>
+          <label className={`block text-sm font-medium text-gray-700 ${fa} ${ta} mb-1`}>{t('unit_desc')}</label>
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
             rows={3}
-            dir="rtl"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-right font-arabic text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none"
-            placeholder="موضوعات هذه الوحدة..."
+            dir={dir}
+            className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${ta} ${fa} text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none`}
+            placeholder={t('unit_desc_ph')}
           />
         </div>
         <button
           type="submit"
           disabled={saving || !title.trim()}
-          className="w-full py-4 rounded-xl bg-teal text-white font-bold font-arabic text-base disabled:opacity-50"
+          className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {saving ? 'جاري الحفظ...' : 'إنشاء الوحدة'}
+          {saving ? t('saving') : t('create_unit')}
         </button>
       </form>
     </PageWrapper>

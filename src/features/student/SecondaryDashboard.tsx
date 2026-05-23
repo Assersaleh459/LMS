@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext }  from '../../app/providers/AuthProvider'
+import { useLang }      from '../../app/providers/LangProvider'
 import { supabase }     from '../../lib/supabase'
 import { PageWrapper }  from '../../components/layout/PageWrapper'
 import { AppBar }       from '../../components/layout/AppBar'
@@ -11,6 +12,7 @@ import { toArabicNumerals } from '../../lib/arabic'
 
 export function SecondaryDashboard() {
   const auth = useContext(AuthContext)
+  const { t } = useLang()
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [grades,      setGrades]      = useState<GradeEntry[]>([])
   const [assignments, setAssignments] = useState<Assignment[]>([])
@@ -52,7 +54,7 @@ export function SecondaryDashboard() {
 
   return (
     <PageWrapper>
-      <AppBar title="مدرستي — ثانوي" subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
+      <AppBar title={t('app_name_sec')} subtitle={student?.school_name_ar ?? ''} onLogout={auth?.signOut} />
 
       <div className="bg-navy text-white px-4 py-6 flex items-center gap-4">
         <Avatar name={student?.full_name_ar ?? ''} url={student?.avatar_url} size="lg" />

@@ -4,6 +4,7 @@ import { AuthContext } from '../../app/providers/AuthProvider'
 import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface Lesson {
   id: string; title_ar: string; content_type: string
@@ -13,11 +14,12 @@ interface Lesson {
 const ICONS: Record<string, string> = {
   video: '🎬', pdf: '📄', text: '📝', link: '🔗', quiz: '✅'
 }
-const TYPE_LABELS: Record<string, string> = {
-  video: 'فيديو', pdf: 'ملف PDF', text: 'نص', link: 'رابط', quiz: 'اختبار'
+const TYPE_KEYS: Record<string, string> = {
+  video: 'type_video', pdf: 'type_pdf', text: 'type_text', link: 'type_link', quiz: 'type_quiz'
 }
 
 export function UnitPage() {
+  const { t, ta, fa } = useLang()
   const { subjectId, unitId } = useParams<{ subjectId: string; unitId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
@@ -45,13 +47,13 @@ export function UnitPage() {
 
   return (
     <PageWrapper>
-      <AppBar title={unitTitle || 'الوحدة'} onBack={() => navigate(-1)} />
+      <AppBar title={unitTitle || t('unit')} onBack={() => navigate(-1)} />
 
       {lessons.length > 0 && (
         <div className="px-4 py-3 bg-white border-b border-gray-100">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-gray-500 font-arabic">{completed.size}/{lessons.length} درس مكتمل</span>
-            <span className="text-xs font-bold text-teal">{progress}%</span>
+            <span className={`text-xs text-gray-500 ${fa}`}>{completed.size}/{lessons.length} {t('lessons_done')}</span>
+            <span className="text-xs font-bold text-teal">{progress}% {t('complete')}</span>
           </div>
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <div className="h-full bg-teal rounded-full transition-all" style={{ width: `${progress}%` }} />
@@ -63,9 +65,9 @@ export function UnitPage() {
         <div className="px-4 py-3 border-b border-gray-100 bg-lms-bg">
           <button
             onClick={() => navigate(`/teacher/course/${subjectId}/unit/${unitId}/lesson/new`)}
-            className="w-full py-3 rounded-xl bg-teal text-white font-bold font-arabic text-sm"
+            className={`w-full py-3 rounded-xl bg-teal text-white font-bold ${fa} text-sm`}
           >
-            + إضافة درس جديد
+            {t('add_lesson')}
           </button>
         </div>
       )}
@@ -76,7 +78,7 @@ export function UnitPage() {
             <div className="w-8 h-8 rounded-full border-2 border-teal border-t-transparent animate-spin" />
           </div>
         ) : lessons.length === 0 ? (
-          <p className="text-center text-gray-400 font-arabic text-sm py-20">لا توجد دروس بعد</p>
+          <p className={`text-center text-gray-400 ${fa} text-sm py-20`}>{t('no_lessons')}</p>
         ) : (
           lessons.map((lesson) => {
             const done = completed.has(lesson.id)
@@ -84,16 +86,16 @@ export function UnitPage() {
               <button
                 key={lesson.id}
                 onClick={() => navigate(`/course/${subjectId}/unit/${unitId}/lesson/${lesson.id}`)}
-                className={`w-full rounded-2xl border p-4 text-right flex items-center gap-3 transition-colors ${
+                className={`w-full rounded-2xl border p-4 ${ta} flex items-center gap-3 transition-colors ${
                   done ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100 shadow-sm'
                 }`}
               >
                 <span className="text-2xl flex-shrink-0">{ICONS[lesson.content_type] ?? '📄'}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold font-arabic text-gray-900 text-sm truncate">{lesson.title_ar}</p>
-                  <p className="text-gray-500 font-arabic text-xs mt-0.5">
-                    {TYPE_LABELS[lesson.content_type]}
-                    {lesson.duration_min ? ` · ${lesson.duration_min} دقيقة` : ''}
+                  <p className={`font-semibold ${fa} text-gray-900 text-sm truncate`}>{lesson.title_ar}</p>
+                  <p className={`text-gray-500 ${fa} text-xs mt-0.5`}>
+                    {t(TYPE_KEYS[lesson.content_type] ?? 'type_pdf')}
+                    {lesson.duration_min ? ` · ${lesson.duration_min} ${t('minutes')}` : ''}
                   </p>
                 </div>
                 {done ? (

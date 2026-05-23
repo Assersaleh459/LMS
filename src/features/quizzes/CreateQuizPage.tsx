@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 import { ArabicInput } from '../../components/forms/ArabicInput'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface QuizQuestion {
   question_ar: string
@@ -18,15 +19,17 @@ const emptyMCQ = (): QuizQuestion => ({
   question_ar: '', question_type: 'mcq',
   options: ['', '', '', ''], correct_index: 0, points: 1,
 })
-const emptyTF = (): QuizQuestion => ({
-  question_ar: '', question_type: 'true_false',
-  options: ['صح', 'خطأ'], correct_index: 0, points: 1,
-})
 
 export function CreateQuizPage() {
+  const { t, ta, fa, dir } = useLang()
   const { subjectId } = useParams<{ subjectId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
+
+  const emptyTF = (): QuizQuestion => ({
+    question_ar: '', question_type: 'true_false',
+    options: [t('t_true'), t('t_false')], correct_index: 0, points: 1,
+  })
 
   const [title, setTitle] = useState('')
   const [instructions, setInstructions] = useState('')
@@ -93,60 +96,60 @@ export function CreateQuizPage() {
 
   return (
     <PageWrapper>
-      <AppBar title="اختبار جديد" onBack={() => navigate(-1)} />
+      <AppBar title={t('new_quiz')} onBack={() => navigate(-1)} />
       <form onSubmit={handleSubmit} className="p-4 space-y-5 pb-24">
-        <ArabicInput label="عنوان الاختبار" placeholder="مثال: اختبار الوحدة الأولى" value={title} onChange={e => setTitle(e.target.value)} />
+        <ArabicInput label={t('quiz_title')} placeholder={t('quiz_title_ph')} value={title} onChange={e => setTitle(e.target.value)} />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 font-arabic text-right mb-1">تعليمات (اختياري)</label>
+          <label className={`block text-sm font-medium text-gray-700 ${fa} ${ta} mb-1`}>{t('instructions')}</label>
           <textarea
             value={instructions}
             onChange={e => setInstructions(e.target.value)}
             rows={2}
-            dir="rtl"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-right font-arabic text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none text-sm"
-            placeholder="أي تعليمات للطلاب..."
+            dir={dir}
+            className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${ta} ${fa} text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none text-sm`}
+            placeholder={t('instructions_ph')}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 font-arabic text-right mb-1">المدة (دقيقة)</label>
+            <label className={`block text-sm font-medium text-gray-700 ${fa} ${ta} mb-1`}>{t('duration_min')}</label>
             <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min={1} max={180}
-              dir="rtl" placeholder="30"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-right font-arabic focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal text-sm" />
+              dir={dir} placeholder="30"
+              className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${ta} ${fa} focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal text-sm`} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 font-arabic text-right mb-1">درجة النجاح %</label>
+            <label className={`block text-sm font-medium text-gray-700 ${fa} ${ta} mb-1`}>{t('pass_score')}</label>
             <input type="number" value={passScore} onChange={e => setPassScore(e.target.value)} min={0} max={100}
-              dir="rtl"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-right font-arabic focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal text-sm" />
+              dir={dir}
+              className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${ta} ${fa} focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal text-sm`} />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <ArabicInput label="الصف" placeholder="10" value={gradeYear} onChange={e => setGradeYear(e.target.value)} />
-          <ArabicInput label="الفصل" placeholder="أ" value={section} onChange={e => setSection(e.target.value)} />
+          <ArabicInput label={t('grade_year')} placeholder="10" value={gradeYear} onChange={e => setGradeYear(e.target.value)} />
+          <ArabicInput label={t('section')} placeholder="أ" value={section} onChange={e => setSection(e.target.value)} />
         </div>
 
         {/* Questions */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="font-arabic font-bold text-gray-800 text-right">الأسئلة ({questions.length})</p>
+            <p className={`${fa} font-bold text-gray-800 ${ta}`}>{t('questions')} ({questions.length})</p>
           </div>
 
           {questions.map((q, qIdx) => (
             <div key={qIdx} className="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <button type="button" onClick={() => setQuestions(prev => prev.filter((_, i) => i !== qIdx))}
-                  className="text-red-400 text-xs font-arabic">حذف</button>
+                  className={`text-red-400 text-xs ${fa}`}>{t('delete')}</button>
                 <div className="flex gap-2">
                   <button type="button"
                     onClick={() => updateQ(qIdx, q.question_type === 'mcq' ? emptyTF() : emptyMCQ())}
-                    className="text-xs font-arabic text-teal bg-teal/10 px-2 py-1 rounded-lg">
-                    {q.question_type === 'mcq' ? 'صح/خطأ' : 'اختيار متعدد'}
+                    className={`text-xs ${fa} text-teal bg-teal/10 px-2 py-1 rounded-lg`}>
+                    {q.question_type === 'mcq' ? t('tf_label') : t('mcq_label')}
                   </button>
-                  <span className="text-xs font-arabic text-gray-500">س {qIdx + 1}</span>
+                  <span className={`text-xs ${fa} text-gray-500`}>س {qIdx + 1}</span>
                 </div>
               </div>
 
@@ -154,9 +157,9 @@ export function CreateQuizPage() {
                 value={q.question_ar}
                 onChange={e => updateQ(qIdx, { question_ar: e.target.value })}
                 rows={2}
-                dir="rtl"
-                placeholder="نص السؤال..."
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-right font-arabic text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none"
+                dir={dir}
+                placeholder={t('question_text')}
+                className={`w-full px-3 py-2 rounded-xl border border-gray-200 ${ta} ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal resize-none`}
               />
 
               {q.question_type === 'mcq' ? (
@@ -173,22 +176,22 @@ export function CreateQuizPage() {
                       <input
                         value={opt}
                         onChange={e => updateOption(qIdx, oIdx, e.target.value)}
-                        dir="rtl"
-                        placeholder={`الخيار ${oIdx + 1}`}
-                        className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-right font-arabic text-sm focus:outline-none focus:ring-1 focus:ring-teal/30"
+                        dir={dir}
+                        placeholder={`${t('option_ph')} ${oIdx + 1}`}
+                        className={`flex-1 px-3 py-2 rounded-xl border border-gray-200 ${ta} ${fa} text-sm focus:outline-none focus:ring-1 focus:ring-teal/30`}
                       />
                     </div>
                   ))}
-                  <p className="text-xs text-gray-400 font-arabic text-right">اضغط الدائرة لتحديد الإجابة الصحيحة</p>
+                  <p className={`text-xs text-gray-400 ${fa} ${ta}`}>{t('q_correct_hint')}</p>
                 </div>
               ) : (
                 <div className="flex gap-2 justify-end">
-                  {['صح', 'خطأ'].map((opt, oIdx) => (
+                  {[t('t_true'), t('t_false')].map((opt, oIdx) => (
                     <button
                       key={opt}
                       type="button"
                       onClick={() => updateQ(qIdx, { correct_index: oIdx })}
-                      className={`flex-1 py-2 rounded-xl font-arabic font-bold text-sm ${q.correct_index === oIdx ? 'bg-teal text-white' : 'bg-gray-100 text-gray-600'}`}
+                      className={`flex-1 py-2 rounded-xl ${fa} font-bold text-sm ${q.correct_index === oIdx ? 'bg-teal text-white' : 'bg-gray-100 text-gray-600'}`}
                     >
                       {opt}
                     </button>
@@ -197,7 +200,7 @@ export function CreateQuizPage() {
               )}
 
               <div className="flex items-center justify-end gap-2">
-                <label className="text-xs font-arabic text-gray-500">الدرجة:</label>
+                <label className={`text-xs ${fa} text-gray-500`}>{t('points')}:</label>
                 <input type="number" value={q.points} min={1} max={10}
                   onChange={e => updateQ(qIdx, { points: parseInt(e.target.value) || 1 })}
                   className="w-16 px-2 py-1 rounded-lg border border-gray-200 text-center text-sm focus:outline-none focus:ring-1 focus:ring-teal/30" />
@@ -207,12 +210,12 @@ export function CreateQuizPage() {
 
           <div className="flex gap-2">
             <button type="button" onClick={() => setQuestions(prev => [...prev, emptyTF()])}
-              className="flex-1 py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 font-arabic text-sm">
-              + صح/خطأ
+              className={`flex-1 py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 ${fa} text-sm`}>
+              {t('add_tf')}
             </button>
             <button type="button" onClick={() => setQuestions(prev => [...prev, emptyMCQ()])}
-              className="flex-1 py-3 rounded-xl border-2 border-dashed border-teal/40 text-teal font-arabic text-sm">
-              + اختيار متعدد
+              className={`flex-1 py-3 rounded-xl border-2 border-dashed border-teal/40 text-teal ${fa} text-sm`}>
+              {t('add_mcq')}
             </button>
           </div>
         </div>
@@ -220,9 +223,9 @@ export function CreateQuizPage() {
         <button
           type="submit"
           disabled={saving || !title.trim() || questions.every(q => !q.question_ar.trim())}
-          className="w-full py-4 rounded-xl bg-teal text-white font-bold font-arabic text-base disabled:opacity-50"
+          className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {saving ? 'جاري الحفظ...' : 'نشر الاختبار'}
+          {saving ? t('saving') : t('publish_quiz')}
         </button>
       </form>
     </PageWrapper>
