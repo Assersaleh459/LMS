@@ -498,7 +498,7 @@ export function UserManagementPage() {
             <div>
               <label className={`block text-sm font-bold text-gray-700 ${fa} mb-2`}>{t('role')}</label>
               <div className="grid grid-cols-1 gap-2">
-                {(Object.keys(ROLE_LABEL) as UserRole[]).map(role => {
+                {(Object.keys(ROLE_T_KEY) as UserRole[]).map(role => {
                   const color   = ROLE_COLOR[role] ?? '#999'
                   const isChosen = editRole === role
                   return (
@@ -515,7 +515,7 @@ export function UserManagementPage() {
                         style={{ backgroundColor: isChosen ? color : '#d1d5db' }}
                       />
                       <span className={`text-sm ${fa} ${isChosen ? 'font-bold text-gray-900' : 'text-gray-600'}`}>
-                        {lang === 'ar' ? ROLE_LABEL[role] : ROLE_LABEL_EN[role]}
+                        {t(ROLE_T_KEY[role])}
                       </span>
                       {isChosen && (
                         <svg className="w-4 h-4 text-teal mr-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

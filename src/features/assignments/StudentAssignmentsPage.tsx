@@ -34,7 +34,11 @@ export function StudentAssignmentsPage() {
   useEffect(() => {
     if (!auth?.profile?.id) return
     supabase.from('v_student_card').select('grade_year, section').eq('id', auth.profile.id).single()
-      .then(({ data }) => { if (data) setStudentInfo(data) })
+      .then(({ data }) => {
+        if (data && data.grade_year !== null && data.section !== null) {
+          setStudentInfo({ grade_year: data.grade_year, section: data.section })
+        }
+      })
   }, [auth?.profile?.id])
 
   useEffect(() => {

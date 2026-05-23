@@ -41,7 +41,7 @@ export function ClassRosterPage() {
       .order('full_name_ar')
       .then(async ({ data: sData }) => {
         if (!sData?.length) { setLoading(false); return }
-        const ids = sData.map(s => s.id)
+        const ids = sData.map(s => s.id).filter((id): id is string => id !== null)
 
         const [attRes, gradesRes] = await Promise.all([
           supabase.from('attendance_records').select('student_id, status')

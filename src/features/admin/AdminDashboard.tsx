@@ -30,7 +30,7 @@ export function AdminDashboard() {
         const map: Record<string, ClassSummary> = {}
         for (const s of data) {
           const key = `${s.grade_year}:${s.section}`
-          if (!map[key]) map[key] = { grade: s.grade_year, section: s.section, count: 0 }
+          if (!map[key]) map[key] = { grade: s.grade_year ?? 0, section: s.section ?? '', count: 0 }
           map[key].count++
         }
         setClasses(Object.values(map).sort((a, b) => a.grade - b.grade || a.section.localeCompare(b.section)))
