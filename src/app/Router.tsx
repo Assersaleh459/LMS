@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthContext } from './providers/AuthProvider'
+import { useLang } from './providers/LangProvider'
 import type { UserRole } from '../types/enums'
 
 // Phase 3 — Advanced teacher tools
@@ -60,7 +61,8 @@ const ROLE_ROUTES: Record<UserRole, string> = {
 
 function RoleRedirect() {
   const auth = useContext(AuthContext)
-  if (!auth || auth.loading) return <div className="flex items-center justify-center min-h-screen"><p className="text-navy font-arabic">جاري التحميل...</p></div>
+  const { t, fa } = useLang()
+  if (!auth || auth.loading) return <div className="flex items-center justify-center min-h-screen"><p className={`text-navy ${fa}`}>{t('loading')}</p></div>
   if (!auth.session) return <Navigate to="/login" replace />
   const dest = auth.role ? ROLE_ROUTES[auth.role] : '/login'
   return <Navigate to={dest} replace />
@@ -68,7 +70,8 @@ function RoleRedirect() {
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useContext(AuthContext)
-  if (!auth || auth.loading) return <div className="flex items-center justify-center min-h-screen"><p className="text-navy font-arabic">جاري التحميل...</p></div>
+  const { t, fa } = useLang()
+  if (!auth || auth.loading) return <div className="flex items-center justify-center min-h-screen"><p className={`text-navy ${fa}`}>{t('loading')}</p></div>
   if (!auth.session) return <Navigate to="/login" replace />
   return <>{children}</>
 }

@@ -48,6 +48,7 @@ const translations: T = {
   period_1:       { ar: 'الحصة الأولى', en: 'Period 1' },
   present:        { ar: 'حاضر', en: 'Present' },
   absent:         { ar: 'غائب', en: 'Absent' },
+  late:           { ar: 'متأخر', en: 'Late' },
   pending:        { ar: 'لم يُسجَّل', en: 'Pending' },
   whatsapp_alert: { ar: 'إرسال تنبيهات واتساب', en: 'Send WhatsApp Alerts' },
   whatsapp_sent:  { ar: 'تم الإرسال', en: 'Sent' },
@@ -309,6 +310,25 @@ const translations: T = {
   // ── Report card ───────────────────────────────────────────────
   report_card:      { ar: 'كشف الدرجات', en: 'Report Card' },
   print_card:       { ar: 'طباعة', en: 'Print' },
+  rc_grade_year:    { ar: 'الصف الدراسي',  en: 'Grade Year' },
+  rc_overall_avg:   { ar: 'المتوسط العام', en: 'Overall Average' },
+  rc_present_days:  { ar: 'أيام الحضور',   en: 'Days Present' },
+  rc_absent_days:   { ar: 'أيام الغياب',   en: 'Days Absent' },
+
+  // ── Column headers (exports + tables) ────────────────────────
+  col_student_name: { ar: 'اسم الطالب', en: 'Student Name' },
+  col_student_code: { ar: 'كود الطالب', en: 'Student Code' },
+  col_total:        { ar: 'الإجمالي',   en: 'Total' },
+  col_pct:          { ar: 'النسبة %',   en: 'Percent %' },
+  col_grade_lbl:    { ar: 'التقدير',    en: 'Grade' },
+  col_subject:      { ar: 'المادة',     en: 'Subject' },
+
+  // ── MoE grade band labels ─────────────────────────────────────
+  moe_excellent:    { ar: 'ممتاز',    en: 'Excellent' },
+  moe_vgood:        { ar: 'جيد جداً', en: 'Very Good' },
+  moe_good:         { ar: 'جيد',      en: 'Good' },
+  moe_pass:         { ar: 'مقبول',    en: 'Pass' },
+  moe_fail:         { ar: 'ضعيف',     en: 'Fail' },
 
   // ── Admin ─────────────────────────────────────────────────────
   classes:           { ar: 'الفصول الدراسية', en: 'Classes' },
@@ -332,6 +352,40 @@ const translations: T = {
   phone_ph:          { ar: '+20...', en: '+20...' },
   create_user:       { ar: 'إنشاء مستخدم', en: 'Create user' },
   user_created:      { ar: 'تم إنشاء المستخدم بنجاح', en: 'User created successfully' },
+
+  // ── Role labels ───────────────────────────────────────────────
+  role_kg_primary:   { ar: 'طالب ابتدائي/روضة',  en: 'Primary/KG Student' },
+  role_prep_sec:     { ar: 'طالب إعدادي/ثانوي',  en: 'Secondary Student' },
+  role_sub_teacher:  { ar: 'معلم مادة',           en: 'Subject Teacher' },
+  role_homeroom:     { ar: 'معلم فصل',            en: 'Homeroom Teacher' },
+  role_parent:       { ar: 'ولي أمر',             en: 'Parent' },
+  role_school_admin: { ar: 'مدير مدرسة',          en: 'School Admin' },
+  role_it_admin:     { ar: 'مسؤول IT',            en: 'IT Admin' },
+  role_chain_admin:  { ar: 'مدير مجموعة',         en: 'Chain Admin' },
+  role_moe_sup:      { ar: 'مشرف تربوي',          en: 'MoE Supervisor' },
+
+  // ── Filter tabs ───────────────────────────────────────────────
+  tab_all:           { ar: 'الكل',   en: 'All' },
+  tab_teachers:      { ar: 'معلمون', en: 'Teachers' },
+  tab_students:      { ar: 'طلاب',   en: 'Students' },
+  tab_parents:       { ar: 'أولياء', en: 'Parents' },
+  tab_admins:        { ar: 'إدارة',  en: 'Admins' },
+
+  // ── Validation errors ─────────────────────────────────────────
+  err_name_req:      { ar: 'الاسم الأول واسم العائلة مطلوبان',   en: 'First and last name are required' },
+  err_contact_req:   { ar: 'رقم الهاتف أو البريد الإلكتروني مطلوب', en: 'Phone or email is required' },
+  err_title_req:     { ar: 'عنوان الواجب مطلوب',                 en: 'Assignment title is required' },
+  err_date_req:      { ar: 'تاريخ الاستحقاق مطلوب',              en: 'Due date is required' },
+  err_grade_pos:     { ar: 'الدرجة يجب أن تكون أكبر من صفر',    en: 'Grade must be greater than zero' },
+
+  // ── Assignment form labels ────────────────────────────────────
+  assign_title_lbl:  { ar: 'عنوان الواجب',               en: 'Assignment title' },
+  assign_title_ph:   { ar: 'اكتب عنوان الواجب هنا...',  en: 'Enter assignment title...' },
+  assign_type_lbl:   { ar: 'اختر النوع',                 en: 'Select type' },
+  assign_instr_lbl:  { ar: 'تعليمات (اختياري)',           en: 'Instructions (optional)' },
+  assign_instr_ph:   { ar: 'تعليمات إضافية للطلاب...',  en: 'Additional instructions for students...' },
+  assign_wa_label:   { ar: 'إرسال WhatsApp للأولياء',   en: 'Send WhatsApp to parents' },
+  assign_wa_sub:     { ar: 'يُرسل تنبيه فور النشر',     en: 'Alert sent immediately on publish' },
 }
 
 export function translate(key: string, lang: Lang): string {

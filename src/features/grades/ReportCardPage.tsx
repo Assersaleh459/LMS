@@ -18,7 +18,7 @@ export function ReportCardPage() {
   const { studentId } = useParams<{ studentId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
-  const { fa } = useLang()
+  const { t, fa } = useLang()
 
   const [student,      setStudent]      = useState<StudentCard | null>(null)
   const [rows,         setRows]         = useState<GradeRow[]>([])
@@ -95,7 +95,7 @@ export function ReportCardPage() {
     <div className="min-h-screen bg-gray-100 print:bg-white">
       {/* Toolbar — hidden when printing */}
       <div className="print:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className={`text-navy text-sm font-bold ${fa}`}>← رجوع</button>
+        <button onClick={() => navigate(-1)} className={`text-navy text-sm font-bold ${fa}`}>← {t('back')}</button>
         <div className="flex-1" />
         <button
           onClick={() => window.print()}
@@ -104,7 +104,7 @@ export function ReportCardPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
           </svg>
-          طباعة
+          {t('print_card')}
         </button>
       </div>
 
@@ -114,32 +114,32 @@ export function ReportCardPage() {
 
           {/* School header */}
           <div className="text-center border-b-2 border-navy pb-5 mb-6">
-            <h1 className="text-xl font-bold text-navy font-arabic">{schoolName}</h1>
-            <p className="text-base font-bold text-gray-700 font-arabic mt-1">كشف الدرجات</p>
-            {termLabel && <p className="text-sm text-gray-500 font-arabic mt-0.5">{termLabel}</p>}
+            <h1 className={`text-xl font-bold text-navy ${fa}`}>{schoolName}</h1>
+            <p className={`text-base font-bold text-gray-700 ${fa} mt-1`}>{t('report_card')}</p>
+            {termLabel && <p className={`text-sm text-gray-500 ${fa} mt-0.5`}>{termLabel}</p>}
           </div>
 
           {/* Student details */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-3 mb-6 text-sm">
             {[
-              ['اسم الطالب', student?.full_name_ar ?? '—'],
-              ['كود الطالب', student?.student_code ?? '—'],
-              ['الصف الدراسي', `${student?.grade_year ?? '—'}`],
-              ['الفصل', student?.section ?? '—'],
+              [t('col_student_name'), student?.full_name_ar ?? '—'],
+              [t('col_student_code'), student?.student_code ?? '—'],
+              [t('rc_grade_year'),    `${student?.grade_year ?? '—'}`],
+              [t('section'),          student?.section ?? '—'],
             ].map(([label, value]) => (
               <div key={label} className="flex items-center gap-2">
-                <span className="text-gray-500 font-arabic whitespace-nowrap">{label}:</span>
-                <span className="font-bold text-gray-900 font-arabic">{value}</span>
+                <span className={`text-gray-500 ${fa} whitespace-nowrap`}>{label}:</span>
+                <span className={`font-bold text-gray-900 ${fa}`}>{value}</span>
               </div>
             ))}
           </div>
 
           {/* Grades table */}
-          <table className="w-full text-sm font-arabic border-collapse mb-6" style={{ borderSpacing: 0 }}>
+          <table className={`w-full text-sm ${fa} border-collapse mb-6`} style={{ borderSpacing: 0 }}>
             <thead>
               <tr style={{ backgroundColor: '#1a3c5e', color: 'white' }}>
-                {['المادة', 'تحريري', 'شفهي', 'عملي', 'نشاط', 'الإجمالي', 'التقدير'].map(h => (
-                  <th key={h} className="p-2 text-center font-arabic text-xs border border-gray-300">{h}</th>
+                {[t('col_subject'), t('written'), t('oral'), t('practical'), t('activity'), t('col_total'), t('col_grade_lbl')].map(h => (
+                  <th key={h} className={`p-2 text-center ${fa} text-xs border border-gray-300`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -148,7 +148,7 @@ export function ReportCardPage() {
                 const grade = getMoELetterGrade(row.pct, 100)
                 return (
                   <tr key={row.subjectId} style={{ backgroundColor: i % 2 === 0 ? '#f9fafb' : 'white' }}>
-                    <td className="p-2 font-bold text-right border border-gray-200">{row.subjectName}</td>
+                    <td className={`p-2 font-bold text-right ${fa} border border-gray-200`}>{row.subjectName}</td>
                     <td className="p-2 text-center border border-gray-200">
                       {toArabicNumerals(row.written)}/{toArabicNumerals(row.writtenMax)}
                     </td>
@@ -177,8 +177,8 @@ export function ReportCardPage() {
             {rows.length > 0 && overallGrade && (
               <tfoot>
                 <tr style={{ backgroundColor: '#e8f4f8' }}>
-                  <td colSpan={5} className="p-2 font-bold text-right font-arabic border border-gray-300">المتوسط العام</td>
-                  <td className="p-2 text-center font-bold font-arabic border border-gray-300">
+                  <td colSpan={5} className={`p-2 font-bold text-right ${fa} border border-gray-300`}>{t('rc_overall_avg')}</td>
+                  <td className={`p-2 text-center font-bold ${fa} border border-gray-300`}>
                     {toArabicNumerals(overallPct)}%
                   </td>
                   <td className="p-2 text-center border border-gray-300">
@@ -196,11 +196,11 @@ export function ReportCardPage() {
           <div className="border border-gray-200 rounded-xl p-4 flex justify-around">
             <div className="text-center">
               <p className="text-2xl font-bold" style={{ color: '#27ae60' }}>{toArabicNumerals(presentCount)}</p>
-              <p className="text-xs text-gray-500 font-arabic">أيام الحضور</p>
+              <p className={`text-xs text-gray-500 ${fa}`}>{t('rc_present_days')}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold" style={{ color: '#c0392b' }}>{toArabicNumerals(absentCount)}</p>
-              <p className="text-xs text-gray-500 font-arabic">أيام الغياب</p>
+              <p className={`text-xs text-gray-500 ${fa}`}>{t('rc_absent_days')}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-gray-700">
@@ -208,12 +208,12 @@ export function ReportCardPage() {
                   ? `${toArabicNumerals(Math.round((presentCount / (presentCount + absentCount)) * 100))}%`
                   : '—'}
               </p>
-              <p className="text-xs text-gray-500 font-arabic">معدل الحضور</p>
+              <p className={`text-xs text-gray-500 ${fa}`}>{t('attend_rate')}</p>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between text-xs text-gray-400 font-arabic">
+          <div className={`mt-6 pt-4 border-t border-gray-200 flex justify-between text-xs text-gray-400 ${fa}`}>
             <span>تاريخ الطباعة: {new Date().toLocaleDateString('ar-EG')}</span>
             <span>مدرستي — نظام إدارة التعلم</span>
           </div>

@@ -1,6 +1,7 @@
 import type { StudentCard } from '../../types/domain'
 import type { AttendanceStatus } from '../../types/enums'
 import { Avatar } from '../../components/ui/Avatar'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface StudentRowProps {
   student: StudentCard
@@ -17,6 +18,7 @@ const ROW_BG: Record<string, string> = {
 }
 
 export function StudentRow({ student, status, saving, onMark }: StudentRowProps) {
+  const { t } = useLang()
   const rowBg = status ? ROW_BG[status] ?? 'bg-white border-gray-100' : 'bg-white border-gray-100'
 
   return (
@@ -39,7 +41,7 @@ export function StudentRow({ student, status, saving, onMark }: StudentRowProps)
         type="button"
         onClick={() => onMark(student.id, 'absent')}
         disabled={saving}
-        aria-label="تغيب"
+        aria-label={t('absent')}
         className={`w-10 h-10 rounded-full flex items-center justify-center transition-all text-lg disabled:opacity-40 ${
           status === 'absent'
             ? 'bg-red-500 text-white shadow-md scale-110'
@@ -54,7 +56,7 @@ export function StudentRow({ student, status, saving, onMark }: StudentRowProps)
         type="button"
         onClick={() => onMark(student.id, 'present')}
         disabled={saving}
-        aria-label="حاضر"
+        aria-label={t('present')}
         className={`w-10 h-10 rounded-full flex items-center justify-center transition-all text-lg disabled:opacity-40 ${
           status === 'present'
             ? 'bg-green-500 text-white shadow-md scale-110'

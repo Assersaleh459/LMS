@@ -79,12 +79,12 @@ export function GradebookPage() {
 
   function exportGrades() {
     const ws = XLSX.utils.json_to_sheet(students.map(s => ({
-      'اسم الطالب':  s.full_name_ar,
-      'كود الطالب':  s.student_code,
-      'تحريري':      grades[`${s.id}:written`]   || '',
-      'شفهي':        grades[`${s.id}:oral`]       || '',
-      'عملي':        grades[`${s.id}:practical`]  || '',
-      'نشاط':        grades[`${s.id}:activity`]   || '',
+      [t('col_student_name')]: s.full_name_ar,
+      [t('col_student_code')]: s.student_code,
+      [t('written')]:          grades[`${s.id}:written`]   || '',
+      [t('oral')]:             grades[`${s.id}:oral`]       || '',
+      [t('practical')]:        grades[`${s.id}:practical`]  || '',
+      [t('activity')]:         grades[`${s.id}:activity`]   || '',
     })))
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, subjectName.slice(0, 31) || 'Grades')

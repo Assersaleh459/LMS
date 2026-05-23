@@ -29,28 +29,16 @@ interface StudentProfile {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-const ROLE_LABEL: Record<UserRole, string> = {
-  kg_primary_student:     'طالب ابتدائي/روضة',
-  prep_secondary_student: 'طالب إعدادي/ثانوي',
-  subject_teacher:        'معلم مادة',
-  homeroom_teacher:       'معلم فصل',
-  parent:                 'ولي أمر',
-  school_admin:           'مدير مدرسة',
-  it_admin:               'مسؤول IT',
-  chain_admin:            'مدير مجموعة',
-  moe_supervisor:         'مشرف تربوي',
-}
-
-const ROLE_LABEL_EN: Record<UserRole, string> = {
-  kg_primary_student:     'Primary/KG Student',
-  prep_secondary_student: 'Secondary Student',
-  subject_teacher:        'Subject Teacher',
-  homeroom_teacher:       'Homeroom Teacher',
-  parent:                 'Parent',
-  school_admin:           'School Admin',
-  it_admin:               'IT Admin',
-  chain_admin:            'Chain Admin',
-  moe_supervisor:         'MoE Supervisor',
+const ROLE_T_KEY: Record<UserRole, string> = {
+  kg_primary_student:     'role_kg_primary',
+  prep_secondary_student: 'role_prep_sec',
+  subject_teacher:        'role_sub_teacher',
+  homeroom_teacher:       'role_homeroom',
+  parent:                 'role_parent',
+  school_admin:           'role_school_admin',
+  it_admin:               'role_it_admin',
+  chain_admin:            'role_chain_admin',
+  moe_supervisor:         'role_moe_sup',
 }
 
 const ROLE_COLOR: Record<string, string> = {
@@ -78,7 +66,7 @@ const FILTER_ROLES: Record<FilterTab, UserRole[] | null> = {
 // ── Component ────────────────────────────────────────────────────────────────
 
 export function UserManagementPage() {
-  const { t, fa, lang } = useLang()
+  const { t, fa } = useLang()
   const auth    = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -200,8 +188,8 @@ export function UserManagementPage() {
   }
 
   async function handleCreate() {
-    if (!newFirst.trim() || !newLast.trim()) { setCreateError(t('first_name_ar') + ' / ' + t('last_name_ar') + ' required'); return }
-    if (!newPhone.trim() && !newEmail.trim()) { setCreateError('Phone or email required'); return }
+    if (!newFirst.trim() || !newLast.trim()) { setCreateError(t('err_name_req')); return }
+    if (!newPhone.trim() && !newEmail.trim()) { setCreateError(t('err_contact_req')); return }
     setCreateSaving(true); setCreateError('')
 
     const { data: { session } } = await supabase.auth.getSession()
@@ -256,12 +244,12 @@ export function UserManagementPage() {
 
   // ── Render ───────────────────────────────────────────────────────────────
 
-  const TABS: { key: FilterTab; label: string; labelEn: string }[] = [
-    { key: 'all',      label: 'الكل',   labelEn: 'All' },
-    { key: 'teachers', label: 'معلمون', labelEn: 'Teachers' },
-    { key: 'students', label: 'طلاب',   labelEn: 'Students' },
-    { key: 'parents',  label: 'أولياء', labelEn: 'Parents' },
-    { key: 'admins',   label: 'إدارة',  labelEn: 'Admins' },
+  const TABS: { key: FilterTab; tKey: string }[] = [
+    { key: 'all',      tKey: 'tab_all' },
+    { key: 'teachers', tKey: 'tab_teachers' },
+    { key: 'students', tKey: 'tab_students' },
+    { key: 'parents',  tKey: 'tab_parents' },
+    { key: 'admins',   tKey: 'tab_admins' },
   ]
 
   return (
@@ -308,7 +296,7 @@ export function UserManagementPage() {
                 : 'bg-gray-100 text-gray-600'
             }`}
           >
-            {lang === 'ar' ? tab.label : tab.labelEn}
+            {t(tab.tKey)}
             {' '}
             <span className={activeTab === tab.key ? 'text-white/80' : 'text-gray-400'}>
               {toArabicNumerals(count(tab.key))}
@@ -328,7 +316,7 @@ export function UserManagementPage() {
         ) : (
           filtered.map(user => {
             const color  = ROLE_COLOR[user.role] ?? '#999'
-            const label  = lang === 'ar' ? ROLE_LABEL[user.role] : ROLE_LABEL_EN[user.role]
+            const label  = t(ROLE_T_KEY[user.role])
             return (
               <button
                 key={user.id}
@@ -422,7 +410,7 @@ export function UserManagementPage() {
                 <div>
                   <label className={`block text-sm font-bold text-gray-700 ${fa} mb-2`}>{t('role')}</label>
                   <div className="grid grid-cols-1 gap-1.5">
-                    {(Object.keys(ROLE_LABEL) as UserRole[]).map(role => {
+                    {(Object.keys(ROLE_T_KEY) as UserRole[]).map(role => {
                       const color = ROLE_COLOR[role] ?? '#999'
                       const isChosen = newRole === role
                       return (
@@ -431,7 +419,7 @@ export function UserManagementPage() {
                         >
                           <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: isChosen ? color : '#d1d5db' }} />
                           <span className={`text-sm ${fa} ${isChosen ? 'font-bold text-gray-900' : 'text-gray-600'}`}>
-                            {lang === 'ar' ? ROLE_LABEL[role] : ROLE_LABEL_EN[role]}
+                            {t(ROLE_T_KEY[role])}
                           </span>
                           {isChosen && (
                             <svg className="w-4 h-4 text-teal mr-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

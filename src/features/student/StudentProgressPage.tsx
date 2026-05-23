@@ -38,9 +38,7 @@ export function StudentProgressPage() {
       supabase.from('attendance_records')
         .select('status, attendance_date')
         .eq('student_id', studentId).order('attendance_date', { ascending: false }).limit(60),
-      // lesson_progress is not in generated types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (supabase as any).from('lesson_progress')
+      supabase.from('lesson_progress')
         .select('id', { count: 'exact', head: true })
         .eq('student_id', studentId),
     ]).then(([sRes, aRes, attRes, lcRes]) => {

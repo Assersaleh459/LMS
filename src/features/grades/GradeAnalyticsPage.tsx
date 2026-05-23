@@ -83,24 +83,24 @@ export function GradeAnalyticsPage() {
     }
   }, [summaries])
 
-  const distribution = useMemo(() => [
-    { label: 'ممتاز',   color: MOE_LETTER_GRADES.excellent.color, count: summaries.filter(s => s.pct >= 90).length },
-    { label: 'جيد جداً', color: MOE_LETTER_GRADES.veryGood.color, count: summaries.filter(s => s.pct >= 80 && s.pct < 90).length },
-    { label: 'جيد',     color: MOE_LETTER_GRADES.good.color,      count: summaries.filter(s => s.pct >= 65 && s.pct < 80).length },
-    { label: 'مقبول',   color: MOE_LETTER_GRADES.pass.color,      count: summaries.filter(s => s.pct >= 50 && s.pct < 65).length },
-    { label: 'ضعيف',    color: MOE_LETTER_GRADES.fail.color,      count: summaries.filter(s => s.pct < 50).length },
-  ], [summaries])
+  const distribution = [
+    { label: t('moe_excellent'), color: MOE_LETTER_GRADES.excellent.color, count: summaries.filter(s => s.pct >= 90).length },
+    { label: t('moe_vgood'),     color: MOE_LETTER_GRADES.veryGood.color,  count: summaries.filter(s => s.pct >= 80 && s.pct < 90).length },
+    { label: t('moe_good'),      color: MOE_LETTER_GRADES.good.color,      count: summaries.filter(s => s.pct >= 65 && s.pct < 80).length },
+    { label: t('moe_pass'),      color: MOE_LETTER_GRADES.pass.color,      count: summaries.filter(s => s.pct >= 50 && s.pct < 65).length },
+    { label: t('moe_fail'),      color: MOE_LETTER_GRADES.fail.color,      count: summaries.filter(s => s.pct < 50).length },
+  ]
 
   function exportToExcel() {
     const ws = XLSX.utils.json_to_sheet(summaries.map(s => ({
-      'اسم الطالب':  s.name,
-      'تحريري':      s.written,
-      'شفهي':        s.oral,
-      'عملي':        s.practical,
-      'نشاط':        s.activity,
-      'الإجمالي':    s.total,
-      'النسبة %':    Math.round(s.pct),
-      'التقدير':     getMoELetterGrade(s.pct, 100).label,
+      [t('col_student_name')]: s.name,
+      [t('written')]:          s.written,
+      [t('oral')]:             s.oral,
+      [t('practical')]:        s.practical,
+      [t('activity')]:         s.activity,
+      [t('col_total')]:        s.total,
+      [t('col_pct')]:          Math.round(s.pct),
+      [t('col_grade_lbl')]:    getMoELetterGrade(s.pct, 100).label,
     })))
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, subjectName.slice(0, 31) || 'Grades')
