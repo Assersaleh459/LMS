@@ -71,6 +71,30 @@ export function AdminDashboard() {
             ))}
           </div>
 
+          {/* Quick-action links */}
+          <div className="grid grid-cols-2 gap-3 mx-4">
+            <button
+              onClick={() => navigate('/admin/users')}
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-4 active:bg-gray-50 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-xl bg-navy/10 flex items-center justify-center text-xl">👥</div>
+              <div className="text-right">
+                <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('user_mgmt')}</p>
+                <p className={`text-xs text-gray-400 ${fa}`}>{t('user_mgmt_sub')}</p>
+              </div>
+            </button>
+            <button
+              onClick={() => navigate('/teacher/grades/analytics')}
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-4 active:bg-gray-50 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-xl bg-teal/10 flex items-center justify-center text-xl">📊</div>
+              <div className="text-right">
+                <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('analytics')}</p>
+                <p className={`text-xs text-gray-400 ${fa}`}>{t('view_analytics')}</p>
+              </div>
+            </button>
+          </div>
+
           {/* Class list */}
           {classes.length > 0 && (
             <div className="mx-4">

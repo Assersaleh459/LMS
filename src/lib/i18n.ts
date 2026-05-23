@@ -270,8 +270,20 @@ const translations: T = {
   print_card:       { ar: 'طباعة', en: 'Print' },
 
   // ── Admin ─────────────────────────────────────────────────────
-  classes:          { ar: 'الفصول الدراسية', en: 'Classes' },
-  class_roster:     { ar: 'كشف الفصل', en: 'Class Roster' },
+  classes:           { ar: 'الفصول الدراسية', en: 'Classes' },
+  class_roster:      { ar: 'كشف الفصل', en: 'Class Roster' },
+
+  // ── User management ───────────────────────────────────────────
+  user_mgmt:         { ar: 'إدارة المستخدمين', en: 'User Management' },
+  user_mgmt_sub:     { ar: 'الأدوار والصلاحيات', en: 'Roles & Permissions' },
+  search_user:       { ar: 'ابحث باسم المستخدم أو البريد', en: 'Search by name or email' },
+  no_users:          { ar: 'لا يوجد مستخدمون مطابقون', en: 'No matching users' },
+  role:              { ar: 'الدور الوظيفي', en: 'Role' },
+  inactive:          { ar: 'غير نشط', en: 'Inactive' },
+  active_account:    { ar: 'الحساب نشط', en: 'Account active' },
+  active_account_sub:{ ar: 'إيقاف التشغيل يمنع الدخول', en: 'Disabling blocks login' },
+  save_changes:      { ar: 'حفظ التغييرات', en: 'Save changes' },
+  student_code:      { ar: 'كود الطالب', en: 'Student code' },
 }
 
 export function translate(key: string, lang: Lang): string {

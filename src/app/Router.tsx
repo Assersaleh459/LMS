@@ -8,6 +8,7 @@ import { GradeAnalyticsPage }  from '../features/grades/GradeAnalyticsPage'
 import { StudentProgressPage } from '../features/student/StudentProgressPage'
 import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
+import { UserManagementPage }  from '../features/admin/UserManagementPage'
 
 // Phase 1 pages
 import { LoginPage }           from '../features/auth/LoginPage'
@@ -98,6 +99,7 @@ export function Router() {
         {/* Admin */}
         <Route path="/admin"                         element={<RequireAuth><AdminDashboard /></RequireAuth>} />
         <Route path="/admin/class/:grade/:section"   element={<RequireAuth><ClassRosterPage /></RequireAuth>} />
+        <Route path="/admin/users"                   element={<RequireAuth><UserManagementPage /></RequireAuth>} />
 
         {/* Phase 2 — Subjects & Courses */}
         <Route path="/courses"                                                        element={<RequireAuth><SubjectsListPage /></RequireAuth>} />

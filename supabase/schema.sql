@@ -340,3 +340,30 @@ create policy "assignments_write" on assignments
 
 create policy "submissions_rw" on assignment_submissions
   for all using (auth.uid() is not null);
+
+-- Allow school/IT admins to update users within their school
+create policy "admin_users_update" on users
+  for update using (
+    exists (
+      select 1 from users admin_u
+      where admin_u.id = auth.uid()
+        and admin_u.role in ('school_admin', 'it_admin', 'chain_admin')
+        and admin_u.school_id = users.school_id
+    )
+  );
+
+-- Allow school/IT admins to update student profiles within their school
+create policy "admin_student_profiles_update" on student_profiles
+  for update using (
+    exists (
+      select 1 from users admin_u
+      join users student_u on student_u.id = student_profiles.user_id
+      where admin_u.id = auth.uid()
+        and admin_u.role in ('school_admin', 'it_admin', 'chain_admin')
+        and admin_u.school_id = student_u.school_id
+    )
+  );
+
+-- Allow admins to read all student_profiles in their school
+create policy "admin_student_profiles_read" on student_profiles
+  for select using (auth.uid() is not null);
