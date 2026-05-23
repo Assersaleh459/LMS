@@ -293,6 +293,13 @@ const translations: T = {
   active_account_sub:{ ar: 'إيقاف التشغيل يمنع الدخول', en: 'Disabling blocks login' },
   save_changes:      { ar: 'حفظ التغييرات', en: 'Save changes' },
   student_code:      { ar: 'كود الطالب', en: 'Student code' },
+  add_user:          { ar: 'إضافة مستخدم', en: 'Add user' },
+  first_name_ar:     { ar: 'الاسم الأول', en: 'First name' },
+  last_name_ar:      { ar: 'اسم العائلة', en: 'Last name' },
+  phone_num:         { ar: 'رقم الهاتف', en: 'Phone number' },
+  phone_ph:          { ar: '+20...', en: '+20...' },
+  create_user:       { ar: 'إنشاء مستخدم', en: 'Create user' },
+  user_created:      { ar: 'تم إنشاء المستخدم بنجاح', en: 'User created successfully' },
 }
 
 export function translate(key: string, lang: Lang): string {

@@ -95,6 +95,20 @@ export function UserManagementPage() {
   const [saving,      setSaving]      = useState(false)
   const [saveError,   setSaveError]   = useState('')
 
+  // Create user sheet
+  const [creating,      setCreating]      = useState(false)
+  const [newFirst,      setNewFirst]      = useState('')
+  const [newLast,       setNewLast]       = useState('')
+  const [newPhone,      setNewPhone]      = useState('')
+  const [newEmail,      setNewEmail]      = useState('')
+  const [newRole,       setNewRole]       = useState<UserRole>('subject_teacher')
+  const [newGrade,      setNewGrade]      = useState('')
+  const [newSection,    setNewSection]    = useState('أ')
+  const [newCode,       setNewCode]       = useState('')
+  const [createSaving,  setCreateSaving]  = useState(false)
+  const [createError,   setCreateError]   = useState('')
+  const [createSuccess, setCreateSuccess] = useState(false)
+
   useEffect(() => {
     if (!auth?.schoolId) return
     supabase.from('users')
@@ -176,6 +190,63 @@ export function UserManagementPage() {
     setSaving(false)
   }
 
+  // ── Create new user ──────────────────────────────────────────────────────
+
+  function openCreate() {
+    setNewFirst(''); setNewLast(''); setNewPhone(''); setNewEmail('')
+    setNewRole('subject_teacher'); setNewGrade(''); setNewSection('أ'); setNewCode('')
+    setCreateError(''); setCreateSuccess(false)
+    setCreating(true)
+  }
+
+  async function handleCreate() {
+    if (!newFirst.trim() || !newLast.trim()) { setCreateError(t('first_name_ar') + ' / ' + t('last_name_ar') + ' required'); return }
+    if (!newPhone.trim() && !newEmail.trim()) { setCreateError('Phone or email required'); return }
+    setCreateSaving(true); setCreateError('')
+
+    const { data: { session } } = await supabase.auth.getSession()
+    const jwt = session?.access_token ?? ''
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
+    const res = await fetch(`${supabaseUrl}/functions/v1/admin-create-user`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        first_name_ar: newFirst.trim(),
+        last_name_ar:  newLast.trim(),
+        role:          newRole,
+        phone:         newPhone.trim() || undefined,
+        email:         newEmail.trim() || undefined,
+        grade_year:    newGrade ? parseInt(newGrade) : undefined,
+        section:       newSection || 'أ',
+        student_code:  newCode.trim() || undefined,
+      }),
+    })
+
+    const json = await res.json()
+    setCreateSaving(false)
+
+    if (!res.ok) {
+      setCreateError(json.error ?? 'Unknown error')
+      return
+    }
+
+    // Add to local list
+    const newUser: User = {
+      id:            json.id,
+      first_name_ar: newFirst.trim(),
+      last_name_ar:  newLast.trim(),
+      role:          newRole,
+      email:         newEmail.trim() || null,
+      phone:         newPhone.trim() || null,
+      is_active:     true,
+      created_at:    new Date().toISOString(),
+    }
+    setUsers(prev => [newUser, ...prev])
+    setCreateSuccess(true)
+    setTimeout(() => { setCreating(false) }, 1200)
+  }
+
   // ── Tab counts ───────────────────────────────────────────────────────────
 
   const count = (tab: FilterTab) => {
@@ -195,7 +266,18 @@ export function UserManagementPage() {
 
   return (
     <PageWrapper>
-      <AppBar title={t('user_mgmt')} onBack={() => navigate(-1)} />
+      <AppBar
+        title={t('user_mgmt')}
+        onBack={() => navigate(-1)}
+        action={
+          <button
+            onClick={openCreate}
+            className={`bg-white/20 hover:bg-white/30 text-white text-sm font-bold px-3 py-1.5 rounded-lg ${fa} transition-colors`}
+          >
+            + {t('add_user')}
+          </button>
+        }
+      />
 
       {/* Search */}
       <div className="px-4 py-3 bg-white border-b border-gray-100">
@@ -289,6 +371,120 @@ export function UserManagementPage() {
           })
         )}
       </div>
+
+      {/* Create user bottom sheet */}
+      {creating && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
+          <div className="bg-white w-full rounded-t-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between">
+              <p className={`font-bold text-gray-800 text-base ${fa}`}>{t('add_user')}</p>
+              <button onClick={() => setCreating(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xl leading-none">×</button>
+            </div>
+
+            {createSuccess ? (
+              <div className="flex flex-col items-center py-8 gap-3">
+                <span className="text-5xl">✅</span>
+                <p className={`${fa} font-bold text-green-700`}>{t('user_created')}</p>
+              </div>
+            ) : (
+              <>
+                {/* Names */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('first_name_ar')}</label>
+                    <input value={newFirst} onChange={e => setNewFirst(e.target.value)} dir="rtl"
+                      className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                      placeholder="محمد" />
+                  </div>
+                  <div>
+                    <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('last_name_ar')}</label>
+                    <input value={newLast} onChange={e => setNewLast(e.target.value)} dir="rtl"
+                      className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                      placeholder="علي" />
+                  </div>
+                </div>
+
+                {/* Contact */}
+                <div>
+                  <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('phone_num')}</label>
+                  <input type="tel" value={newPhone} onChange={e => setNewPhone(e.target.value)} dir="ltr"
+                    className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                    placeholder="+201234567890" />
+                </div>
+                <div>
+                  <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('email')}</label>
+                  <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} dir="ltr"
+                    className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                    placeholder="user@school.edu.eg" />
+                </div>
+
+                {/* Role selector */}
+                <div>
+                  <label className={`block text-sm font-bold text-gray-700 ${fa} mb-2`}>{t('role')}</label>
+                  <div className="grid grid-cols-1 gap-1.5">
+                    {(Object.keys(ROLE_LABEL) as UserRole[]).map(role => {
+                      const color = ROLE_COLOR[role] ?? '#999'
+                      const isChosen = newRole === role
+                      return (
+                        <button key={role} type="button" onClick={() => setNewRole(role)}
+                          className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border-2 text-right transition-colors ${isChosen ? 'border-teal bg-teal/5' : 'border-gray-100 bg-gray-50'}`}
+                        >
+                          <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: isChosen ? color : '#d1d5db' }} />
+                          <span className={`text-sm ${fa} ${isChosen ? 'font-bold text-gray-900' : 'text-gray-600'}`}>
+                            {lang === 'ar' ? ROLE_LABEL[role] : ROLE_LABEL_EN[role]}
+                          </span>
+                          {isChosen && (
+                            <svg className="w-4 h-4 text-teal mr-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Student fields */}
+                {(newRole === 'kg_primary_student' || newRole === 'prep_secondary_student') && (
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('grade_year')}</label>
+                      <input type="number" min={0} max={12} value={newGrade} onChange={e => setNewGrade(e.target.value)} dir="rtl"
+                        className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                        placeholder="6" />
+                    </div>
+                    <div>
+                      <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('section')}</label>
+                      <input value={newSection} onChange={e => setNewSection(e.target.value)} dir="rtl"
+                        className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                        placeholder="أ" />
+                    </div>
+                    <div>
+                      <label className={`block text-xs font-bold text-gray-700 ${fa} mb-1`}>{t('student_code')}</label>
+                      <input value={newCode} onChange={e => setNewCode(e.target.value)} dir="ltr"
+                        className={`w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30`}
+                        placeholder="STU-001" />
+                    </div>
+                  </div>
+                )}
+
+                {createError && (
+                  <p className={`text-xs text-red-500 ${fa} bg-red-50 px-3 py-2 rounded-lg`}>{createError}</p>
+                )}
+
+                <div className="flex gap-3 pt-1 pb-2">
+                  <button onClick={() => setCreating(false)}
+                    className={`flex-1 py-3.5 rounded-xl border border-gray-200 text-gray-600 ${fa} text-sm font-bold`}
+                  >{t('cancel')}</button>
+                  <button onClick={handleCreate} disabled={createSaving}
+                    className={`flex-1 py-3.5 rounded-xl bg-teal text-white font-bold ${fa} text-sm disabled:opacity-50`}
+                  >{createSaving ? t('saving') : t('create_user')}</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Edit bottom sheet */}
       {editUser && (
