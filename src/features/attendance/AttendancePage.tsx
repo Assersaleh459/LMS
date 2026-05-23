@@ -10,6 +10,7 @@ import { WhatsAppAlertButton } from './WhatsAppAlertButton'
 import { useAttendance } from './useAttendance'
 import { triggerAbsenceWhatsApp } from '../../lib/notifications'
 import { formatDateAr } from '../../lib/arabic'
+import { useLang } from '../../app/providers/LangProvider'
 import type { StudentCard } from '../../types/domain'
 
 // Hard-coded for MVP: teacher's first assigned class
@@ -17,6 +18,7 @@ import type { StudentCard } from '../../types/domain'
 const TODAY = new Date().toISOString().split('T')[0]
 
 export function AttendancePage() {
+  const { t } = useLang()
   const auth    = useContext(AuthContext)
   const [students,   setStudents]   = useState<StudentCard[]>([])
   const [subjectId,  setSubjectId]  = useState('')
@@ -80,11 +82,11 @@ export function AttendancePage() {
   return (
     <PageWrapper>
       <AppBar
-        title="تسجيل الحضور"
-        subtitle={`الصف ${gradeYear === 6 ? 'السادس' : gradeYear} ${section} · ${formatDateAr(new Date())}`}
+        title={t('attendance')}
+        subtitle={`${t('grade_label')} ${gradeYear} ${section} · ${formatDateAr(new Date())}`}
         action={
           <span className="bg-white/20 text-white text-xs font-arabic px-2 py-1 rounded-lg">
-            الحصة الأولى
+            {t('period_1')}
           </span>
         }
         onLogout={auth?.signOut}

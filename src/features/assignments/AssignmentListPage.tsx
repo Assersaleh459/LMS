@@ -6,8 +6,10 @@ import { AppBar }       from '../../components/layout/AppBar'
 import { PageWrapper }  from '../../components/layout/PageWrapper'
 import { AssignmentCard } from './AssignmentCard'
 import { useAssignments } from './useAssignments'
+import { useLang } from '../../app/providers/LangProvider'
 
 export function AssignmentListPage() {
+  const { t, fa } = useLang()
   const auth     = useContext(AuthContext)
   const navigate = useNavigate()
   const [subjectId, setSubjectId] = useState('')
@@ -28,13 +30,13 @@ export function AssignmentListPage() {
   return (
     <PageWrapper>
       <AppBar
-        title="الواجبات"
+        title={t('assignments')}
         action={
           <button
             onClick={() => navigate('/teacher/assignments/new')}
-            className="bg-teal text-white text-xs font-arabic font-bold px-3 py-2 rounded-lg"
+            className={`bg-teal text-white text-xs ${fa} font-bold px-3 py-2 rounded-lg`}
           >
-            + واجب جديد
+            + {t('new_assignment')}
           </button>
         }
       />
@@ -46,12 +48,12 @@ export function AssignmentListPage() {
       ) : assignments.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <span className="text-5xl">📋</span>
-          <p className="text-gray-400 font-arabic text-sm">لا توجد واجبات بعد</p>
+          <p className={`text-gray-400 ${fa} text-sm`}>{t('no_assignments')}</p>
           <button
             onClick={() => navigate('/teacher/assignments/new')}
-            className="bg-teal text-white font-arabic font-bold px-6 py-3 rounded-xl"
+            className={`bg-teal text-white ${fa} font-bold px-6 py-3 rounded-xl`}
           >
-            أضف أول واجب
+            {t('add_first')}
           </button>
         </div>
       ) : (

@@ -211,10 +211,18 @@ const translations: T = {
   nav_home:       { ar: 'الرئيسية', en: 'Home' },
 
   // ── Parent dashboard ─────────────────────────────────────────
-  parent_title:   { ar: 'متابعة الطالب', en: 'Student Tracking' },
-  parent_grades:  { ar: 'الدرجات', en: 'Grades' },
-  parent_attend:  { ar: 'الحضور', en: 'Attendance' },
-  no_link:        { ar: 'لا يوجد ربط لحساب الطالب', en: 'No student account linked' },
+  parent_title:      { ar: 'متابعة الطالب', en: 'Student Tracking' },
+  parent_grades:     { ar: 'الدرجات', en: 'Grades' },
+  parent_attend:     { ar: 'الحضور', en: 'Attendance' },
+  no_link:           { ar: 'لا يوجد ربط لحساب الطالب', en: 'No student account linked' },
+  generic_error:     { ar: 'حدث خطأ غير متوقع', en: 'An unexpected error occurred' },
+  wa_linked:         { ar: 'مرتبط بـ WhatsApp', en: 'Linked via WhatsApp' },
+  absent_today:      { ar: 'غياب اليوم', en: 'Absent today' },
+  contact_teacher:   { ar: 'راسل المعلم', en: 'Contact teacher' },
+  upcoming_hw:       { ar: 'الواجبات القادمة', en: 'Upcoming assignments' },
+  attendance_log:    { ar: 'سجل الحضور', en: 'Attendance log' },
+  past_due:          { ar: 'فات الوقت', en: 'Past due' },
+  due_label:         { ar: 'الموعد', en: 'Due' },
 
   // ── Student dashboard ────────────────────────────────────────
   hello:          { ar: 'أهلاً', en: 'Hello' },
