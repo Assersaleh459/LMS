@@ -58,8 +58,8 @@ export function useParentData(selectedStudentId?: string | null) {
       const primaryId = links.find(l => l.is_primary)?.student_id ?? links[0].student_id
       const studentId = selectedStudentId ?? primaryId
 
-      const today    = new Date().toISOString().split('T')[0]
-      const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0]
+      const today      = new Date().toISOString().split('T')[0]
+      const monthAgo   = new Date(Date.now() - 90 * 86400000).toISOString().split('T')[0]
 
       const [studentRes, attendanceRes, gradesRes, assignmentsRes] = await Promise.all([
         supabase.from('v_student_card').select('*').eq('id', studentId).single(),
