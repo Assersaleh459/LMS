@@ -216,6 +216,8 @@ const translations: T = {
   nav_hw:         { ar: 'الواجبات', en: 'Homework' },
 
   // ── Assignment submissions ────────────────────────────────────
+  all_students:     { ar: 'جميع الطلاب', en: 'All Students' },
+  digital_subs:     { ar: 'رقمي', en: 'Digital' },
   my_assignments:   { ar: 'واجباتي', en: 'My Assignments' },
   no_pending_hw:    { ar: 'لا توجد واجبات معلقة 🎉', en: 'No pending assignments 🎉' },
   sub_pending:      { ar: 'لم يُسلَّم', en: 'Not submitted' },
