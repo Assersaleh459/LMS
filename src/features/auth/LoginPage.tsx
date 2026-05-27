@@ -1,15 +1,33 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useContext, useState } from 'react'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from './useAuth'
 import { useLang } from '../../app/providers/LangProvider'
+import { AuthContext } from '../../app/providers/AuthProvider'
+
+const ROLE_ROUTES: Record<string, string> = {
+  subject_teacher:        '/teacher/attendance',
+  homeroom_teacher:       '/teacher/attendance',
+  kg_primary_student:     '/student/primary',
+  prep_secondary_student: '/student/secondary',
+  parent:                 '/parent',
+  school_admin:           '/admin',
+  chain_admin:            '/admin',
+  it_admin:               '/admin',
+  moe_supervisor:         '/admin',
+}
 
 export function LoginPage() {
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
-  const { loading, error, signIn, signInWithGoogle } = useAuth()
+  const { loading: authLoading, error, signIn, signInWithGoogle } = useAuth()
+  const auth = useContext(AuthContext)
   const navigate = useNavigate()
   const { t, ta, fa } = useLang()
+
+  if (auth && !auth.loading && auth.session && auth.role) {
+    return <Navigate to={ROLE_ROUTES[auth.role] ?? '/'} replace />
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -22,7 +40,7 @@ export function LoginPage() {
 
       {/* Logo */}
       <div className="w-24 h-24 rounded-2xl bg-teal flex items-center justify-center mb-8 shadow-lg">
-        <span className="text-white text-4xl font-bold font-arabic">م</span>
+        <span className={`text-white text-4xl font-bold ${fa}`}>م</span>
       </div>
 
       <h1 className={`text-white text-2xl font-bold ${fa} mb-1 text-center`}>
@@ -88,10 +106,10 @@ export function LoginPage() {
 
         <button
           type="submit"
-          disabled={loading || !email || !password}
+          disabled={authLoading || !email || !password}
           className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-teal-light transition-colors`}
         >
-          {loading ? t('login_loading') : t('login_btn')}
+          {authLoading ? t('login_loading') : t('login_btn')}
         </button>
       </form>
 
@@ -104,7 +122,7 @@ export function LoginPage() {
         </div>
         <button
           onClick={signInWithGoogle}
-          disabled={loading}
+          disabled={authLoading}
           className={`w-full py-3 rounded-xl bg-white text-gray-800 font-medium ${fa} flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors disabled:opacity-50`}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">

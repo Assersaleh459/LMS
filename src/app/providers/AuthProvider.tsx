@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function loadProfile(userId: string) {
+    setLoading(true)
     const { data } = await supabase
       .from('users')
       .select('*')
