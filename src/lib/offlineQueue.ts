@@ -12,11 +12,7 @@ const QUEUE_KEY = 'lms_offline_queue'
 export class OfflineQueue {
   enqueue(action: Omit<QueuedAction, 'id' | 'timestamp'>) {
     const queue = this.getQueue()
-    queue.push({
-      ...action,
-      id:        crypto.randomUUID(),
-      timestamp: Date.now(),
-    })
+    queue.push({ ...action, id: crypto.randomUUID(), timestamp: Date.now() })
     localStorage.setItem(QUEUE_KEY, JSON.stringify(queue))
   }
 
@@ -29,14 +25,21 @@ export class OfflineQueue {
     const queue = this.getQueue()
     if (!queue.length) return
 
+    const failed: QueuedAction[] = []
     for (const action of queue) {
       try {
         await this.executeAction(action)
       } catch (err) {
         console.warn('[offlineQueue] failed to sync action:', action.id, err)
+        failed.push(action)
       }
     }
-    localStorage.removeItem(QUEUE_KEY)
+
+    if (failed.length) {
+      localStorage.setItem(QUEUE_KEY, JSON.stringify(failed))
+    } else {
+      localStorage.removeItem(QUEUE_KEY)
+    }
   }
 
   private async executeAction(action: QueuedAction): Promise<void> {
@@ -44,10 +47,14 @@ export class OfflineQueue {
     const p = action.payload as any
     switch (action.type) {
       case 'attendance':
-        await supabase.from('attendance_records').upsert(p)
+        await supabase.from('attendance_records').upsert(p, {
+          onConflict: 'student_id,attendance_date,period_number',
+        })
         break
       case 'grade':
-        await supabase.from('grade_entries').insert(p)
+        await supabase.from('grade_entries').upsert(p, {
+          onConflict: 'student_id,subject_id,term_id,grade_type',
+        })
         break
       case 'assignment':
         await supabase.from('assignment_submissions').upsert(p)

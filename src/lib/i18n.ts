@@ -6,6 +6,8 @@ const translations: T = {
   // ── Common ──────────────────────────────────────────────────
   loading:        { ar: 'جاري التحميل...', en: 'Loading...' },
   offline:        { ar: 'غير متصل', en: 'Offline' },
+  syncing:        { ar: 'جاري المزامنة...', en: 'Syncing...' },
+  pending_sync:   { ar: 'إجراء في انتظار المزامنة', en: 'action(s) pending sync' },
   save:           { ar: 'حفظ', en: 'Save' },
   saving:         { ar: 'جاري الحفظ...', en: 'Saving...' },
   cancel:         { ar: 'إلغاء', en: 'Cancel' },

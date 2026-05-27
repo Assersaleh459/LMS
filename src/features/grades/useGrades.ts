@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { supabase, enterGrade } from '../../lib/supabase'
+import { offlineQueue } from '../../lib/offlineQueue'
 import { AuthContext } from '../../app/providers/AuthProvider'
 import type { GradeType } from '../../types/enums'
 import type { StudentCard } from '../../types/domain'
@@ -45,26 +46,50 @@ export function useGrades(
     if (!auth?.profile?.id) return
     setSaving(true)
 
-    const inserts = []
+    const enterable = ['written', 'oral', 'practical', 'activity'] as const
+    type Enterable = typeof enterable[number]
+
+    const rows: { student: StudentCard; gradeType: Enterable; val: number }[] = []
     for (const student of students) {
       for (const gradeType of gradeTypes) {
         const key = `${student.id}:${gradeType}`
         const val = parseFloat(grades[key] ?? '')
-        const enterable = ['written', 'oral', 'practical', 'activity'] as const
-        if (!isNaN(val) && enterable.includes(gradeType as typeof enterable[number])) {
-          inserts.push(enterGrade({
-            studentId: student.id,
-            subjectId,
-            termId,
-            gradeType: gradeType as typeof enterable[number],
-            grade:     val,
-            enteredBy: auth.profile.id,
-          }))
+        if (!isNaN(val) && enterable.includes(gradeType as Enterable)) {
+          rows.push({ student, gradeType: gradeType as Enterable, val })
         }
       }
     }
 
-    await Promise.all(inserts)
+    if (!navigator.onLine) {
+      rows.forEach(({ student, gradeType, val }) => {
+        offlineQueue.enqueue({
+          type: 'grade',
+          payload: {
+            student_id:  student.id,
+            subject_id:  subjectId,
+            term_id:     termId,
+            grade_type:  gradeType,
+            total_grade: val,
+            entered_by:  auth.profile!.id,
+          },
+        })
+      })
+      setSaving(false)
+      return
+    }
+
+    await Promise.all(
+      rows.map(({ student, gradeType, val }) =>
+        enterGrade({
+          studentId: student.id,
+          subjectId,
+          termId,
+          gradeType,
+          grade:     val,
+          enteredBy: auth.profile!.id,
+        })
+      )
+    )
     setSaving(false)
   }
 

@@ -1,21 +1,11 @@
 import { useEffect, useState, useContext } from 'react'
 import { supabase, markAttendance } from '../../lib/supabase'
+import { offlineQueue } from '../../lib/offlineQueue'
 import { AuthContext } from '../../app/providers/AuthProvider'
 import type { AttendanceRecord, StudentCard } from '../../types/domain'
 import type { AttendanceStatus } from '../../types/enums'
 
 type AttendanceMap = Record<string, AttendanceStatus>
-
-const QUEUE_KEY = 'lms_attendance_queue'
-
-interface QueuedAttendance {
-  studentId:    string
-  teacherId:    string
-  subjectId:    string
-  status:       'present' | 'absent' | 'late' | 'excused'
-  date:         string
-  periodNumber: number
-}
 
 export function useAttendance(
   students:     StudentCard[],
@@ -42,9 +32,7 @@ export function useAttendance(
       .then(({ data }) => {
         if (data) {
           const map: AttendanceMap = {}
-          data.forEach(r => {
-            map[r.student_id] = r.status as AttendanceStatus
-          })
+          data.forEach(r => { map[r.student_id] = r.status as AttendanceStatus })
           setRecords(map)
         }
         setLoading(false)
@@ -59,12 +47,8 @@ export function useAttendance(
       .channel(`attendance:${classDate}:${periodNumber}`)
       .on(
         'postgres_changes',
-        {
-          event:  '*',
-          schema: 'public',
-          table:  'attendance_records',
-          filter: `attendance_date=eq.${classDate}`,
-        },
+        { event: '*', schema: 'public', table: 'attendance_records',
+          filter: `attendance_date=eq.${classDate}` },
         payload => {
           const r = payload.new as AttendanceRecord
           if (r.period_number === periodNumber) {
@@ -85,10 +69,17 @@ export function useAttendance(
     setSaving(prev => ({ ...prev, [studentId]: true }))
 
     if (!navigator.onLine) {
-      // Queue for later sync
-      const queue: QueuedAttendance[] = JSON.parse(localStorage.getItem(QUEUE_KEY) ?? '[]')
-      queue.push({ studentId, teacherId: auth.profile.id, subjectId, status, date: classDate, periodNumber })
-      localStorage.setItem(QUEUE_KEY, JSON.stringify(queue))
+      offlineQueue.enqueue({
+        type: 'attendance',
+        payload: {
+          student_id:      studentId,
+          teacher_id:      auth.profile!.id,
+          subject_id:      subjectId || null,
+          attendance_date: classDate,
+          period_number:   periodNumber,
+          status,
+        },
+      })
       setSaving(prev => ({ ...prev, [studentId]: false }))
       return
     }
@@ -104,27 +95,10 @@ export function useAttendance(
     setSaving(prev => ({ ...prev, [studentId]: false }))
   }
 
-  // Stats derived from records
   const presentCount = Object.values(records).filter(s => s === 'present').length
   const absentCount  = Object.values(records).filter(s => s === 'absent').length
   const pendingCount = students.length - Object.keys(records).length
   const progressPct  = students.length ? (presentCount / students.length) * 100 : 0
-
-  // Flush offline queue on reconnect
-  useEffect(() => {
-    async function flush() {
-      const raw = localStorage.getItem(QUEUE_KEY)
-      if (!raw) return
-      const queue: QueuedAttendance[] = JSON.parse(raw)
-      for (const item of queue) {
-        await markAttendance(item)
-      }
-      localStorage.removeItem(QUEUE_KEY)
-    }
-
-    window.addEventListener('online', flush)
-    return () => window.removeEventListener('online', flush)
-  }, [])
 
   return { records, saving, loading, mark, presentCount, absentCount, pendingCount, progressPct }
 }
