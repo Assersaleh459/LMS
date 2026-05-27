@@ -6,6 +6,7 @@ import type { UserRole } from '../types/enums'
 
 // Phase 3 — Advanced teacher tools
 import { GradeAnalyticsPage }  from '../features/grades/GradeAnalyticsPage'
+import { AuditLogPage }        from '../features/grades/AuditLogPage'
 import { StudentProgressPage } from '../features/student/StudentProgressPage'
 import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
@@ -92,6 +93,7 @@ export function Router() {
         <Route path="/teacher/attendance"        element={<RequireAuth><AttendancePage /></RequireAuth>} />
         <Route path="/teacher/grades"            element={<RequireAuth><GradebookPage /></RequireAuth>} />
         <Route path="/teacher/grades/analytics"  element={<RequireAuth><GradeAnalyticsPage /></RequireAuth>} />
+        <Route path="/teacher/grades/audit"      element={<RequireAuth><AuditLogPage /></RequireAuth>} />
         <Route path="/teacher/student/:studentId/progress" element={<RequireAuth><StudentProgressPage /></RequireAuth>} />
         <Route path="/teacher/report-card/:studentId"      element={<RequireAuth><ReportCardPage /></RequireAuth>} />
         <Route path="/teacher/assignments"                           element={<RequireAuth><AssignmentListPage /></RequireAuth>} />

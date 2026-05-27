@@ -332,6 +332,11 @@ const translations: T = {
   moe_pass:         { ar: 'مقبول',    en: 'Pass' },
   moe_fail:         { ar: 'ضعيف',     en: 'Fail' },
 
+  // ── Grade audit log ───────────────────────────────────────────
+  audit_log:         { ar: 'سجل تعديل الدرجات', en: 'Grade Audit Log' },
+  audit_log_sub:     { ar: 'آخر ٢٠٠ تغيير',       en: 'Last 200 changes' },
+  by_teacher:        { ar: 'بواسطة',              en: 'by' },
+
   // ── Absence report ────────────────────────────────────────────
   absence_report:    { ar: 'تقرير الغياب', en: 'Absence Report' },
   moe_threshold_sub: { ar: 'عتبة وزارة التربية ٢٥٪ للرسوب', en: 'MoE 25% threshold for failing' },

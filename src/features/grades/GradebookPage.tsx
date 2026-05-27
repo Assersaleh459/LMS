@@ -132,6 +132,15 @@ export function GradebookPage() {
       {/* Toolbar */}
       <div className="flex gap-2 px-4 py-2 bg-white border-b border-gray-100">
         <button
+          onClick={() => navigate('/teacher/grades/audit')}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-600 text-xs font-bold ${fa}`}
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          {t('audit_log')}
+        </button>
+        <button
           onClick={() => navigate('/teacher/grades/analytics')}
           className={`flex items-center gap-1 px-3 py-1.5 rounded-lg bg-navy/10 text-navy text-xs font-bold ${fa}`}
         >
