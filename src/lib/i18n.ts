@@ -332,6 +332,13 @@ const translations: T = {
   moe_pass:         { ar: 'مقبول',    en: 'Pass' },
   moe_fail:         { ar: 'ضعيف',     en: 'Fail' },
 
+  // ── Emergency broadcast ───────────────────────────────────────
+  emergency_broadcast: { ar: 'إشعار طارئ',              en: 'Emergency Broadcast' },
+  emergency_sub:       { ar: 'إرسال رسالة لجميع الأولياء', en: 'Send to all parents' },
+  emergency_ph:        { ar: 'اكتب رسالتك هنا...',        en: 'Write your message here...' },
+  emergency_confirm:   { ar: 'إرسال للكل',               en: 'Send to All' },
+  emergency_sent:      { ar: 'تم الإرسال!',               en: 'Sent!' },
+
   // ── Admin ─────────────────────────────────────────────────────
   classes:           { ar: 'الفصول الدراسية', en: 'Classes' },
   class_roster:      { ar: 'كشف الفصل', en: 'Class Roster' },

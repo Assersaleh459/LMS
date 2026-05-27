@@ -10,6 +10,7 @@ import { Card }         from '../../components/ui/Card'
 import { SchoolHealthScore } from './SchoolHealthScore'
 import { useAdminData } from './useAdminData'
 import { toArabicNumerals, formatDateAr } from '../../lib/arabic'
+import { triggerEmergencyBroadcast } from '../../lib/notifications'
 
 interface ClassSummary { grade: number; section: string; count: number }
 
@@ -19,7 +20,11 @@ export function AdminDashboard() {
   const { school } = useSchool()
   const navigate   = useNavigate()
   const { stats, loading } = useAdminData()
-  const [classes, setClasses] = useState<ClassSummary[]>([])
+  const [classes,          setClasses]          = useState<ClassSummary[]>([])
+  const [broadcastOpen,    setBroadcastOpen]    = useState(false)
+  const [broadcastMsg,     setBroadcastMsg]     = useState('')
+  const [broadcastSending, setBroadcastSending] = useState(false)
+  const [broadcastSent,    setBroadcastSent]    = useState(false)
 
   useEffect(() => {
     if (!auth?.schoolId) return
@@ -36,6 +41,16 @@ export function AdminDashboard() {
         setClasses(Object.values(map).sort((a, b) => a.grade - b.grade || a.section.localeCompare(b.section)))
       })
   }, [auth?.schoolId])
+
+  async function handleBroadcast() {
+    if (!auth?.schoolId || !broadcastMsg.trim()) return
+    setBroadcastSending(true)
+    await triggerEmergencyBroadcast(auth.schoolId, broadcastMsg.trim())
+    setBroadcastSending(false)
+    setBroadcastSent(true)
+    setBroadcastMsg('')
+    setTimeout(() => { setBroadcastSent(false); setBroadcastOpen(false) }, 2000)
+  }
 
   return (
     <PageWrapper>
@@ -95,6 +110,20 @@ export function AdminDashboard() {
             </button>
           </div>
 
+          {/* Emergency broadcast */}
+          <div className="mx-4">
+            <button
+              onClick={() => { setBroadcastOpen(true); setBroadcastSent(false) }}
+              className={`w-full flex items-center gap-3 bg-red-50 border border-red-200 rounded-2xl px-4 py-4 active:bg-red-100 transition-colors`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-xl flex-shrink-0">📢</div>
+              <div className="text-right flex-1">
+                <p className={`font-bold text-red-700 text-sm ${fa}`}>{t('emergency_broadcast')}</p>
+                <p className={`text-xs text-red-400 ${fa}`}>{t('emergency_sub')}</p>
+              </div>
+            </button>
+          </div>
+
           {/* Class list */}
           {classes.length > 0 && (
             <div className="mx-4">
@@ -127,6 +156,55 @@ export function AdminDashboard() {
               </div>
             </div>
           )}
+        </div>
+      )}
+      {/* Emergency broadcast modal */}
+      {broadcastOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
+          <div className="bg-white w-full rounded-t-2xl p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <p className={`font-bold text-red-700 text-base ${fa}`}>{t('emergency_broadcast')}</p>
+              <button
+                onClick={() => setBroadcastOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {broadcastSent ? (
+              <div className="py-8 text-center">
+                <p className="text-4xl mb-2">✅</p>
+                <p className={`font-bold text-green-700 ${fa}`}>{t('emergency_sent')}</p>
+              </div>
+            ) : (
+              <>
+                <textarea
+                  value={broadcastMsg}
+                  onChange={e => setBroadcastMsg(e.target.value)}
+                  rows={5}
+                  dir="rtl"
+                  placeholder={t('emergency_ph')}
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-red-300 resize-none`}
+                />
+                <div className="flex gap-3 pb-2">
+                  <button
+                    onClick={() => setBroadcastOpen(false)}
+                    className={`flex-1 py-3.5 rounded-xl border border-gray-200 text-gray-600 ${fa} text-sm font-bold`}
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    onClick={handleBroadcast}
+                    disabled={broadcastSending || !broadcastMsg.trim()}
+                    className={`flex-1 py-3.5 rounded-xl bg-red-600 text-white font-bold ${fa} text-sm disabled:opacity-50`}
+                  >
+                    {broadcastSending ? t('sending') : t('emergency_confirm')}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
     </PageWrapper>
