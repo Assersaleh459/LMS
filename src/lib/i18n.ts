@@ -386,6 +386,15 @@ const translations: T = {
   classes:           { ar: 'الفصول الدراسية', en: 'Classes' },
   class_roster:      { ar: 'كشف الفصل', en: 'Class Roster' },
 
+  // ── CSV bulk import ───────────────────────────────────────────
+  csv_import:   { ar: 'استيراد CSV', en: 'Import CSV' },
+  csv_help:     { ar: 'الصق بيانات الطلاب — الاسم الأول، اسم العائلة، الصف، الفصل، الكود (اختياري). يمكن الفصل بفاصلة أو Tab.', en: 'Paste student data — first name, last name, grade, section, code (optional). Comma or Tab separated.' },
+  csv_ph:       { ar: 'محمد,علي,6,أ,STU-001\nفاطمة,أحمد,6,أ', en: 'Mohamed,Ali,6,A,STU-001\nFatima,Ahmed,6,A' },
+  csv_no_match: { ar: 'لا يمكن قراءة البيانات — تأكد من التنسيق', en: 'Cannot parse data — check the format' },
+  csv_start:    { ar: 'بدء الاستيراد', en: 'Start import' },
+  csv_importing:{ ar: 'جاري الاستيراد...', en: 'Importing...' },
+  csv_done:     { ar: 'تم إنشاء', en: 'Created' },
+
   // ── User management ───────────────────────────────────────────
   user_mgmt:         { ar: 'إدارة المستخدمين', en: 'User Management' },
   user_mgmt_sub:     { ar: 'الأدوار والصلاحيات', en: 'Roles & Permissions' },

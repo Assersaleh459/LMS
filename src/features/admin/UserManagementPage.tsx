@@ -83,6 +83,14 @@ export function UserManagementPage() {
   const [saving,      setSaving]      = useState(false)
   const [saveError,   setSaveError]   = useState('')
 
+  // Bulk CSV import
+  const [csvOpen,       setCsvOpen]       = useState(false)
+  const [csvText,       setCsvText]       = useState('')
+  const [csvImporting,  setCsvImporting]  = useState(false)
+  const [csvProgress,   setCsvProgress]   = useState(0)
+  const [csvDone,       setCsvDone]       = useState(0)
+  const [csvRole,       setCsvRole]       = useState<'kg_primary_student' | 'prep_secondary_student'>('kg_primary_student')
+
   // Create user sheet
   const [creating,      setCreating]      = useState(false)
   const [newFirst,      setNewFirst]      = useState('')
@@ -235,6 +243,78 @@ export function UserManagementPage() {
     setTimeout(() => { setCreating(false) }, 1200)
   }
 
+  // ── CSV import ───────────────────────────────────────────────────────────
+
+  interface CsvRow { first: string; last: string; grade: number; section: string; code: string }
+
+  function parseCsv(text: string): CsvRow[] {
+    return text.trim().split('\n')
+      .map(line => line.trim())
+      .filter(line => line && !line.startsWith('#'))
+      .map(line => {
+        const sep = line.includes('\t') ? '\t' : ','
+        const parts = line.split(sep).map(p => p.trim())
+        const first = parts[0] ?? ''
+        const last  = parts[1] ?? ''
+        const grade = parseInt(parts[2] ?? '') || 0
+        const section = parts[3] ?? 'أ'
+        const code    = parts[4] ?? ''
+        return { first, last, grade, section, code }
+      })
+      .filter(r => r.first && r.last && r.grade > 0)
+  }
+
+  async function handleBulkImport() {
+    const rows = parseCsv(csvText)
+    if (!rows.length) return
+
+    setCsvImporting(true)
+    setCsvProgress(0)
+    setCsvDone(0)
+
+    const { data: { session } } = await supabase.auth.getSession()
+    const jwt = session?.access_token ?? ''
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
+
+    const newUsers: User[] = []
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i]
+      try {
+        const res = await fetch(`${supabaseUrl}/functions/v1/admin-create-user`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            first_name_ar: row.first,
+            last_name_ar:  row.last,
+            role:          csvRole,
+            grade_year:    row.grade,
+            section:       row.section,
+            student_code:  row.code || undefined,
+          }),
+        })
+        const json = await res.json()
+        if (res.ok && json.id) {
+          newUsers.push({
+            id:            json.id,
+            first_name_ar: row.first,
+            last_name_ar:  row.last,
+            role:          csvRole,
+            email:         null,
+            phone:         null,
+            is_active:     true,
+            created_at:    new Date().toISOString(),
+          })
+          setCsvDone(d => d + 1)
+        }
+      } catch { /* continue on individual failure */ }
+      setCsvProgress(Math.round(((i + 1) / rows.length) * 100))
+    }
+
+    setUsers(prev => [...newUsers, ...prev])
+    setCsvImporting(false)
+    setTimeout(() => { setCsvOpen(false); setCsvText(''); setCsvProgress(0); setCsvDone(0) }, 1500)
+  }
+
   // ── Tab counts ───────────────────────────────────────────────────────────
 
   const count = (tab: FilterTab) => {
@@ -258,12 +338,20 @@ export function UserManagementPage() {
         title={t('user_mgmt')}
         onBack={() => navigate(-1)}
         action={
-          <button
-            onClick={openCreate}
-            className={`bg-white/20 hover:bg-white/30 text-white text-sm font-bold px-3 py-1.5 rounded-lg ${fa} transition-colors`}
-          >
-            + {t('add_user')}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setCsvOpen(true); setCsvText(''); setCsvProgress(0); setCsvDone(0) }}
+              className={`bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg ${fa} transition-colors`}
+            >
+              {t('csv_import')}
+            </button>
+            <button
+              onClick={openCreate}
+              className={`bg-white/20 hover:bg-white/30 text-white text-sm font-bold px-3 py-1.5 rounded-lg ${fa} transition-colors`}
+            >
+              + {t('add_user')}
+            </button>
+          </div>
         }
       />
 
@@ -467,6 +555,101 @@ export function UserManagementPage() {
                   <button onClick={handleCreate} disabled={createSaving}
                     className={`flex-1 py-3.5 rounded-xl bg-teal text-white font-bold ${fa} text-sm disabled:opacity-50`}
                   >{createSaving ? t('saving') : t('create_user')}</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* CSV import bottom sheet */}
+      {csvOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
+          <div className="bg-white w-full rounded-t-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between">
+              <p className={`font-bold text-gray-800 text-base ${fa}`}>{t('csv_import')}</p>
+              <button
+                onClick={() => setCsvOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {csvImporting || csvDone > 0 ? (
+              <div className="py-6 space-y-4">
+                <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                  <div
+                    className="h-full bg-teal transition-all duration-300 rounded-full"
+                    style={{ width: `${csvProgress}%` }}
+                  />
+                </div>
+                <p className={`text-center text-sm ${fa} ${csvImporting ? 'text-gray-600' : 'text-teal font-bold'}`}>
+                  {csvImporting
+                    ? `${t('csv_importing')} ${csvDone} / ${parseCsv(csvText).length}`
+                    : `✅ ${t('csv_done')} ${csvDone} ${t('students')}`
+                  }
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className={`text-xs text-gray-500 ${fa}`}>{t('csv_help')}</p>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <p className="text-xs text-gray-400 font-mono dir-ltr text-left">
+                    محمد,علي,6,أ,STU-001{'\n'}
+                    فاطمة,أحمد,6,أ,STU-002
+                  </p>
+                </div>
+
+                {/* Role selector */}
+                <div className="flex gap-2">
+                  {([
+                    { val: 'kg_primary_student',     label: t('role_kg_primary') },
+                    { val: 'prep_secondary_student',  label: t('role_prep_sec') },
+                  ] as const).map(({ val, label }) => (
+                    <button
+                      key={val}
+                      onClick={() => setCsvRole(val)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-bold ${fa} border transition-colors ${
+                        csvRole === val ? 'bg-navy text-white border-transparent' : 'bg-white text-gray-600 border-gray-200'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
+                <textarea
+                  value={csvText}
+                  onChange={e => setCsvText(e.target.value)}
+                  rows={8}
+                  dir="rtl"
+                  placeholder={t('csv_ph')}
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 resize-none font-mono`}
+                />
+
+                {csvText.trim() && (
+                  <p className={`text-xs ${parseCsv(csvText).length > 0 ? 'text-teal' : 'text-red-500'} ${fa}`}>
+                    {parseCsv(csvText).length > 0
+                      ? `${t('matched')} ${parseCsv(csvText).length} ${t('students')}`
+                      : t('csv_no_match')}
+                  </p>
+                )}
+
+                <div className="flex gap-3 pb-2">
+                  <button
+                    onClick={() => setCsvOpen(false)}
+                    className={`flex-1 py-3.5 rounded-xl border border-gray-200 text-gray-600 ${fa} text-sm font-bold`}
+                  >
+                    {t('cancel')}
+                  </button>
+                  <button
+                    onClick={handleBulkImport}
+                    disabled={parseCsv(csvText).length === 0}
+                    className={`flex-1 py-3.5 rounded-xl bg-teal text-white font-bold ${fa} text-sm disabled:opacity-50`}
+                  >
+                    {t('csv_start')} ({parseCsv(csvText).length})
+                  </button>
                 </div>
               </>
             )}
