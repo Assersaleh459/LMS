@@ -10,6 +10,7 @@ import { OfflineBanner } from '../../components/ui/OfflineBanner'
 import { GradeTypeTabs } from './GradeTypeTabs'
 import { GradeRow }      from './GradeRow'
 import { useGrades }     from './useGrades'
+import { useTeacherSubjects } from '../../hooks/useTeacherSubjects'
 import type { StudentCard } from '../../types/domain'
 import type { GradeType } from '../../types/enums'
 import { GRADE_TYPE_LABELS } from '../../lib/arabic'
@@ -35,47 +36,44 @@ export function GradebookPage() {
   const auth = useContext(AuthContext)
   const { t, fa } = useLang()
   const navigate = useNavigate()
-  const [activeTab,   setActiveTab]   = useState<GradeType>('written')
-  const [students,    setStudents]    = useState<StudentCard[]>([])
-  const [subjectId,   setSubjectId]   = useState('')
-  const [termId,      setTermId]      = useState('')
-  const [subjectName, setSubjectName] = useState('')
+
+  const { subjects, active, setActive, loading: loadingSubjects } = useTeacherSubjects()
+
+  const [activeTab,       setActiveTab]       = useState<GradeType>('written')
+  const [students,        setStudents]        = useState<StudentCard[]>([])
+  const [termId,          setTermId]          = useState('')
   const [loadingStudents, setLoadingStudents] = useState(true)
-  const [importOpen,  setImportOpen]  = useState(false)
-  const [pasteText,   setPasteText]   = useState('')
+  const [importOpen,      setImportOpen]      = useState(false)
+  const [pasteText,       setPasteText]       = useState('')
 
-  const { grades, setGrade, saveAll, saving, loading: loadingGrades } = useGrades(students, subjectId, termId)
+  const { grades, setGrade, saveAll, saving, loading: loadingGrades } =
+    useGrades(students, active?.subjectId ?? '', termId)
 
+  // Fetch active term once
   useEffect(() => {
-    if (!auth?.profile?.id) return
-    Promise.all([
-      supabase.from('teacher_subjects')
-        .select('subject_id, grade_year, section, subjects(name_ar)')
-        .eq('teacher_id', auth.profile.id).limit(1).single(),
-      supabase.from('academic_terms')
-        .select('id').eq('school_id', auth.schoolId ?? '').eq('is_active', true).single(),
-    ]).then(([tsRes, termRes]) => {
-      if (tsRes.data) {
-        setSubjectId(tsRes.data.subject_id)
-        const subj = tsRes.data.subjects as unknown as { name_ar: string } | null
-        setSubjectName(subj?.name_ar ?? '')
-        if (auth.schoolId) {
-          supabase.from('v_student_card').select('*')
-            .eq('school_id', auth.schoolId)
-            .eq('grade_year', tsRes.data.grade_year)
-            .eq('section', tsRes.data.section)
-            .order('full_name_ar')
-            .then(({ data }) => {
-              if (data) setStudents(data as StudentCard[])
-              setLoadingStudents(false)
-            })
-        }
-      }
-      if (termRes.data) setTermId(termRes.data.id)
-    })
-  }, [auth?.profile?.id, auth?.schoolId])
+    if (!auth?.schoolId) return
+    supabase.from('academic_terms')
+      .select('id').eq('school_id', auth.schoolId).eq('is_active', true).single()
+      .then(({ data }) => { if (data) setTermId(data.id) })
+  }, [auth?.schoolId])
 
-  const isLoading = loadingStudents || loadingGrades
+  // Reload students whenever active class changes
+  useEffect(() => {
+    if (!active || !auth?.schoolId) return
+    setLoadingStudents(true)
+    supabase.from('v_student_card').select('*')
+      .eq('school_id', auth.schoolId)
+      .eq('grade_year', active.gradeYear)
+      .eq('section', active.section)
+      .order('full_name_ar')
+      .then(({ data }) => {
+        setStudents((data ?? []) as StudentCard[])
+        setLoadingStudents(false)
+      })
+  }, [active, auth?.schoolId])
+
+  const isLoading = loadingSubjects || loadingStudents || loadingGrades
+  const subjectName = active?.subjectName ?? ''
 
   function exportGrades() {
     const ws = XLSX.utils.json_to_sheet(students.map(s => ({
@@ -102,7 +100,33 @@ export function GradebookPage() {
 
   return (
     <PageWrapper>
-      <AppBar title={t('grade_entry')} subtitle={subjectName || t('loading')} />
+      <AppBar
+        title={t('grade_entry')}
+        subtitle={active ? `${subjectName} · ${t('grade_label')} ${active.gradeYear} ${active.section}` : t('loading')}
+      />
+
+      {/* Class picker — shown only when teacher has multiple classes */}
+      {subjects.length > 1 && (
+        <div className="bg-white border-b border-gray-200 px-3 py-2 flex gap-2 overflow-x-auto">
+          {subjects.map(sub => {
+            const isActive = sub.subjectId === active?.subjectId &&
+                             sub.gradeYear === active?.gradeYear &&
+                             sub.section   === active?.section
+            return (
+              <button
+                key={`${sub.subjectId}-${sub.gradeYear}-${sub.section}`}
+                onClick={() => setActive(sub)}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold ${fa} transition-colors ${
+                  isActive ? 'bg-navy text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {sub.subjectName} · {sub.gradeYear}{sub.section}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       <OfflineBanner />
 
       {/* Toolbar */}
