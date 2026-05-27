@@ -9,7 +9,7 @@ interface AppBarProps {
 }
 
 export function AppBar({ title, subtitle, onBack, action, onLogout }: AppBarProps) {
-  const { lang, toggleLang } = useLang()
+  const { lang, fa, toggleLang } = useLang()
   return (
     <header className="bg-navy text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-40">
       {onBack && (
@@ -25,9 +25,9 @@ export function AppBar({ title, subtitle, onBack, action, onLogout }: AppBarProp
       )}
 
       <div className="flex-1 min-w-0">
-        <h1 className={`font-bold text-base leading-tight truncate ${lang === 'ar' ? 'font-arabic' : ''}`}>{title}</h1>
+        <h1 className={`font-bold text-base leading-tight truncate ${fa}`}>{title}</h1>
         {subtitle && (
-          <p className={`text-white/60 text-xs mt-0.5 truncate ${lang === 'ar' ? 'font-arabic' : ''}`}>{subtitle}</p>
+          <p className={`text-white/60 text-xs mt-0.5 truncate ${fa}`}>{subtitle}</p>
         )}
       </div>
 

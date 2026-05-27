@@ -1,3 +1,5 @@
+import { useLang } from '../../app/providers/LangProvider'
+
 interface Option {
   value: string
   label: string
@@ -12,6 +14,7 @@ interface TypeSelectorProps {
 }
 
 export function TypeSelector({ options, value, onChange, columns = 3 }: TypeSelectorProps) {
+  const { fa } = useLang()
   return (
     <div className={`grid gap-3 ${columns === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
       {options.map(opt => (
@@ -26,7 +29,7 @@ export function TypeSelector({ options, value, onChange, columns = 3 }: TypeSele
           }`}
         >
           {opt.icon && <span className="text-2xl">{opt.icon}</span>}
-          <span className="text-xs font-arabic font-medium">{opt.label}</span>
+          <span className={`text-xs ${fa} font-medium`}>{opt.label}</span>
         </button>
       ))}
     </div>

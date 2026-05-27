@@ -1,3 +1,5 @@
+import { useLang } from '../../app/providers/LangProvider'
+
 type BadgeVariant = 'green' | 'red' | 'yellow' | 'blue' | 'navy' | 'gray'
 
 const VARIANT_CLASSES: Record<BadgeVariant, string> = {
@@ -16,8 +18,9 @@ interface BadgeProps {
 }
 
 export function Badge({ label, variant = 'gray', dot = false }: BadgeProps) {
+  const { fa } = useLang()
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium font-arabic ${VARIANT_CLASSES[variant]}`}>
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${fa} ${VARIANT_CLASSES[variant]}`}>
       {dot && <span className={`w-1.5 h-1.5 rounded-full ${variant === 'green' ? 'bg-green-500' : variant === 'red' ? 'bg-red-500' : 'bg-current'}`} />}
       {label}
     </span>

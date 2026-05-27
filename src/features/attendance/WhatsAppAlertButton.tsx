@@ -1,4 +1,5 @@
 import { toArabicNumerals } from '../../lib/arabic'
+import { useLang } from '../../app/providers/LangProvider'
 
 interface WhatsAppAlertButtonProps {
   absentCount: number
@@ -7,6 +8,7 @@ interface WhatsAppAlertButtonProps {
 }
 
 export function WhatsAppAlertButton({ absentCount, loading, onPress }: WhatsAppAlertButtonProps) {
+  const { fa } = useLang()
   if (absentCount === 0) return null
 
   return (
@@ -15,7 +17,7 @@ export function WhatsAppAlertButton({ absentCount, loading, onPress }: WhatsAppA
         type="button"
         onClick={onPress}
         disabled={loading}
-        className="w-full py-4 rounded-2xl bg-[#25D366] text-white font-bold font-arabic text-base flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform disabled:opacity-60"
+        className={`w-full py-4 rounded-2xl bg-[#25D366] text-white font-bold ${fa} text-base flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform disabled:opacity-60`}
       >
         {/* WhatsApp icon */}
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">

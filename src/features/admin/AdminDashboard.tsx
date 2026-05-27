@@ -63,7 +63,7 @@ export function AdminDashboard() {
             ].map(({ label, value, icon, color }) => (
               <Card key={label} className="text-center py-5">
                 <span className="text-3xl">{icon}</span>
-                <p className={`text-2xl font-bold mt-2 font-arabic ${color}`}>
+                <p className={`text-2xl font-bold mt-2 ${fa} ${color}`}>
                   {typeof value === 'number' ? toArabicNumerals(value) : value}
                 </p>
                 <p className={`text-xs text-gray-500 ${fa} mt-0.5`}>{label}</p>

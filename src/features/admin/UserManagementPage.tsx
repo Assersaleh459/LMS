@@ -326,7 +326,7 @@ export function UserManagementPage() {
                 <div className="flex items-center gap-3">
                   {/* Avatar initial */}
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center font-bold font-arabic text-white text-sm flex-shrink-0"
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${fa} text-white text-sm flex-shrink-0`}
                     style={{ backgroundColor: color + (user.is_active ? '' : '60') }}
                   >
                     {user.first_name_ar.charAt(0)}

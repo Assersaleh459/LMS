@@ -18,7 +18,7 @@ const ROW_BG: Record<string, string> = {
 }
 
 export function StudentRow({ student, status, saving, onMark }: StudentRowProps) {
-  const { t } = useLang()
+  const { t, fa } = useLang()
   const rowBg = status ? ROW_BG[status] ?? 'bg-white border-gray-100' : 'bg-white border-gray-100'
 
   return (
@@ -26,7 +26,7 @@ export function StudentRow({ student, status, saving, onMark }: StudentRowProps)
       <Avatar name={student.full_name_ar} url={student.avatar_url} size="sm" />
 
       <div className="flex-1 min-w-0">
-        <p className="font-medium font-arabic text-gray-900 text-sm truncate">
+        <p className={`font-medium ${fa} text-gray-900 text-sm truncate`}>
           {student.full_name_ar}
         </p>
         <p className="text-xs text-gray-400 font-mono">{student.student_code}</p>

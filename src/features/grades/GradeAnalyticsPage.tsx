@@ -194,12 +194,12 @@ export function GradeAnalyticsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <span className="w-5 text-xs text-gray-400 text-center font-bold">{i + 1}</span>
-                    <span className="text-sm text-gray-800 font-arabic text-right">{s.name}</span>
+                    <span className={`text-sm text-gray-800 ${fa} text-right`}>{s.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-gray-700">{toArabicNumerals(s.total)}</span>
                     <span
-                      className="text-xs font-bold font-arabic px-2 py-0.5 rounded-full whitespace-nowrap"
+                      className={`text-xs font-bold ${fa} px-2 py-0.5 rounded-full whitespace-nowrap`}
                       style={{ backgroundColor: grade.color + '20', color: grade.color }}
                     >
                       {grade.label}

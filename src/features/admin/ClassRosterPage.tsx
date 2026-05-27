@@ -121,18 +121,18 @@ export function ClassRosterPage() {
                     {i + 1}
                   </span>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-800 font-arabic">{s.full_name_ar}</p>
+                    <p className={`text-sm font-bold text-gray-800 ${fa}`}>{s.full_name_ar}</p>
                     <p className="text-xs text-gray-400">{s.student_code}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {s.todayStatus && (
-                    <span className={`text-xs font-arabic font-bold px-2 py-0.5 rounded-full ${STATUS_STYLE[s.todayStatus] ?? 'bg-gray-100 text-gray-500'}`}>
+                    <span className={`text-xs ${fa} font-bold px-2 py-0.5 rounded-full ${STATUS_STYLE[s.todayStatus] ?? 'bg-gray-100 text-gray-500'}`}>
                       {t(s.todayStatus) ?? s.todayStatus}
                     </span>
                   )}
                   {gradeLabel && (
-                    <span className="text-xs font-bold font-arabic px-2 py-0.5 rounded-full"
+                    <span className={`text-xs font-bold ${fa} px-2 py-0.5 rounded-full`}
                       style={{ backgroundColor: gradeLabel.color + '20', color: gradeLabel.color }}>
                       {gradeLabel.label}
                     </span>

@@ -18,7 +18,7 @@ import type { StudentCard } from '../../types/domain'
 const TODAY = new Date().toISOString().split('T')[0]
 
 export function AttendancePage() {
-  const { t } = useLang()
+  const { t, fa } = useLang()
   const auth    = useContext(AuthContext)
   const [students,   setStudents]   = useState<StudentCard[]>([])
   const [subjectId,  setSubjectId]  = useState('')
@@ -85,7 +85,7 @@ export function AttendancePage() {
         title={t('attendance')}
         subtitle={`${t('grade_label')} ${gradeYear} ${section} · ${formatDateAr(new Date())}`}
         action={
-          <span className="bg-white/20 text-white text-xs font-arabic px-2 py-1 rounded-lg">
+          <span className={`bg-white/20 text-white text-xs ${fa} px-2 py-1 rounded-lg`}>
             {t('period_1')}
           </span>
         }
@@ -111,7 +111,7 @@ export function AttendancePage() {
           </div>
         ) : students.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="text-gray-400 font-arabic">لا يوجد طلاب في هذا الفصل</p>
+            <p className={`text-gray-400 ${fa}`}>لا يوجد طلاب في هذا الفصل</p>
           </div>
         ) : (
           students.map(student => (

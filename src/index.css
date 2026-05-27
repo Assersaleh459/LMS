@@ -2,12 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-/* RTL defaults */
+/* RTL / Arabic defaults */
 html, body {
   direction: rtl;
   font-family: 'Cairo', 'Tajawal', sans-serif;
   background-color: #f8f6f1;
   margin: 0;
+}
+
+/* English mode: switch to system font */
+html[lang="en"], html[lang="en"] body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Form elements don't inherit font by default — force them to */
+input, textarea, select, button {
+  font-family: inherit;
 }
 
 * {

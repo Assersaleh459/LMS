@@ -18,7 +18,7 @@ interface AssignmentCardProps {
 }
 
 export function AssignmentCard({ assignment }: AssignmentCardProps) {
-  const { t } = useLang()
+  const { t, fa } = useLang()
   const dueDate  = new Date(assignment.due_date)
   const isPast   = dueDate < new Date()
 
@@ -27,9 +27,9 @@ export function AssignmentCard({ assignment }: AssignmentCardProps) {
       <div className="flex items-start gap-3">
         <span className="text-2xl">{TYPE_ICONS[assignment.assignment_type] ?? '📋'}</span>
         <div className="flex-1 min-w-0">
-          <p className="font-bold font-arabic text-gray-900 text-sm">{assignment.title_ar}</p>
+          <p className={`font-bold ${fa} text-gray-900 text-sm`}>{assignment.title_ar}</p>
           {assignment.description_ar && (
-            <p className="text-xs text-gray-500 font-arabic mt-0.5 line-clamp-2">{assignment.description_ar}</p>
+            <p className={`text-xs text-gray-500 ${fa} mt-0.5 line-clamp-2`}>{assignment.description_ar}</p>
           )}
           <div className="flex items-center gap-2 mt-2">
             <Badge

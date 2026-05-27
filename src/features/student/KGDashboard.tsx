@@ -59,7 +59,7 @@ export function KGDashboard() {
           {KG_GRADES.map(g => (
             <div key={g.value} className="bg-white rounded-2xl border border-gray-100 p-3 text-center">
               <span className="text-3xl">{g.emoji}</span>
-              <p className="text-xs font-arabic text-gray-700 mt-1">{g.label}</p>
+              <p className={`text-xs ${fa} text-gray-700 mt-1`}>{g.label}</p>
             </div>
           ))}
         </div>

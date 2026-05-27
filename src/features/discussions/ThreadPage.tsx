@@ -83,14 +83,14 @@ export function ThreadPage() {
         {thread && (
           <div className="bg-navy/5 px-4 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-500 font-arabic">{timeAgo(thread.created_at)}</span>
+              <span className={`text-xs text-gray-500 ${fa}`}>{timeAgo(thread.created_at)}</span>
               {thread.users && (
-                <span className="text-xs font-bold text-navy font-arabic">
+                <span className={`text-xs font-bold text-navy ${fa}`}>
                   {thread.users.first_name_ar} {thread.users.last_name_ar}
                 </span>
               )}
             </div>
-            <p className="font-arabic text-gray-800 text-sm leading-relaxed">{thread.body_ar}</p>
+            <p className={`${fa} text-gray-800 text-sm leading-relaxed`}>{thread.body_ar}</p>
           </div>
         )}
 
@@ -101,13 +101,13 @@ export function ThreadPage() {
               <div key={reply.id} className="px-4 py-3">
                 <div className="flex items-center justify-between mb-1">
                   {reply.users && (
-                    <span className="text-xs font-bold text-gray-700 font-arabic">
+                    <span className={`text-xs font-bold text-gray-700 ${fa}`}>
                       {reply.users.first_name_ar} {reply.users.last_name_ar}
                     </span>
                   )}
-                  <span className="text-xs text-gray-400 font-arabic">{timeAgo(reply.created_at)}</span>
+                  <span className={`text-xs text-gray-400 ${fa}`}>{timeAgo(reply.created_at)}</span>
                 </div>
-                <p className="font-arabic text-gray-800 text-sm leading-relaxed">{reply.body_ar}</p>
+                <p className={`${fa} text-gray-800 text-sm leading-relaxed`}>{reply.body_ar}</p>
               </div>
             )
           })}

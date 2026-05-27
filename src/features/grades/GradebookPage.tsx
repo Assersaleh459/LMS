@@ -184,7 +184,7 @@ export function GradebookPage() {
               rows={6}
               dir="rtl"
               placeholder={t('paste_ph')}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200 font-arabic text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 resize-none"
+              className={`w-full px-3 py-2 rounded-xl border border-gray-200 ${fa} text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 resize-none`}
             />
             {pasteText.trim() && (
               <p className={`text-xs ${parsedPreview.length > 0 ? 'text-teal' : 'text-red-500'} ${fa}`}>

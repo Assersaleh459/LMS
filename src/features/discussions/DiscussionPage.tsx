@@ -64,14 +64,14 @@ export function DiscussionPage() {
                   📌 {t('pinned')}
                 </span>
               )}
-              <p className="font-bold font-arabic text-gray-900 text-sm">{thread.title_ar}</p>
-              <p className="text-gray-500 font-arabic text-xs mt-0.5 line-clamp-2">{thread.body_ar}</p>
+              <p className={`font-bold ${fa} text-gray-900 text-sm`}>{thread.title_ar}</p>
+              <p className={`text-gray-500 ${fa} text-xs mt-0.5 line-clamp-2`}>{thread.body_ar}</p>
               <div className="flex items-center justify-between mt-2">
                 <span className={`text-gray-400 text-xs ${fa}`}>
                   💬 {thread.reply_count} {t('replies')}
                 </span>
                 {thread.users && (
-                  <span className="text-gray-400 text-xs font-arabic">
+                  <span className={`text-gray-400 text-xs ${fa}`}>
                     {thread.users.first_name_ar} {thread.users.last_name_ar}
                   </span>
                 )}

@@ -54,7 +54,7 @@ export function ParentDashboard() {
   })
 
   return (
-    <div className="min-h-screen bg-lms-bg font-arabic">
+    <div className={`min-h-screen bg-lms-bg ${fa}`}>
       <OfflineBanner />
 
       {/* Header — green for parent portal */}
@@ -94,7 +94,7 @@ export function ParentDashboard() {
             </div>
             <a
               href={`https://wa.me/${student.parent_whatsapp?.replace('+', '')}`}
-              className="bg-red-600 text-white text-xs font-arabic font-bold px-3 py-2 rounded-lg"
+              className={`bg-red-600 text-white text-xs ${fa} font-bold px-3 py-2 rounded-lg`}
             >
               {t('contact_teacher')}
             </a>
