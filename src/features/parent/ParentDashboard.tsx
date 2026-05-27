@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Avatar }          from '../../components/ui/Avatar'
 import { Card }            from '../../components/ui/Card'
 import { OfflineBanner }   from '../../components/ui/OfflineBanner'
@@ -12,7 +13,9 @@ import { useLang } from '../../app/providers/LangProvider'
 
 export function ParentDashboard() {
   const { t, fa } = useLang()
-  const { data, loading, error, absentToday } = useParentData()
+  const navigate = useNavigate()
+  const [activeChildId, setActiveChildId] = useState<string | null>(null)
+  const { data, loading, error, absentToday, allChildren } = useParentData(activeChildId)
   const [subjectNames, setSubjectNames] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -57,6 +60,28 @@ export function ParentDashboard() {
     <div className={`min-h-screen bg-lms-bg ${fa}`}>
       <OfflineBanner />
 
+      {/* Children switcher — only shown when parent has multiple children */}
+      {allChildren.length > 1 && (
+        <div className="bg-white border-b border-gray-100 px-3 py-2 flex gap-2 overflow-x-auto">
+          {allChildren.map(child => {
+            const isActive = (activeChildId ?? '') === child.id ||
+              (!activeChildId && child.id === student?.id)
+            return (
+              <button
+                key={child.id}
+                onClick={() => setActiveChildId(child.id)}
+                className={`flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold ${fa} transition-colors ${
+                  isActive ? 'bg-[#1e8449] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <Avatar name={child.full_name_ar} url={child.avatar_url} size="sm" />
+                <span>{child.full_name_ar}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {/* Header — green for parent portal */}
       <div className="bg-[#1e8449] text-white px-4 pt-8 pb-6">
         <div className="flex items-center gap-4">
@@ -73,6 +98,16 @@ export function ParentDashboard() {
               {t('wa_linked')}
             </span>
           </div>
+          {/* Report card button */}
+          <button
+            onClick={() => navigate(`/parent/report-card/${student.id}`)}
+            className={`flex-shrink-0 bg-white/20 hover:bg-white/30 text-white text-xs ${fa} font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {t('report_card')}
+          </button>
         </div>
         {data.lastFetched && (
           <p className="text-white/50 text-xs mt-3 text-left">

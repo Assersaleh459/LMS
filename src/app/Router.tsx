@@ -103,6 +103,9 @@ export function Router() {
         <Route path="/student/secondary" element={<RequireAuth><SecondaryDashboard /></RequireAuth>} />
         <Route path="/student/kg"        element={<RequireAuth><KGDashboard /></RequireAuth>} />
 
+        {/* Parent report card */}
+        <Route path="/parent/report-card/:studentId" element={<RequireAuth><ReportCardPage /></RequireAuth>} />
+
         {/* Admin */}
         <Route path="/admin"                         element={<RequireAuth><AdminDashboard /></RequireAuth>} />
         <Route path="/admin/class/:grade/:section"   element={<RequireAuth><ClassRosterPage /></RequireAuth>} />

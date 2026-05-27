@@ -13,24 +13,25 @@ import { formatDateAr } from '../../lib/arabic'
 import { useLang } from '../../app/providers/LangProvider'
 import type { StudentCard } from '../../types/domain'
 
-// Hard-coded for MVP: teacher's first assigned class
-// In Phase 2, teacher picks class from a selector
 const TODAY = new Date().toISOString().split('T')[0]
+const MAX_PERIODS = 8
+const AR_ORDINALS = ['الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة','السابعة','الثامنة']
 
 export function AttendancePage() {
-  const { t, fa } = useLang()
+  const { t, fa, lang } = useLang()
   const auth    = useContext(AuthContext)
   const [students,   setStudents]   = useState<StudentCard[]>([])
   const [subjectId,  setSubjectId]  = useState('')
   const [gradeYear,  setGradeYear]  = useState(6)
   const [section,    setSection]    = useState('أ')
+  const [period,     setPeriod]     = useState(1)
   const [loadingStudents, setLoadingStudents] = useState(true)
   const [waLoading,  setWaLoading]  = useState(false)
 
   const {
     records, saving, loading: loadingRecords,
     mark, presentCount, absentCount, pendingCount, progressPct
-  } = useAttendance(students, subjectId, TODAY, 1)
+  } = useAttendance(students, subjectId, TODAY, period)
 
   // Load teacher's assigned class
   useEffect(() => {
@@ -79,6 +80,9 @@ export function AttendancePage() {
 
   const isLoading = loadingStudents || loadingRecords
 
+  const periodLabel = (p: number) =>
+    lang === 'ar' ? `الحصة ${AR_ORDINALS[p - 1] ?? p}` : `Period ${p}`
+
   return (
     <PageWrapper>
       <AppBar
@@ -86,11 +90,26 @@ export function AttendancePage() {
         subtitle={`${t('grade_label')} ${gradeYear} ${section} · ${formatDateAr(new Date())}`}
         action={
           <span className={`bg-white/20 text-white text-xs ${fa} px-2 py-1 rounded-lg`}>
-            {t('period_1')}
+            {periodLabel(period)}
           </span>
         }
         onLogout={auth?.signOut}
       />
+
+      {/* Period selector strip */}
+      <div className="bg-white border-b border-gray-100 px-3 py-2 flex gap-2 overflow-x-auto scrollbar-hide">
+        {Array.from({ length: MAX_PERIODS }, (_, i) => i + 1).map(p => (
+          <button
+            key={p}
+            onClick={() => setPeriod(p)}
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold ${fa} transition-colors ${
+              period === p ? 'bg-teal text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            {periodLabel(p)}
+          </button>
+        ))}
+      </div>
 
       <OfflineBanner />
 
