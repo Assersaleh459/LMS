@@ -332,6 +332,26 @@ const translations: T = {
   moe_pass:         { ar: 'مقبول',    en: 'Pass' },
   moe_fail:         { ar: 'ضعيف',     en: 'Fail' },
 
+  // ── Academic year rollover ────────────────────────────────────
+  academic_year:          { ar: 'السنة الدراسية', en: 'Academic Year' },
+  academic_year_sub:      { ar: 'إدارة الفصول الدراسية', en: 'Manage terms & rollover' },
+  academic_year_label:    { ar: 'العام الدراسي', en: 'Academic year' },
+  current_term:           { ar: 'الفصل الحالي', en: 'Current term' },
+  term_active:            { ar: 'نشط', en: 'Active' },
+  term_ended:             { ar: 'منتهي', en: 'Ended' },
+  term_history:           { ar: 'سجل الفصول', en: 'Term history' },
+  term_number_label:      { ar: 'رقم الفصل', en: 'Term number' },
+  term_first:             { ar: 'الفصل الأول', en: 'Term 1' },
+  term_second:            { ar: 'الفصل الثاني', en: 'Term 2' },
+  new_term:               { ar: 'فصل دراسي جديد', en: 'New term' },
+  start_term:             { ar: 'بدء الفصل', en: 'Start term' },
+  end_term:               { ar: 'إنهاء الفصل', en: 'End term' },
+  start_date:             { ar: 'تاريخ البداية', en: 'Start date' },
+  end_date:               { ar: 'تاريخ النهاية', en: 'End date' },
+  end_term_confirm_title: { ar: 'تأكيد إنهاء الفصل', en: 'Confirm end of term' },
+  end_term_confirm_body:  { ar: 'سيصبح الفصل غير نشط. البيانات محفوظة ولن تُحذف.', en: 'The term will become inactive. All data is preserved.' },
+  rollover_warning:       { ar: 'الفصل الحالي سيُنهى تلقائياً عند بدء الجديد.', en: 'The current active term will be ended automatically.' },
+
   // ── Conduct log ───────────────────────────────────────────────
   conduct_log:            { ar: 'سجل السلوك',           en: 'Conduct Log' },
   conduct_log_sub:        { ar: 'تقارير السلوك والمشاركة', en: 'Behavior & participation records' },
