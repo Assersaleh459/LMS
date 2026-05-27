@@ -10,6 +10,7 @@ import { StudentProgressPage } from '../features/student/StudentProgressPage'
 import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
 import { UserManagementPage }  from '../features/admin/UserManagementPage'
+import { AbsenceReportPage }   from '../features/admin/AbsenceReportPage'
 
 // Phase 1 pages
 import { LoginPage }           from '../features/auth/LoginPage'
@@ -108,6 +109,7 @@ export function Router() {
 
         {/* Admin */}
         <Route path="/admin"                         element={<RequireAuth><AdminDashboard /></RequireAuth>} />
+        <Route path="/admin/absence-report"          element={<RequireAuth><AbsenceReportPage /></RequireAuth>} />
         <Route path="/admin/class/:grade/:section"   element={<RequireAuth><ClassRosterPage /></RequireAuth>} />
         <Route path="/admin/users"                   element={<RequireAuth><UserManagementPage /></RequireAuth>} />
 

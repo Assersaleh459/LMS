@@ -332,6 +332,12 @@ const translations: T = {
   moe_pass:         { ar: 'مقبول',    en: 'Pass' },
   moe_fail:         { ar: 'ضعيف',     en: 'Fail' },
 
+  // ── Absence report ────────────────────────────────────────────
+  absence_report:    { ar: 'تقرير الغياب', en: 'Absence Report' },
+  moe_threshold_sub: { ar: 'عتبة وزارة التربية ٢٥٪ للرسوب', en: 'MoE 25% threshold for failing' },
+  moe_critical:      { ar: 'خطر (≥٢٥٪)', en: 'Critical (≥25%)' },
+  moe_warning:       { ar: 'تحذير (≥١٥٪)', en: 'Warning (≥15%)' },
+
   // ── Emergency broadcast ───────────────────────────────────────
   emergency_broadcast: { ar: 'إشعار طارئ',              en: 'Emergency Broadcast' },
   emergency_sub:       { ar: 'إرسال رسالة لجميع الأولياء', en: 'Send to all parents' },

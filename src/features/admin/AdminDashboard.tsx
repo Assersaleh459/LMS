@@ -108,6 +108,16 @@ export function AdminDashboard() {
                 <p className={`text-xs text-gray-400 ${fa}`}>{t('view_analytics')}</p>
               </div>
             </button>
+            <button
+              onClick={() => navigate('/admin/absence-report')}
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-4 active:bg-gray-50 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-xl">📋</div>
+              <div className="text-right">
+                <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('absence_report')}</p>
+                <p className={`text-xs text-gray-400 ${fa}`}>{t('moe_threshold_sub')}</p>
+              </div>
+            </button>
           </div>
 
           {/* Emergency broadcast */}
