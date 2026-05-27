@@ -158,7 +158,7 @@ export function GradebookPage() {
         )}
       </div>
 
-      <div className="sticky bottom-20 px-4 pb-4 bg-lms-bg border-t border-gray-100 pt-3">
+      <div className="sticky bottom-0 px-4 pb-4 bg-lms-bg border-t border-gray-100 pt-3">
         <button
           type="button"
           onClick={() => saveAll([activeTab])}

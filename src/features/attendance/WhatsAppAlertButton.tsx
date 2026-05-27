@@ -12,7 +12,7 @@ export function WhatsAppAlertButton({ absentCount, loading, onPress }: WhatsAppA
   if (absentCount === 0) return null
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-30">
+    <div className="fixed bottom-4 left-4 right-4 z-30">
       <button
         type="button"
         onClick={onPress}

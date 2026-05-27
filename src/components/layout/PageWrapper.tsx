@@ -1,19 +1,21 @@
-import { BottomNav } from './BottomNav'
+import { SideNav } from './SideNav'
 import { useLang } from '../../app/providers/LangProvider'
 
 interface PageWrapperProps {
-  children:    React.ReactNode
-  hasBottomNav?: boolean
+  children:     React.ReactNode
+  hasNav?:      boolean
 }
 
-export function PageWrapper({ children, hasBottomNav = true }: PageWrapperProps) {
+export function PageWrapper({ children, hasNav = true }: PageWrapperProps) {
   const { fa } = useLang()
   return (
     <div className={`min-h-screen bg-lms-bg flex flex-col ${fa}`}>
-      <main className={`flex-1 ${hasBottomNav ? 'pb-20' : ''}`}>
-        {children}
-      </main>
-      {hasBottomNav && <BottomNav />}
+      <div className="flex flex-1 overflow-hidden">
+        {hasNav && <SideNav />}
+        <main className="flex-1 overflow-y-auto min-h-screen">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }
