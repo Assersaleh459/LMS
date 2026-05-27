@@ -10,6 +10,7 @@ import { AuditLogPage }        from '../features/grades/AuditLogPage'
 import { StudentProgressPage } from '../features/student/StudentProgressPage'
 import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
+import { ConductLogPage }      from '../features/admin/ConductLogPage'
 import { UserManagementPage }  from '../features/admin/UserManagementPage'
 import { AbsenceReportPage }   from '../features/admin/AbsenceReportPage'
 
@@ -114,6 +115,7 @@ export function Router() {
         <Route path="/admin/absence-report"          element={<RequireAuth><AbsenceReportPage /></RequireAuth>} />
         <Route path="/admin/class/:grade/:section"   element={<RequireAuth><ClassRosterPage /></RequireAuth>} />
         <Route path="/admin/users"                   element={<RequireAuth><UserManagementPage /></RequireAuth>} />
+        <Route path="/teacher/conduct"               element={<RequireAuth><ConductLogPage /></RequireAuth>} />
 
         {/* Phase 2 — Subjects & Courses */}
         <Route path="/courses"                                                        element={<RequireAuth><SubjectsListPage /></RequireAuth>} />

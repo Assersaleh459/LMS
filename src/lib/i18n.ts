@@ -332,6 +332,16 @@ const translations: T = {
   moe_pass:         { ar: 'مقبول',    en: 'Pass' },
   moe_fail:         { ar: 'ضعيف',     en: 'Fail' },
 
+  // ── Conduct log ───────────────────────────────────────────────
+  conduct_log:            { ar: 'سجل السلوك',           en: 'Conduct Log' },
+  conduct_log_sub:        { ar: 'تقارير السلوك والمشاركة', en: 'Behavior & participation records' },
+  conduct_add:            { ar: 'تسجيل ملاحظة سلوكية',  en: 'Add conduct note' },
+  conduct_select_student: { ar: 'اختر الطالب',           en: 'Select student' },
+  conduct_note_ph:        { ar: 'اكتب الملاحظة هنا...',  en: 'Write the note here...' },
+  conduct_positive:       { ar: 'إيجابي',                en: 'Positive' },
+  conduct_negative:       { ar: 'سلبي',                  en: 'Negative' },
+  conduct_neutral:        { ar: 'محايد',                 en: 'Neutral' },
+
   // ── Grade audit log ───────────────────────────────────────────
   audit_log:         { ar: 'سجل تعديل الدرجات', en: 'Grade Audit Log' },
   audit_log_sub:     { ar: 'آخر ٢٠٠ تغيير',       en: 'Last 200 changes' },
