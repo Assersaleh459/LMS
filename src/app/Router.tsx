@@ -12,6 +12,7 @@ import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
 import { ConductLogPage }      from '../features/admin/ConductLogPage'
 import { AcademicYearPage }    from '../features/admin/AcademicYearPage'
+import { SchoolSettingsPage }  from '../features/admin/SchoolSettingsPage'
 import { UserManagementPage }  from '../features/admin/UserManagementPage'
 import { AbsenceReportPage }   from '../features/admin/AbsenceReportPage'
 
@@ -118,6 +119,7 @@ export function Router() {
         <Route path="/admin/users"                   element={<RequireAuth><UserManagementPage /></RequireAuth>} />
         <Route path="/teacher/conduct"               element={<RequireAuth><ConductLogPage /></RequireAuth>} />
         <Route path="/admin/academic-year"           element={<RequireAuth><AcademicYearPage /></RequireAuth>} />
+        <Route path="/admin/settings"               element={<RequireAuth><SchoolSettingsPage /></RequireAuth>} />
 
         {/* Phase 2 — Subjects & Courses */}
         <Route path="/courses"                                                        element={<RequireAuth><SubjectsListPage /></RequireAuth>} />

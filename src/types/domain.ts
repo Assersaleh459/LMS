@@ -94,13 +94,16 @@ export type AssignmentSubmission = {
 }
 
 export type School = {
-  id:           string
-  name_ar:      string
-  name_en:      string | null
-  school_type:  string
-  governorate:  string
-  moe_code:     string | null
-  logo_url:     string | null
+  id:                   string
+  name_ar:              string
+  name_en:              string | null
+  school_type:          string
+  governorate:          string
+  moe_code:             string | null
+  logo_url:             string | null
+  phone:                string | null
+  address_ar:           string | null
+  whatsapp_webhook_url: string | null
 }
 
 export type UserProfile = {

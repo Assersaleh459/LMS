@@ -4,11 +4,12 @@ import type { School } from '../../types/domain'
 import { AuthContext } from './AuthProvider'
 
 type SchoolState = {
-  school: School | null
-  loading: boolean
+  school:    School | null
+  loading:   boolean
+  setSchool: (s: School) => void
 }
 
-const SchoolContext = createContext<SchoolState>({ school: null, loading: true })
+const SchoolContext = createContext<SchoolState>({ school: null, loading: true, setSchool: () => {} })
 
 export function SchoolProvider({ children }: { children: ReactNode }) {
   const auth = useContext(AuthContext)
@@ -24,13 +25,13 @@ export function SchoolProvider({ children }: { children: ReactNode }) {
       .eq('id', auth.schoolId)
       .single()
       .then(({ data }) => {
-        if (data) setSchool(data as School)
+        if (data) setSchool(data as unknown as School)
         setLoading(false)
       })
   }, [auth?.schoolId])
 
   return (
-    <SchoolContext.Provider value={{ school, loading }}>
+    <SchoolContext.Provider value={{ school, loading, setSchool }}>
       {children}
     </SchoolContext.Provider>
   )
