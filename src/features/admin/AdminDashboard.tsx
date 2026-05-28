@@ -150,6 +150,26 @@ export function AdminDashboard() {
                 <p className={`text-xs text-gray-400 ${fa}`}>{t('academic_year_sub')}</p>
               </div>
             </button>
+            <button
+              onClick={() => navigate('/admin/timetable')}
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-4 active:bg-gray-50 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center text-xl">📅</div>
+              <div className="text-right">
+                <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('timetable')}</p>
+                <p className={`text-xs text-gray-400 ${fa}`}>{t('timetable_sub')}</p>
+              </div>
+            </button>
+            <button
+              onClick={() => navigate('/admin/teacher-assignment')}
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-4 active:bg-gray-50 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-xl">👩‍🏫</div>
+              <div className="text-right">
+                <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('teacher_assign')}</p>
+                <p className={`text-xs text-gray-400 ${fa}`}>{t('teacher_assign_sub')}</p>
+              </div>
+            </button>
           </div>
 
           {/* Emergency broadcast */}

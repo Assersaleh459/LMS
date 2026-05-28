@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { AuthContext } from '../../app/providers/AuthProvider'
 import { AppBar }    from '../../components/layout/AppBar'
@@ -21,6 +22,7 @@ const AR_ORDINALS = ['الأولى','الثانية','الثالثة','الرا�
 export function AttendancePage() {
   const { t, fa, lang } = useLang()
   const auth = useContext(AuthContext)
+  const navigate = useNavigate()
 
   const { subjects, active, setActive, loading: loadingSubjects } = useTeacherSubjects()
 
@@ -74,9 +76,19 @@ export function AttendancePage() {
         title={t('attendance')}
         subtitle={`${classLabel(active)} · ${formatDateAr(new Date())}`}
         action={
-          <span className={`bg-white/20 text-white text-xs ${fa} px-2 py-1 rounded-lg`}>
-            {periodLabel(period)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={`bg-white/20 text-white text-xs ${fa} px-2 py-1 rounded-lg`}>
+              {periodLabel(period)}
+            </span>
+            <button
+              onClick={() => navigate('/teacher/profile')}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </button>
+          </div>
         }
         onLogout={auth?.signOut}
       />

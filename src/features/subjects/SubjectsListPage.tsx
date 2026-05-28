@@ -29,6 +29,7 @@ export function SubjectsListPage() {
   const [loading, setLoading] = useState(true)
 
   const isTeacher = auth?.role === 'subject_teacher' || auth?.role === 'homeroom_teacher' || auth?.role === 'school_admin'
+  const isAdmin = auth?.role === 'school_admin'
 
   useEffect(() => {
     if (!auth?.profile?.id || !auth?.schoolId) return
@@ -75,24 +76,36 @@ export function SubjectsListPage() {
           <p className={`text-center text-gray-400 ${fa} text-sm py-20`}>{t('no_subjects')}</p>
         ) : (
           subjects.map(sub => (
-            <button
-              key={sub.id}
-              onClick={() => navigate(`/course/${sub.id}`)}
-              className={`w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 ${ta} flex items-center gap-4`}
-            >
-              <div className="w-12 h-12 rounded-2xl bg-navy/10 flex items-center justify-center flex-shrink-0">
-                <span className={`text-navy font-bold ${fa} text-xs leading-tight text-center`}>{sub.name_ar.slice(0, 2)}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={`font-bold ${fa} text-gray-900 text-sm truncate`}>{sub.name_ar}</p>
-                <p className={`text-gray-400 ${fa} text-xs mt-0.5`}>
-                  {t(STAGE_KEYS[sub.stage] ?? sub.stage)} — {t('grade_label')} {sub.grade_year}
-                </p>
-              </div>
-              <svg className="w-4 h-4 text-gray-400 flex-shrink-0 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+            <div key={sub.id} className="flex items-center gap-2">
+              <button
+                onClick={() => navigate(`/course/${sub.id}`)}
+                className={`flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 ${ta} flex items-center gap-4`}
+              >
+                <div className="w-12 h-12 rounded-2xl bg-navy/10 flex items-center justify-center flex-shrink-0">
+                  <span className={`text-navy font-bold ${fa} text-xs leading-tight text-center`}>{sub.name_ar.slice(0, 2)}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`font-bold ${fa} text-gray-900 text-sm truncate`}>{sub.name_ar}</p>
+                  <p className={`text-gray-400 ${fa} text-xs mt-0.5`}>
+                    {t(STAGE_KEYS[sub.stage] ?? sub.stage)} — {t('grade_label')} {sub.grade_year}
+                  </p>
+                </div>
+                <svg className="w-4 h-4 text-gray-400 flex-shrink-0 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => navigate(`/admin/enrollment/${sub.id}`)}
+                  className="w-10 h-10 rounded-xl bg-teal/10 text-teal flex items-center justify-center flex-shrink-0"
+                  title={t('enrollment')}
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                </button>
+              )}
+            </div>
           ))
         )}
       </div>

@@ -8,13 +8,22 @@ import type { UserRole } from '../types/enums'
 import { GradeAnalyticsPage }  from '../features/grades/GradeAnalyticsPage'
 import { AuditLogPage }        from '../features/grades/AuditLogPage'
 import { StudentProgressPage } from '../features/student/StudentProgressPage'
+import { StudentGradesPage }   from '../features/student/StudentGradesPage'
 import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
 import { ConductLogPage }      from '../features/admin/ConductLogPage'
 import { AcademicYearPage }    from '../features/admin/AcademicYearPage'
 import { SchoolSettingsPage }  from '../features/admin/SchoolSettingsPage'
-import { UserManagementPage }  from '../features/admin/UserManagementPage'
-import { AbsenceReportPage }   from '../features/admin/AbsenceReportPage'
+import { TimetablePage }          from '../features/admin/TimetablePage'
+import { TeacherAssignmentPage } from '../features/admin/TeacherAssignmentPage'
+import { UserManagementPage }     from '../features/admin/UserManagementPage'
+import { AbsenceReportPage }      from '../features/admin/AbsenceReportPage'
+import { ChainDashboard }         from '../features/admin/ChainDashboard'
+import { ITAdminPage }            from '../features/admin/ITAdminPage'
+import { SubjectEnrollmentPage }  from '../features/admin/SubjectEnrollmentPage'
+import { TeacherProfilePage }     from '../features/teacher/TeacherProfilePage'
+import { NotificationsPage }      from '../features/notifications/NotificationsPage'
+import { MessagesPage }           from '../features/messages/MessagesPage'
 
 // Phase 1 pages
 import { LoginPage }           from '../features/auth/LoginPage'
@@ -59,9 +68,9 @@ const ROLE_ROUTES: Record<UserRole, string> = {
   prep_secondary_student: '/student/secondary',
   parent:                 '/parent',
   school_admin:           '/admin',
-  chain_admin:            '/admin',
-  it_admin:               '/admin',
-  moe_supervisor:         '/admin',
+  chain_admin:            '/chain',
+  it_admin:               '/it-admin',
+  moe_supervisor:         '/chain',
 }
 
 function RoleRedirect() {
@@ -105,6 +114,7 @@ export function Router() {
 
         {/* Students — Phase 1 */}
         <Route path="/student/assignments" element={<RequireAuth><StudentAssignmentsPage /></RequireAuth>} />
+        <Route path="/student/grades"      element={<RequireAuth><StudentGradesPage /></RequireAuth>} />
         <Route path="/student/primary"     element={<RequireAuth><StudentDashboard /></RequireAuth>} />
         <Route path="/student/secondary" element={<RequireAuth><SecondaryDashboard /></RequireAuth>} />
         <Route path="/student/kg"        element={<RequireAuth><KGDashboard /></RequireAuth>} />
@@ -119,7 +129,17 @@ export function Router() {
         <Route path="/admin/users"                   element={<RequireAuth><UserManagementPage /></RequireAuth>} />
         <Route path="/teacher/conduct"               element={<RequireAuth><ConductLogPage /></RequireAuth>} />
         <Route path="/admin/academic-year"           element={<RequireAuth><AcademicYearPage /></RequireAuth>} />
-        <Route path="/admin/settings"               element={<RequireAuth><SchoolSettingsPage /></RequireAuth>} />
+        <Route path="/admin/settings"                element={<RequireAuth><SchoolSettingsPage /></RequireAuth>} />
+        <Route path="/admin/timetable"               element={<RequireAuth><TimetablePage /></RequireAuth>} />
+        <Route path="/teacher/timetable"             element={<RequireAuth><TimetablePage /></RequireAuth>} />
+        <Route path="/student/timetable"              element={<RequireAuth><TimetablePage /></RequireAuth>} />
+        <Route path="/admin/teacher-assignment"       element={<RequireAuth><TeacherAssignmentPage /></RequireAuth>} />
+        <Route path="/admin/enrollment/:subjectId"   element={<RequireAuth><SubjectEnrollmentPage /></RequireAuth>} />
+        <Route path="/chain"                         element={<RequireAuth><ChainDashboard /></RequireAuth>} />
+        <Route path="/it-admin"                      element={<RequireAuth><ITAdminPage /></RequireAuth>} />
+        <Route path="/notifications"                 element={<RequireAuth><NotificationsPage /></RequireAuth>} />
+        <Route path="/messages"                      element={<RequireAuth><MessagesPage /></RequireAuth>} />
+        <Route path="/teacher/profile"               element={<RequireAuth><TeacherProfilePage /></RequireAuth>} />
 
         {/* Phase 2 — Subjects & Courses */}
         <Route path="/courses"                                                        element={<RequireAuth><SubjectsListPage /></RequireAuth>} />

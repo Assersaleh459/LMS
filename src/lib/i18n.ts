@@ -473,6 +473,94 @@ const translations: T = {
   assign_instr_ph:   { ar: 'تعليمات إضافية للطلاب...',  en: 'Additional instructions for students...' },
   assign_wa_label:   { ar: 'إرسال WhatsApp للأولياء',   en: 'Send WhatsApp to parents' },
   assign_wa_sub:     { ar: 'يُرسل تنبيه فور النشر',     en: 'Alert sent immediately on publish' },
+
+  // ── Timetable ─────────────────────────────────────────────────
+  timetable:         { ar: 'الجدول الدراسي',            en: 'Timetable' },
+  timetable_sub:     { ar: 'جدول الحصص اليومي',          en: 'Daily class schedule' },
+  timetable_edit:    { ar: 'تعديل الجدول',               en: 'Edit timetable' },
+  timetable_saved:   { ar: 'تم حفظ الجدول',             en: 'Timetable saved' },
+  timetable_class:   { ar: 'اختر الفصل',                en: 'Select class' },
+  timetable_empty:   { ar: 'لا توجد حصص مضافة بعد',    en: 'No periods added yet' },
+  timetable_add:     { ar: 'إضافة حصة',                 en: 'Add period' },
+  timetable_period:  { ar: 'الحصة',                     en: 'Period' },
+  timetable_subject: { ar: 'المادة',                    en: 'Subject' },
+  timetable_teacher: { ar: 'المعلم',                    en: 'Teacher' },
+  timetable_time:    { ar: 'الوقت',                     en: 'Time' },
+  timetable_from:    { ar: 'من',                        en: 'From' },
+  timetable_to:      { ar: 'إلى',                       en: 'To' },
+  day_sun:           { ar: 'الأحد',    en: 'Sun' },
+  day_mon:           { ar: 'الاثنين', en: 'Mon' },
+  day_tue:           { ar: 'الثلاثاء', en: 'Tue' },
+  day_wed:           { ar: 'الأربعاء', en: 'Wed' },
+  day_thu:           { ar: 'الخميس',  en: 'Thu' },
+  day_fri:           { ar: 'الجمعة',  en: 'Fri' },
+  day_sat:           { ar: 'السبت',   en: 'Sat' },
+
+  // ── Student grades view ───────────────────────────────────────
+  my_grades:         { ar: 'درجاتي',                    en: 'My Grades' },
+  my_grades_sub:     { ar: 'درجاتك في جميع المواد',     en: 'Your grades across all subjects' },
+  no_grades_yet:     { ar: 'لا توجد درجات بعد',         en: 'No grades yet' },
+  grade_written:     { ar: 'تحريري',                    en: 'Written' },
+  grade_oral:        { ar: 'شفهي',                      en: 'Oral' },
+  grade_practical:   { ar: 'عملي',                      en: 'Practical' },
+  grade_activity:    { ar: 'نشاط',                      en: 'Activity' },
+
+  // ── Teacher subject assignment ────────────────────────────────
+  teacher_assign:    { ar: 'إسناد المواد للمعلمين',     en: 'Teacher Subject Assignment' },
+  teacher_assign_sub:{ ar: 'حدد من يدرّس كل مادة',     en: 'Assign teachers to subjects' },
+  assign_teacher:    { ar: 'اختر معلماً',               en: 'Select teacher' },
+  no_teacher:        { ar: 'بدون معلم',                 en: 'No teacher' },
+  assignment_saved:  { ar: 'تم الحفظ',                  en: 'Saved' },
+
+  // ── Notifications ─────────────────────────────────────────────
+  notifications:     { ar: 'الإشعارات',                 en: 'Notifications' },
+  notif_empty:       { ar: 'لا توجد إشعارات',           en: 'No notifications' },
+  notif_enable:      { ar: 'تفعيل الإشعارات',           en: 'Enable notifications' },
+  notif_enabled:     { ar: 'الإشعارات مفعّلة',          en: 'Notifications enabled' },
+  notif_denied:      { ar: 'تم رفض الإشعارات من المتصفح', en: 'Notifications blocked by browser' },
+  mark_read:         { ar: 'تعليم كمقروء',              en: 'Mark as read' },
+  mark_all_read:     { ar: 'تعليم الكل كمقروء',         en: 'Mark all read' },
+
+  // ── Messaging ─────────────────────────────────────────────────
+  messages:          { ar: 'الرسائل',                   en: 'Messages' },
+  new_message:       { ar: 'رسالة جديدة',               en: 'New message' },
+  message_ph:        { ar: 'اكتب رسالتك هنا...',        en: 'Type your message...' },
+  send:              { ar: 'إرسال',                     en: 'Send' },
+  no_messages:       { ar: 'لا توجد رسائل',             en: 'No messages yet' },
+  conversation_with: { ar: 'محادثة مع',                 en: 'Conversation with' },
+
+  // ── Chain / MoE dashboard ─────────────────────────────────────
+  chain_dashboard:   { ar: 'لوحة المجموعة التعليمية',   en: 'Chain Dashboard' },
+  all_schools:       { ar: 'جميع المدارس',              en: 'All Schools' },
+  school_count:      { ar: 'عدد المدارس',               en: 'Schools' },
+  chain_students:    { ar: 'إجمالي الطلاب',             en: 'Total Students' },
+  chain_teachers:    { ar: 'إجمالي المعلمين',           en: 'Total Teachers' },
+  chain_attendance:  { ar: 'معدل الحضور العام',         en: 'Overall Attendance' },
+  view_school:       { ar: 'عرض المدرسة',               en: 'View School' },
+
+  // ── IT admin ─────────────────────────────────────────────────
+  it_dashboard:      { ar: 'لوحة تقنية المعلومات',      en: 'IT Admin' },
+  system_health:     { ar: 'صحة النظام',                en: 'System Health' },
+  active_users:      { ar: 'المستخدمون النشطون',        en: 'Active Users' },
+  total_logins:      { ar: 'إجمالي تسجيلات الدخول',    en: 'Total Logins' },
+  storage_used:      { ar: 'التخزين المستخدم',          en: 'Storage Used' },
+  recent_activity:   { ar: 'النشاط الأخير',             en: 'Recent Activity' },
+
+  // ── Subject enrollment ────────────────────────────────────────
+  enrollment:        { ar: 'تسجيل المواد',              en: 'Subject Enrollment' },
+  enroll_student:    { ar: 'تسجيل طالب',               en: 'Enroll student' },
+  enrolled:          { ar: 'مسجّل',                    en: 'Enrolled' },
+  not_enrolled:      { ar: 'غير مسجّل',                en: 'Not enrolled' },
+  enroll_all:        { ar: 'تسجيل الجميع',             en: 'Enroll all' },
+
+  // ── Teacher profile ───────────────────────────────────────────
+  my_profile:        { ar: 'ملفي الشخصي',              en: 'My Profile' },
+  profile_name:      { ar: 'الاسم',                    en: 'Name' },
+  profile_email:     { ar: 'البريد الإلكتروني',        en: 'Email' },
+  profile_phone:     { ar: 'الهاتف',                   en: 'Phone' },
+  profile_subjects:  { ar: 'المواد التي أدرّسها',      en: 'Subjects I teach' },
+  profile_classes:   { ar: 'الفصول الدراسية',          en: 'My classes' },
+  profile_saved:     { ar: 'تم حفظ الملف الشخصي',     en: 'Profile saved' },
 }
 
 export function translate(key: string, lang: Lang): string {
