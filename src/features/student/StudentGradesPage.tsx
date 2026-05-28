@@ -16,11 +16,19 @@ interface SubjectSummary {
   maxTotal: number
 }
 
+// Maps grade_type → subject column holding the max marks for that type
+const TYPE_MAX_COL: Record<string, string> = {
+  written:    'written_marks',
+  oral:       'oral_marks',
+  practical:  'practical_marks',
+  activity:   'activity_marks',
+}
+
 const TYPE_LABEL: Record<string, string> = {
-  written: 'grade_written',
-  oral: 'grade_oral',
+  written:   'grade_written',
+  oral:      'grade_oral',
   practical: 'grade_practical',
-  activity: 'grade_activity',
+  activity:  'grade_activity',
 }
 
 function pct(score: number, max: number) {
@@ -45,12 +53,29 @@ export function StudentGradesPage() {
   useEffect(() => {
     if (!auth?.profile?.id || !auth?.schoolId) return
 
-    supabase.from('academic_terms').select('id').eq('school_id', auth.schoolId).eq('is_active', true).single()
+    supabase.from('academic_terms')
+      .select('id')
+      .eq('school_id', auth.schoolId)
+      .eq('is_active', true)
+      .single()
       .then(({ data: term }) => {
         if (!term) { setLoading(false); return }
 
+        // Join grade_entries → subjects to get the mark allocations per grade type
         supabase.from('grade_entries')
-          .select('subject_id, grade_type, total_grade, max_grade, subjects(name_ar)')
+          .select(`
+            subject_id,
+            grade_type,
+            total_grade,
+            subjects (
+              name_ar,
+              total_marks,
+              written_marks,
+              oral_marks,
+              practical_marks,
+              activity_marks
+            )
+          `)
           .eq('student_id', auth.profile!.id)
           .eq('term_id', term.id)
           .then(({ data }) => {
@@ -58,13 +83,32 @@ export function StudentGradesPage() {
 
             const map: Record<string, SubjectSummary> = {}
             for (const r of data as any[]) {
-              const sid = r.subject_id
-              const name = r.subjects?.name_ar ?? sid
-              if (!map[sid]) map[sid] = { subject_id: sid, subject_name: name, grades: [], total: 0, maxTotal: 0 }
-              map[sid].grades.push({ type: r.grade_type, score: r.total_grade, max: r.max_grade })
-              map[sid].total    += r.total_grade
-              map[sid].maxTotal += r.max_grade
+              const sid  = r.subject_id
+              const sub  = r.subjects
+              const name = sub?.name_ar ?? sid
+
+              if (!map[sid]) {
+                map[sid] = {
+                  subject_id:   sid,
+                  subject_name: name,
+                  grades:       [],
+                  total:        0,
+                  maxTotal:     sub?.total_marks ?? 100,
+                }
+              }
+
+              // Get the max for this specific grade type from the subject columns
+              const maxColKey = TYPE_MAX_COL[r.grade_type]
+              const maxForType = sub?.[maxColKey] ?? 0
+
+              map[sid].grades.push({
+                type:  r.grade_type,
+                score: r.total_grade,
+                max:   maxForType,
+              })
+              map[sid].total += r.total_grade
             }
+
             setSubjects(Object.values(map))
             setLoading(false)
           })
@@ -91,7 +135,7 @@ export function StudentGradesPage() {
       ) : (
         <div className="py-4 space-y-3 px-4 pb-24">
           {subjects.map(sub => {
-            const p = pct(sub.total, sub.maxTotal)
+            const p      = pct(sub.total, sub.maxTotal)
             const letter = getMoELetterGrade(p, 100)
             return (
               <div key={sub.subject_id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -108,23 +152,25 @@ export function StudentGradesPage() {
 
                 {/* Grade breakdown */}
                 <div className="divide-y divide-gray-50">
-                  {sub.grades.map(g => (
-                    <div key={g.type} className="flex items-center justify-between px-4 py-2.5">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-sm font-bold ${gradeColor(pct(g.score, g.max))} ${fa}`}>
-                          {toArabicNumerals(g.score)}/{toArabicNumerals(g.max)}
-                        </span>
-                        {/* progress bar */}
-                        <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${pct(g.score, g.max) >= 65 ? 'bg-teal' : pct(g.score, g.max) >= 50 ? 'bg-yellow-400' : 'bg-red-400'}`}
-                            style={{ width: `${pct(g.score, g.max)}%` }}
-                          />
+                  {sub.grades.map(g => {
+                    const gp = pct(g.score, g.max)
+                    return (
+                      <div key={g.type} className="flex items-center justify-between px-4 py-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-bold ${gradeColor(gp)} ${fa}`}>
+                            {toArabicNumerals(g.score)}/{toArabicNumerals(g.max)}
+                          </span>
+                          <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${gp >= 65 ? 'bg-teal' : gp >= 50 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                              style={{ width: `${gp}%` }}
+                            />
+                          </div>
                         </div>
+                        <p className={`text-sm text-gray-600 ${fa}`}>{t(TYPE_LABEL[g.type] ?? g.type)}</p>
                       </div>
-                      <p className={`text-sm text-gray-600 ${fa}`}>{t(TYPE_LABEL[g.type] ?? g.type)}</p>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
 
                 {/* Total row */}
