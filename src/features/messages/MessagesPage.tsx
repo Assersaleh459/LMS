@@ -103,7 +103,33 @@ export function MessagesPage() {
       .eq('sender_id', otherId)
       .eq('is_read', false)
 
+    // Real-time: subscribe to new messages in this thread
+    const channel = supabase
+      .channel(`thread-${me}-${otherId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        (payload: any) => {
+          const m: Message = payload.new
+          const inThread =
+            (m.sender_id === me && m.recipient_id === otherId) ||
+            (m.sender_id === otherId && m.recipient_id === me)
+          if (!inThread) return
+          setMessages(prev => {
+            // avoid duplicate if we already added it optimistically
+            if (prev.some(p => p.id === m.id)) return prev
+            return [...prev, m]
+          })
+          // mark as read immediately if received
+          if (m.recipient_id === me) {
+            ;(supabase as any).from('messages').update({ is_read: true }).eq('id', m.id)
+          }
+        }
+      )
+      .subscribe()
+
     setLoading(false)
+    return () => { supabase.removeChannel(channel) }
   }
 
   async function send() {

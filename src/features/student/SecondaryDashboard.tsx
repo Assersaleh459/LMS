@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate }  from 'react-router-dom'
 import { AuthContext }  from '../../app/providers/AuthProvider'
 import { useLang }      from '../../app/providers/LangProvider'
 import { supabase }     from '../../lib/supabase'
@@ -13,6 +14,7 @@ import { toArabicNumerals } from '../../lib/arabic'
 export function SecondaryDashboard() {
   const auth = useContext(AuthContext)
   const { t, fa } = useLang()
+  const navigate = useNavigate()
   const [student,     setStudent]     = useState<StudentCard | null>(null)
   const [grades,      setGrades]      = useState<GradeEntry[]>([])
   const [assignments, setAssignments] = useState<Assignment[]>([])
@@ -88,6 +90,24 @@ export function SecondaryDashboard() {
           </div>
         </div>
       )}
+
+      {/* Quick links */}
+      <div className="grid grid-cols-2 gap-3 mx-4 mt-4">
+        <button
+          onClick={() => navigate('/student/grades')}
+          className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 active:bg-gray-50 transition-colors"
+        >
+          <div className="w-9 h-9 rounded-xl bg-teal/10 flex items-center justify-center text-lg">📊</div>
+          <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('my_grades')}</p>
+        </button>
+        <button
+          onClick={() => navigate('/student/timetable')}
+          className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 active:bg-gray-50 transition-colors"
+        >
+          <div className="w-9 h-9 rounded-xl bg-sky-50 flex items-center justify-center text-lg">📅</div>
+          <p className={`font-bold text-gray-800 text-sm ${fa}`}>{t('timetable')}</p>
+        </button>
+      </div>
 
       {assignments.length > 0 && (
         <div className="pt-4">
