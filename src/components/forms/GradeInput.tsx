@@ -15,11 +15,20 @@ function gradeColor(value: string, max: number): string {
 }
 
 export function GradeInput({ value, max, onChange, disabled }: GradeInputProps) {
+  function handleChange(raw: string) {
+    if (raw === '' || raw === '-') { onChange(raw); return }
+    const n = parseFloat(raw)
+    if (isNaN(n)) { onChange(raw); return }
+    if (n < 0)   { onChange('0');       return }
+    if (n > max) { onChange(String(max)); return }
+    onChange(raw)
+  }
+
   return (
     <input
       type="number"
       value={value}
-      onChange={e => onChange(e.target.value)}
+      onChange={e => handleChange(e.target.value)}
       min={0}
       max={max}
       step={0.5}

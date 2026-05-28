@@ -8,7 +8,9 @@ import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 
 interface Teacher { id: string; full_name_ar: string }
-interface Subject { id: string; name_ar: string; teacher_id: string | null; teacher_name?: string }
+interface Subject { id: string; name_ar: string; grade_year: number; teacher_id: string | null; teacher_name?: string }
+
+const CURRENT_YEAR = '2024-2025'
 
 export function TeacherAssignmentPage() {
   const auth    = useContext(AuthContext)
@@ -19,7 +21,7 @@ export function TeacherAssignmentPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [loading,  setLoading]  = useState(true)
-  const [saving,   setSaving]   = useState<string | null>(null) // subject id being saved
+  const [saving,   setSaving]   = useState<string | null>(null)
   const [saved,    setSaved]    = useState<string | null>(null)
 
   useEffect(() => {
@@ -31,16 +33,14 @@ export function TeacherAssignmentPage() {
         .in('role', ['subject_teacher', 'homeroom_teacher'])
         .order('full_name_ar'),
       (supabase as any).from('subjects')
-        .select('id, name_ar, teacher_id')
+        .select('id, name_ar, grade_year, teacher_id')
         .eq('school_id', auth.schoolId)
         .order('name_ar'),
     ]).then(([tRes, sRes]) => {
       const teachList: Teacher[] = tRes.data ?? []
       setTeachers(teachList)
-
       const teachMap: Record<string, string> = {}
       teachList.forEach((tc: Teacher) => { teachMap[tc.id] = tc.full_name_ar })
-
       const subList: Subject[] = (sRes.data ?? []).map((s: any) => ({
         ...s,
         teacher_name: s.teacher_id ? teachMap[s.teacher_id] : undefined,
@@ -51,8 +51,43 @@ export function TeacherAssignmentPage() {
   }, [auth?.schoolId])
 
   async function handleAssign(subjectId: string, teacherId: string | null) {
+    if (!auth?.schoolId) return
     setSaving(subjectId)
+
+    const sub = subjects.find(s => s.id === subjectId)
+    const gradeYear = sub?.grade_year ?? 0
+
+    // 1. Update subjects.teacher_id
     await (supabase as any).from('subjects').update({ teacher_id: teacherId || null }).eq('id', subjectId)
+
+    // 2. Remove all existing teacher_subjects entries for this subject
+    await supabase.from('teacher_subjects').delete().eq('subject_id', subjectId)
+
+    // 3. If assigning (not clearing), insert teacher_subjects for every section in this grade
+    if (teacherId && gradeYear > 0) {
+      const { data: classRows } = await supabase
+        .from('v_student_card')
+        .select('section')
+        .eq('school_id', auth.schoolId)
+        .eq('grade_year', gradeYear)
+
+      if (classRows?.length) {
+        const sections = [...new Set(classRows.map(r => r.section).filter((s): s is string => !!s))]
+        if (sections.length) {
+          await supabase.from('teacher_subjects').upsert(
+            sections.map(section => ({
+              teacher_id:    teacherId,
+              subject_id:    subjectId,
+              grade_year:    gradeYear,
+              section,
+              academic_year: CURRENT_YEAR,
+            })),
+            { onConflict: 'teacher_id,subject_id,grade_year,section,academic_year' }
+          )
+        }
+      }
+    }
+
     setSubjects(prev => prev.map(s =>
       s.id === subjectId
         ? { ...s, teacher_id: teacherId, teacher_name: teachers.find(t => t.id === teacherId)?.full_name_ar }
@@ -86,9 +121,10 @@ export function TeacherAssignmentPage() {
           {subjects.map(sub => (
             <div key={sub.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <div className={`flex items-center gap-2`}>
+                <div className="flex items-center gap-2">
                   {saved === sub.id && <span className="text-xs text-green-600 font-bold">✓</span>}
                   {saving === sub.id && <div className="w-3 h-3 rounded-full border border-teal border-t-transparent animate-spin" />}
+                  <span className={`text-xs text-gray-400 ${fa}`}>{t('grade_label')} {sub.grade_year}</span>
                 </div>
                 <p className={`font-bold text-gray-800 text-sm ${fa}`}>{sub.name_ar}</p>
               </div>
