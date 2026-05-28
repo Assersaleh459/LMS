@@ -45,6 +45,9 @@ export function GradebookPage() {
   const [loadingStudents, setLoadingStudents] = useState(true)
   const [importOpen,      setImportOpen]      = useState(false)
   const [pasteText,       setPasteText]       = useState('')
+  const [subjectMarks,    setSubjectMarks]    = useState<Record<string, number>>({
+    written: 60, oral: 20, practical: 10, activity: 10,
+  })
 
   const { grades, setGrade, saveAll, saving, loading: loadingGrades } =
     useGrades(students, active?.subjectId ?? '', termId)
@@ -57,19 +60,30 @@ export function GradebookPage() {
       .then(({ data }) => { if (data) setTermId(data.id) })
   }, [auth?.schoolId])
 
-  // Reload students whenever active class changes
+  // Reload students + subject mark allocations whenever active class changes
   useEffect(() => {
     if (!active || !auth?.schoolId) return
     setLoadingStudents(true)
-    supabase.from('v_student_card').select('*')
-      .eq('school_id', auth.schoolId)
-      .eq('grade_year', active.gradeYear)
-      .eq('section', active.section)
-      .order('full_name_ar')
-      .then(({ data }) => {
-        setStudents((data ?? []) as StudentCard[])
-        setLoadingStudents(false)
-      })
+    Promise.all([
+      supabase.from('v_student_card').select('*')
+        .eq('school_id', auth.schoolId)
+        .eq('grade_year', active.gradeYear)
+        .eq('section', active.section)
+        .order('full_name_ar'),
+      supabase.from('subjects').select('written_marks, oral_marks, practical_marks, activity_marks')
+        .eq('id', active.subjectId).single(),
+    ]).then(([stuRes, subRes]) => {
+      setStudents((stuRes.data ?? []) as StudentCard[])
+      if (subRes.data) {
+        setSubjectMarks({
+          written:   subRes.data.written_marks   ?? 60,
+          oral:      subRes.data.oral_marks      ?? 20,
+          practical: subRes.data.practical_marks ?? 10,
+          activity:  subRes.data.activity_marks  ?? 10,
+        })
+      }
+      setLoadingStudents(false)
+    })
   }, [active, auth?.schoolId])
 
   const isLoading = loadingSubjects || loadingStudents || loadingGrades
@@ -185,6 +199,7 @@ export function GradebookPage() {
               student={student}
               gradeType={activeTab}
               value={grades[`${student.id}:${activeTab}`] ?? ''}
+              max={subjectMarks[activeTab] ?? 10}
               onChange={val => setGrade(student.id, activeTab, val)}
             />
           ))
@@ -198,7 +213,7 @@ export function GradebookPage() {
           disabled={saving || isLoading}
           className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {saving ? t('saving') : `${t('save')} ${GRADE_TYPE_LABELS[activeTab]}`}
+          {saving ? t('saving') : `${t('save')} ${GRADE_TYPE_LABELS[activeTab]} (${t('out_of')} ${subjectMarks[activeTab] ?? 10})`}
         </button>
       </div>
 

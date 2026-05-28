@@ -2,19 +2,18 @@ import type { StudentCard } from '../../types/domain'
 import type { GradeType } from '../../types/enums'
 import { GradeInput } from '../../components/forms/GradeInput'
 import { getMoELetterGrade } from '../../lib/moe'
-import { PRIMARY_GRADE_MAX } from '../../lib/moe'
 import { useLang } from '../../app/providers/LangProvider'
 
 interface GradeRowProps {
   student:   StudentCard
   gradeType: GradeType
   value:     string
+  max:       number
   onChange:  (value: string) => void
 }
 
-export function GradeRow({ student, gradeType, value, onChange }: GradeRowProps) {
+export function GradeRow({ student, value, max, onChange }: GradeRowProps) {
   const { fa } = useLang()
-  const max    = PRIMARY_GRADE_MAX[gradeType] ?? 10
   const numVal = parseFloat(value)
   const grade  = !isNaN(numVal) ? getMoELetterGrade(numVal, max) : null
 

@@ -46,16 +46,25 @@ export function CoursePage() {
     <PageWrapper>
       <AppBar title={subject?.name_ar ?? t('course')} onBack={() => navigate(-1)} />
 
-      {isTeacher && (
-        <div className="px-4 py-3 border-b border-gray-100 bg-white">
+      <div className={`px-4 py-3 border-b border-gray-100 bg-white flex gap-2`}>
+        <button
+          onClick={() => navigate(`/discussions/${subjectId}`)}
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-50 text-purple-700 text-xs font-bold ${fa}`}
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          {t('discussions')}
+        </button>
+        {isTeacher && (
           <button
             onClick={() => navigate(`/teacher/course/${subjectId}/unit/new`)}
-            className={`w-full py-3 rounded-xl bg-teal text-white font-bold ${fa} text-sm`}
+            className={`flex-1 py-2 rounded-xl bg-teal text-white font-bold ${fa} text-sm`}
           >
             {t('add_unit')}
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="flex-1 px-4 py-4 space-y-3">
         {loading ? (
