@@ -11,12 +11,15 @@ import { formatLastUpdated } from '../../lib/arabic'
 import { supabase } from '../../lib/supabase'
 import { useLang } from '../../app/providers/LangProvider'
 
+interface Teacher { id: string; full_name_ar: string; subject_name: string }
+
 export function ParentDashboard() {
   const { t, fa } = useLang()
   const navigate = useNavigate()
   const [activeChildId, setActiveChildId] = useState<string | null>(null)
   const { data, loading, error, absentToday, allChildren } = useParentData(activeChildId)
   const [subjectNames, setSubjectNames] = useState<Record<string, string>>({})
+  const [teachers,     setTeachers]     = useState<Teacher[]>([])
 
   useEffect(() => {
     if (!data?.grades?.length) return
@@ -28,6 +31,30 @@ export function ParentDashboard() {
       setSubjectNames(map)
     })
   }, [data?.grades])
+
+  // Load teachers for the student's subjects (those with teacher_id set)
+  useEffect(() => {
+    if (!data?.student) return
+    // Find subjects for this student's grade/section that have an assigned teacher
+    ;(supabase as any).from('subjects')
+      .select('id, name_ar, teacher_id')
+      .not('teacher_id', 'is', null)
+      .then(async ({ data: subs }: { data: any[] | null }) => {
+        if (!subs?.length) return
+        const teacherIds = [...new Set(subs.map((s: any) => s.teacher_id))]
+        const { data: users } = await (supabase as any).from('users')
+          .select('id, full_name_ar').in('id', teacherIds)
+        if (!users) return
+        const userMap: Record<string, string> = {}
+        users.forEach((u: any) => { userMap[u.id] = u.full_name_ar })
+        const seen = new Set<string>()
+        const list: Teacher[] = subs
+          .filter((s: any) => userMap[s.teacher_id])
+          .map((s: any) => ({ id: s.teacher_id, full_name_ar: userMap[s.teacher_id], subject_name: s.name_ar }))
+          .filter((tc: Teacher) => { if (seen.has(tc.id)) return false; seen.add(tc.id); return true })
+        setTeachers(list)
+      })
+  }, [data?.student])
 
   if (loading) {
     return (
@@ -166,6 +193,34 @@ export function ParentDashboard() {
           <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('attendance_log')}</h2>
           <AttendanceCalendar records={attendance} />
         </div>
+
+        {/* Message teachers */}
+        {teachers.length > 0 && (
+          <div className="pb-6">
+            <h2 className={`font-bold ${fa} text-gray-700 px-4 mb-2 text-sm`}>{t('messages')}</h2>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mx-4 overflow-hidden">
+              {teachers.map((tc, i) => (
+                <button
+                  key={tc.id}
+                  onClick={() => navigate(`/messages?with=${tc.id}`)}
+                  className={`w-full flex items-center justify-between px-4 py-3.5 ${
+                    i < teachers.length - 1 ? 'border-b border-gray-50' : ''
+                  } active:bg-gray-50 transition-colors`}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-[#1e8449]/10 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-[#1e8449]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                    <span className={`text-xs text-gray-400 ${fa}`}>{tc.subject_name}</span>
+                  </div>
+                  <p className={`font-bold text-gray-800 text-sm ${fa}`}>{tc.full_name_ar}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
