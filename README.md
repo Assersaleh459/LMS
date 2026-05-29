@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🏫 مدرستي — Madrasati LMS
 
-Currently, two official plugins are available:
+**Arabic-first, mobile-first School Management System for Egyptian K-12 schools**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[Live → lms-egypt.vercel.app](https://lms-egypt.vercel.app)
 
-## React Compiler
+</div>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Overview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+مدرستي is a complete LMS built for Egyptian schools — RTL Arabic interface, offline-capable attendance, Ministry-of-Education-compliant grading (KG descriptive grades, Thanawi 40/60 weighting), parent communication, and full role-based access control.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Live app:** https://lms-egypt.vercel.app
+- **Stack:** React 18 · TypeScript · Vite 8 · Tailwind CSS · Supabase (Postgres + Auth + Storage + Edge Functions + Realtime) · Vercel
+- **Pilot school:** مدرسة الفارابي للغات
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## For developers / AI agents
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+👉 **Start with [CLAUDE.md](CLAUDE.md)** — stack, conventions, gotchas, and commands.
+👉 **[docs/PROJECT_STATE.md](docs/PROJECT_STATE.md)** — full inventory of every migration, edge function, and feature.
+
+## Quick start
+
+```bash
+npm install
+npm run dev          # local dev server
+npm run build        # production build (run before any deploy)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Environment variables (`.env`):
 ```
+VITE_SUPABASE_URL=https://mczvgjfreyvbcdypmjpb.supabase.co
+VITE_SUPABASE_ANON_KEY=...
+```
+
+## Test accounts
+
+All passwords: `Test@1234`
+
+| Role | Email |
+|------|-------|
+| School Admin | `admin@farabi.edu.eg` |
+| Subject Teacher | `teacher@farabi.edu.eg` |
+| Homeroom Teacher | `homeroom@farabi.edu.eg` |
+| Primary Student | `student.primary@farabi.edu.eg` |
+| Secondary Student | `student.sec@farabi.edu.eg` |
+| KG Student | `student.kg@farabi.edu.eg` |
+| Parent | `parent@farabi.edu.eg` |
+| IT Admin | `it@farabi.edu.eg` |
+| Chain Admin | `chain@farabi.edu.eg` |
+| MoE Supervisor | `moe@farabi.edu.eg` |
+
+## Roles
+
+Students (KG/Primary/Secondary) · Teachers (Subject/Homeroom) · Parent · School Admin · IT Admin · Chain Admin · MoE Supervisor — plus admin-defined **custom roles** per school.
+
+## License
+
+Private project.

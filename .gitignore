@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Disposable debug/scratch SQL + scripts
+.tmp
