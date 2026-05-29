@@ -5,14 +5,15 @@ import { AuthContext } from '../../app/providers/AuthProvider'
 import { useContext } from 'react'
 
 interface AppBarProps {
-  title:      string
-  subtitle?:  string
-  onBack?:    () => void
-  action?:    React.ReactNode
-  onLogout?:  () => void
+  title:     string
+  subtitle?: string
+  onBack?:   () => void
+  action?:   React.ReactNode
+  onLogout?: () => void  // kept for backwards compat — logout is now always shown when session exists
 }
 
-export function AppBar({ title, subtitle, onBack, action, onLogout }: AppBarProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function AppBar({ title, subtitle, onBack, action, onLogout: _onLogout }: AppBarProps) {
   const { lang, fa, toggleLang } = useLang()
   const navigate = useNavigate()
   const auth = useContext(AuthContext)
@@ -70,9 +71,10 @@ export function AppBar({ title, subtitle, onBack, action, onLogout }: AppBarProp
         {lang === 'ar' ? 'EN' : 'ع'}
       </button>
 
-      {onLogout && (
+      {/* Logout — always shown when logged in */}
+      {auth?.session && (
         <button
-          onClick={onLogout}
+          onClick={auth.signOut}
           className="p-2 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
           aria-label="logout"
         >
