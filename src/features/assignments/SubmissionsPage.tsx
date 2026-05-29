@@ -13,6 +13,7 @@ interface Submission {
   student_id:      string
   status:          string
   text_answer:     string | null
+  file_url:        string | null
   grade:           number | null
   teacher_comment: string | null
   submitted_at:    string | null
@@ -56,8 +57,8 @@ export function SubmissionsPage() {
       supabase.from('assignments')
         .select('title_ar, max_grade, grade_year, section')
         .eq('id', assignmentId).single(),
-      supabase.from('assignment_submissions')
-        .select('id, student_id, status, text_answer, grade, teacher_comment, submitted_at, users(first_name_ar, last_name_ar)')
+      (supabase as any).from('assignment_submissions')
+        .select('id, student_id, status, text_answer, file_url, grade, teacher_comment, submitted_at, users(first_name_ar, last_name_ar)')
         .eq('assignment_id', assignmentId)
         .order('submitted_at', { ascending: false }),
     ]).then(([aRes, sRes]) => {
@@ -211,6 +212,9 @@ export function SubmissionsPage() {
                     {sub.text_answer && (
                       <p className={`text-xs text-gray-400 ${fa} truncate max-w-[180px]`}>{sub.text_answer}</p>
                     )}
+                    {sub.file_url && !sub.text_answer && (
+                      <p className={`text-xs text-teal ${fa}`}>📎 ملف مرفق</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -288,6 +292,31 @@ export function SubmissionsPage() {
               <div className="bg-gray-50 rounded-xl p-4">
                 <p className={`text-xs font-bold text-gray-500 ${fa} mb-1`}>{t('student_answer')}</p>
                 <p className={`text-sm text-gray-800 ${fa} leading-relaxed`}>{grading.text_answer}</p>
+              </div>
+            )}
+
+            {grading.file_url && (
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className={`text-xs font-bold text-gray-500 ${fa} mb-2`}>{t('open_file')}</p>
+                {/\.(jpg|jpeg|png|webp|gif)$/i.test(grading.file_url) ? (
+                  <img
+                    src={grading.file_url}
+                    alt="submission"
+                    className="w-full max-h-64 object-contain rounded-xl border border-gray-200"
+                  />
+                ) : (
+                  <a
+                    href={grading.file_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`flex items-center gap-2 text-teal font-bold text-sm ${fa} underline`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    تحميل الملف
+                  </a>
+                )}
               </div>
             )}
 

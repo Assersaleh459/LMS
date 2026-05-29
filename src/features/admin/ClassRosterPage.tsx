@@ -111,37 +111,47 @@ export function ClassRosterPage() {
           students.map((s, i) => {
             const gradeLabel = s.avgPct !== undefined ? getMoELetterGrade(s.avgPct, 100) : null
             return (
-              <button
-                key={s.id}
-                onClick={() => navigate(`/teacher/student/${s.id}/progress`)}
-                className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-50 last:border-0 active:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-navy/10 flex items-center justify-center text-xs font-bold text-navy">
-                    {i + 1}
-                  </span>
-                  <div className="text-right">
-                    <p className={`text-sm font-bold text-gray-800 ${fa}`}>{s.full_name_ar}</p>
-                    <p className="text-xs text-gray-400">{s.student_code}</p>
+              <div key={s.id} className="flex items-center border-b border-gray-50 last:border-0">
+                {/* Main row → progress */}
+                <button
+                  onClick={() => navigate(`/teacher/student/${s.id}/progress`)}
+                  className="flex-1 flex items-center justify-between px-4 py-3 active:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 rounded-full bg-navy/10 flex items-center justify-center text-xs font-bold text-navy">
+                      {i + 1}
+                    </span>
+                    <div className="text-right">
+                      <p className={`text-sm font-bold text-gray-800 ${fa}`}>{s.full_name_ar}</p>
+                      <p className="text-xs text-gray-400">{s.student_code}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {s.todayStatus && (
-                    <span className={`text-xs ${fa} font-bold px-2 py-0.5 rounded-full ${STATUS_STYLE[s.todayStatus] ?? 'bg-gray-100 text-gray-500'}`}>
-                      {t(s.todayStatus) ?? s.todayStatus}
-                    </span>
-                  )}
-                  {gradeLabel && (
-                    <span className={`text-xs font-bold ${fa} px-2 py-0.5 rounded-full`}
-                      style={{ backgroundColor: gradeLabel.color + '20', color: gradeLabel.color }}>
-                      {gradeLabel.label}
-                    </span>
-                  )}
-                  <svg className="w-4 h-4 text-gray-300 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <div className="flex items-center gap-2">
+                    {s.todayStatus && (
+                      <span className={`text-xs ${fa} font-bold px-2 py-0.5 rounded-full ${STATUS_STYLE[s.todayStatus] ?? 'bg-gray-100 text-gray-500'}`}>
+                        {t(s.todayStatus) ?? s.todayStatus}
+                      </span>
+                    )}
+                    {gradeLabel && (
+                      <span className={`text-xs font-bold ${fa} px-2 py-0.5 rounded-full`}
+                        style={{ backgroundColor: gradeLabel.color + '20', color: gradeLabel.color }}>
+                        {gradeLabel.label}
+                      </span>
+                    )}
+                  </div>
+                </button>
+
+                {/* Report card icon button */}
+                <button
+                  onClick={() => navigate(`/teacher/report-card/${s.id}`)}
+                  className="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-teal transition-colors flex-shrink-0 mr-1"
+                  title={t('report_card')}
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                </div>
-              </button>
+                </button>
+              </div>
             )
           })
         )}
