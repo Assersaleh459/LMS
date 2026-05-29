@@ -36,7 +36,7 @@ missing_assignments AS (
     COUNT(*) AS overdue_count
   FROM public.assignment_submissions asub
   JOIN public.assignments a ON a.id = asub.assignment_id
-  WHERE asub.status = 'pending'
+  WHERE asub.status IN ('pending', 'late')
     AND a.due_date < CURRENT_DATE
   GROUP BY asub.student_id
 ),

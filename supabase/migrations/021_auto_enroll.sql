@@ -4,11 +4,10 @@
 CREATE OR REPLACE FUNCTION public.fn_auto_enroll_students()
 RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
-  INSERT INTO public.subject_enrollments (student_id, subject_id, school_id, enrolled_at)
+  INSERT INTO public.subject_enrollments (student_id, subject_id, enrolled_at)
   SELECT
     sp.user_id,
     NEW.id,
-    NEW.school_id,
     NOW()
   FROM public.student_profiles sp
   JOIN public.users u ON u.id = sp.user_id

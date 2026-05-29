@@ -116,6 +116,7 @@ export function QuizPage() {
       return { question_id: q.id, answer_text: ans, is_correct: isCorrect }
     })
 
+    const now = new Date().toISOString()
     const { data: attempt } = await supabase
       .from('quiz_attempts')
       .insert({
@@ -124,7 +125,8 @@ export function QuizPage() {
         score,
         max_score: maxScore,
         is_complete: true,
-        submitted_at: new Date().toISOString(),
+        started_at: now,
+        submitted_at: now,
       })
       .select('id')
       .single()

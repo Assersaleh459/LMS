@@ -35,44 +35,50 @@ export function TeacherDashboard() {
   useEffect(() => {
     if (!auth?.profile?.id || loadingSubjects) return
 
-    const today = new Date().toISOString().split('T')[0]
-    const subjectIds = subjects.map(s => s.subjectId)
+    const teacherId = auth.profile.id
+    const today     = new Date().toISOString().split('T')[0]
 
-    Promise.all([
-      // Ungraded submissions across teacher's assignments
-      subjectIds.length
-        ? (supabase as any).from('assignment_submissions')
-            .select('id', { count: 'exact', head: true })
-            .in('status', ['submitted', 'late'])
-            .then(async ({ count: ungraded }: any) => {
-              // Absent students today across teacher's classes
-              const { count: absent } = await supabase
-                .from('attendance_records')
-                .select('id', { count: 'exact', head: true })
-                .eq('teacher_id', auth!.profile!.id)
-                .eq('attendance_date', today)
-                .eq('status', 'absent')
+    async function load() {
+      // 1. Get teacher's own assignment IDs
+      const { data: myAssigns } = await supabase
+        .from('assignments')
+        .select('id, title_ar, due_date')
+        .eq('teacher_id', teacherId)
+        .order('due_date')
 
-              // Upcoming assignments not yet due
-              const { data: assigns } = await supabase
-                .from('assignments')
-                .select('id, title_ar, due_date')
-                .eq('teacher_id', auth!.profile!.id)
-                .gte('due_date', today)
-                .order('due_date')
-                .limit(4)
+      const allAssignIds    = (myAssigns ?? []).map((a: any) => a.id)
+      const upcomingAssigns = (myAssigns ?? []).filter((a: any) => a.due_date >= today).slice(0, 4)
 
-              setStats({
-                classCount:    subjects.length,
-                ungradedCount: ungraded ?? 0,
-                pendingAssign: assigns?.length ?? 0,
-                absentToday:   absent ?? 0,
-              })
-              setAssignments((assigns ?? []).map((a: any) => ({ ...a, ungraded: 0 })))
-              setLoading(false)
-            })
-        : Promise.resolve().then(() => { setLoading(false) })
-    ])
+      // 2. Count ungraded submissions for teacher's assignments only
+      let ungradedCount = 0
+      if (allAssignIds.length) {
+        const { count } = await supabase
+          .from('assignment_submissions')
+          .select('id', { count: 'exact', head: true })
+          .in('assignment_id', allAssignIds)
+          .in('status', ['submitted', 'late'])
+        ungradedCount = count ?? 0
+      }
+
+      // 3. Count absent students today in teacher's periods
+      const { count: absent } = await supabase
+        .from('attendance_records')
+        .select('id', { count: 'exact', head: true })
+        .eq('teacher_id', teacherId)
+        .eq('attendance_date', today)
+        .eq('status', 'absent')
+
+      setStats({
+        classCount:    subjects.length,
+        ungradedCount,
+        pendingAssign: upcomingAssigns.length,
+        absentToday:   absent ?? 0,
+      })
+      setAssignments(upcomingAssigns.map((a: any) => ({ ...a, ungraded: 0 })))
+      setLoading(false)
+    }
+
+    load()
   }, [auth?.profile?.id, subjects, loadingSubjects])
 
   const profile = auth?.profile
