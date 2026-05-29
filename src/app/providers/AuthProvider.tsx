@@ -45,11 +45,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data) {
       setProfile(data as UserProfile)
       localStorage.setItem('school_id', data.school_id)
+
+      // Log login event
+      ;(supabase as any).from('system_audit_log').insert({
+        school_id:   data.school_id,
+        actor_id:    data.id,
+        actor_name:  `${data.first_name_ar} ${data.last_name_ar}`,
+        actor_role:  data.role,
+        action:      'LOGIN',
+        entity_type: 'login',
+        entity_desc: data.email,
+      }).then(() => {})
     }
     setLoading(false)
   }
 
   async function signOut() {
+    // Log logout event before clearing session
+    const profileSnap = profile
+    if (profileSnap) {
+      await (supabase as any).from('system_audit_log').insert({
+        school_id:   profileSnap.school_id,
+        actor_id:    profileSnap.id,
+        actor_name:  `${profileSnap.first_name_ar} ${profileSnap.last_name_ar}`,
+        actor_role:  profileSnap.role,
+        action:      'LOGOUT',
+        entity_type: 'login',
+        entity_desc: (profileSnap as any).email ?? null,
+      })
+    }
     await supabase.auth.signOut()
     localStorage.removeItem('school_id')
   }

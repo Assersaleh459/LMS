@@ -419,6 +419,15 @@ const translations: T = {
   audit_log_sub:     { ar: 'آخر ٢٠٠ تغيير',       en: 'Last 200 changes' },
   by_teacher:        { ar: 'بواسطة',              en: 'by' },
 
+  // ── System audit log ─────────────────────────────────────────
+  audit_system:         { ar: 'سجل النظام الشامل',         en: 'System Audit Log' },
+  audit_system_sub:     { ar: 'جميع الإجراءات في المنصة',  en: 'All platform actions' },
+  audit_search_ph:      { ar: 'ابحث باسم المستخدم أو الحدث...', en: 'Search by user or event...' },
+  audit_total_entries:  { ar: 'إجراء مسجّل',               en: 'recorded entries' },
+  audit_details:        { ar: 'عرض التفاصيل',               en: 'Show details' },
+  permissions_title:    { ar: 'الصلاحيات والأدوار',         en: 'Roles & Permissions' },
+  permissions_sub:      { ar: 'تحكم في صلاحيات كل دور',    en: 'Control access per role' },
+
   // ── At-risk early warning ─────────────────────────────────────
   at_risk_title:       { ar: 'طلاب يحتاجون متابعة',         en: 'Students Needing Follow-up' },
   at_risk_sub:         { ar: 'انقر للتفاصيل',               en: 'Tap to expand' },

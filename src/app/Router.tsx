@@ -21,6 +21,8 @@ import { UserManagementPage }     from '../features/admin/UserManagementPage'
 import { AbsenceReportPage }      from '../features/admin/AbsenceReportPage'
 import { ChainDashboard }         from '../features/admin/ChainDashboard'
 import { ITAdminPage }            from '../features/admin/ITAdminPage'
+import { SystemAuditPage }        from '../features/admin/SystemAuditPage'
+import { PermissionsPage }        from '../features/admin/PermissionsPage'
 import { SubjectEnrollmentPage }  from '../features/admin/SubjectEnrollmentPage'
 import { TeacherProfilePage }     from '../features/teacher/TeacherProfilePage'
 import { TeacherDashboard }       from '../features/teacher/TeacherDashboard'
@@ -141,6 +143,8 @@ export function Router() {
         <Route path="/student/timetable"              element={<RequireAuth><TimetablePage /></RequireAuth>} />
         <Route path="/admin/teacher-assignment"       element={<RequireAuth><TeacherAssignmentPage /></RequireAuth>} />
         <Route path="/admin/enrollment/:subjectId"   element={<RequireAuth><SubjectEnrollmentPage /></RequireAuth>} />
+        <Route path="/admin/audit"                   element={<RequireAuth><SystemAuditPage /></RequireAuth>} />
+        <Route path="/admin/permissions"             element={<RequireAuth><PermissionsPage /></RequireAuth>} />
         <Route path="/chain"                         element={<RequireAuth><ChainDashboard /></RequireAuth>} />
         <Route path="/it-admin"                      element={<RequireAuth><ITAdminPage /></RequireAuth>} />
         <Route path="/notifications"                 element={<RequireAuth><NotificationsPage /></RequireAuth>} />

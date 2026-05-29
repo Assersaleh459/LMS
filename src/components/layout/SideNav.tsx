@@ -1,12 +1,14 @@
 import { NavLink } from 'react-router-dom'
 import { useRole } from '../../hooks/useRole'
 import { useLang } from '../../app/providers/LangProvider'
+import { usePermissions } from '../../hooks/usePermissions'
 
 type NavItem = { to: string; label: string; icon: React.ReactNode }
 
 export function SideNav() {
   const role = useRole()
   const { t, fa } = useLang()
+  const { can } = usePermissions()
 
   const TEACHER_NAV: NavItem[] = [
     {
@@ -207,13 +209,33 @@ export function SideNav() {
     },
   ]
 
-  const items =
+  // Permission → nav route mapping for filtering
+  const ROUTE_PERMISSION: Record<string, string> = {
+    '/teacher/attendance':       'attendance',
+    '/teacher/grades':           'grades',
+    '/teacher/assignments':      'assignments',
+    '/courses':                  'courses',
+    '/teacher/conduct':          'conduct',
+    '/student/grades':           'grades',
+    '/student/grades/kg':        'grades',
+    '/student/assignments':      'assignments',
+    '/announcements':            'announcements',
+    '/messages':                 'messages',
+    '/teacher/grades/analytics': 'analytics',
+  }
+
+  const baseItems =
     role === 'subject_teacher' || role === 'homeroom_teacher' ? TEACHER_NAV
     : role === 'school_admin' || role === 'it_admin' || role === 'chain_admin' ? ADMIN_NAV
     : role === 'moe_supervisor' ? MOE_NAV
     : role === 'kg_primary_student' || role === 'prep_secondary_student' ? STUDENT_NAV
     : role === 'parent' ? PARENT_NAV
     : []
+
+  const items = baseItems.filter(item => {
+    const perm = ROUTE_PERMISSION[item.to]
+    return perm ? can(perm) : true
+  })
 
   if (!items.length) return null
 
