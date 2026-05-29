@@ -43,6 +43,7 @@ serve(async (req) => {
       role:          string
       phone?:        string
       email?:        string
+      password?:     string
       grade_year?:   number
       section?:      string
       student_code?: string
@@ -51,14 +52,15 @@ serve(async (req) => {
     if (!body.first_name_ar || !body.last_name_ar || !body.role) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400, headers: CORS })
     }
-    if (!body.phone && !body.email) {
-      return new Response(JSON.stringify({ error: 'Phone or email required' }), { status: 400, headers: CORS })
+    if (!body.email) {
+      return new Response(JSON.stringify({ error: 'Email required' }), { status: 400, headers: CORS })
     }
 
-    // Create Supabase Auth user
+    // Create Supabase Auth user. Default password if none supplied so account is usable.
     const { data: authUser, error: authErr } = await supabase.auth.admin.createUser({
       phone:              body.phone,
       email:              body.email,
+      password:           body.password && body.password.length >= 8 ? body.password : 'Madrasati@2025',
       phone_confirm:      true,
       email_confirm:      true,
     })
