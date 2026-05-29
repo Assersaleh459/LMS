@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../app/providers/AuthProvider'
 import { Avatar }          from '../../components/ui/Avatar'
 import { Card }            from '../../components/ui/Card'
 import { OfflineBanner }   from '../../components/ui/OfflineBanner'
@@ -16,6 +17,7 @@ interface Teacher { id: string; full_name_ar: string; subject_name: string }
 export function ParentDashboard() {
   const { t, fa } = useLang()
   const navigate = useNavigate()
+  const auth = useContext(AuthContext)
   const [activeChildId, setActiveChildId] = useState<string | null>(null)
   const { data, loading, error, absentToday, allChildren } = useParentData(activeChildId)
   const [subjectNames, setSubjectNames] = useState<Record<string, string>>({})
@@ -128,16 +130,28 @@ export function ParentDashboard() {
               </span>
             )}
           </div>
-          {/* Report card button */}
-          <button
-            onClick={() => navigate(`/parent/report-card/${student.id}`)}
-            className={`flex-shrink-0 bg-white/20 hover:bg-white/30 text-white text-xs ${fa} font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors`}
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            {t('report_card')}
-          </button>
+          <div className="flex flex-col gap-2 flex-shrink-0">
+            {/* Report card button */}
+            <button
+              onClick={() => navigate(`/parent/report-card/${student.id}`)}
+              className={`bg-white/20 hover:bg-white/30 text-white text-xs ${fa} font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              {t('report_card')}
+            </button>
+            {/* Logout button */}
+            <button
+              onClick={auth?.signOut}
+              className="bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              {t('logout')}
+            </button>
+          </div>
         </div>
         {data.lastFetched && (
           <p className="text-white/50 text-xs mt-3 text-left">
