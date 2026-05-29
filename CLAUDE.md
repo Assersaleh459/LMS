@@ -3,6 +3,13 @@
 > **Read this first.** It is the single source of truth for working on this codebase.
 > Detailed feature/migration inventory lives in [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
+> **⚠️ Precedence note.** Other `CLAUDE.md` files also load (your global `~/.claude/CLAUDE.md`
+> and the `Documents/CLAUDE.md` "WAT framework"). Those describe a `workflows/` + `tools/` +
+> `al_materi/` project structure — **this project does NOT use that structure.** It is a standard
+> React + TypeScript + Supabase + Vercel app. For anything specific to this repo, **the conventions
+> in THIS file take precedence.** General working style from the global files (autonomy, git
+> discipline, the React+Supabase/Arabic-RTL deployment notes) still applies and is compatible.
+
 ## What this is
 
 **مدرستي (Madrasati)** — an Arabic-first, mobile-first LMS / school-management system for Egyptian K-12 schools, built to comply with Egyptian Ministry of Education (MoE) rules.
