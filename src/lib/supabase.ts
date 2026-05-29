@@ -13,14 +13,15 @@ export const supabase = createClient<Database>(
       autoRefreshToken: true,
     },
     global: {
-      headers: { 'x-school-id': getSchoolIdFromStorage() },
+      fetch: (url, options = {}) => {
+        const schoolId = localStorage.getItem('school_id') ?? ''
+        const headers = new Headers((options as RequestInit).headers)
+        if (schoolId) headers.set('x-school-id', schoolId)
+        return fetch(url, { ...(options as RequestInit), headers })
+      },
     },
   }
 )
-
-function getSchoolIdFromStorage(): string {
-  return localStorage.getItem('school_id') ?? ''
-}
 
 // ── TYPED QUERY HELPERS ──────────────────────────────────────
 

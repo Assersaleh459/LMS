@@ -9,6 +9,7 @@ import { GradeAnalyticsPage }  from '../features/grades/GradeAnalyticsPage'
 import { AuditLogPage }        from '../features/grades/AuditLogPage'
 import { StudentProgressPage } from '../features/student/StudentProgressPage'
 import { StudentGradesPage }   from '../features/student/StudentGradesPage'
+import { KGGradesPage }        from '../features/student/KGGradesPage'
 import { ReportCardPage }      from '../features/grades/ReportCardPage'
 import { ClassRosterPage }     from '../features/admin/ClassRosterPage'
 import { ConductLogPage }      from '../features/admin/ConductLogPage'
@@ -98,7 +99,7 @@ export function Router() {
         {/* Public */}
         <Route path="/login"          element={<LoginPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/parent"         element={<ParentDashboard />} />
+        <Route path="/parent"         element={<RequireAuth><ParentDashboard /></RequireAuth>} />
 
         {/* Role redirect */}
         <Route path="/" element={<RoleRedirect />} />
@@ -117,6 +118,7 @@ export function Router() {
         {/* Students — Phase 1 */}
         <Route path="/student/assignments" element={<RequireAuth><StudentAssignmentsPage /></RequireAuth>} />
         <Route path="/student/grades"      element={<RequireAuth><StudentGradesPage /></RequireAuth>} />
+        <Route path="/student/grades/kg"   element={<RequireAuth><KGGradesPage /></RequireAuth>} />
         <Route path="/student/primary"     element={<RequireAuth><StudentDashboard /></RequireAuth>} />
         <Route path="/student/secondary" element={<RequireAuth><SecondaryDashboard /></RequireAuth>} />
         <Route path="/student/kg"        element={<RequireAuth><KGDashboard /></RequireAuth>} />

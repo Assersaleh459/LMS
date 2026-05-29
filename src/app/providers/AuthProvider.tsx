@@ -21,12 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading,  setLoading]  = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      if (data.session) loadProfile(data.session.user.id)
-      else setLoading(false)
-    })
-
+    // onAuthStateChange fires INITIAL_SESSION on mount — no need for a separate getSession call.
     const { data: listener } = supabase.auth.onAuthStateChange((_event, sess) => {
       setSession(sess)
       if (sess) loadProfile(sess.user.id)

@@ -9,6 +9,7 @@ import { useLang } from '../../app/providers/LangProvider'
 interface Quiz {
   id: string; title_ar: string; instructions_ar: string | null
   duration_min: number | null; pass_score: number
+  opens_at: string | null; closes_at: string | null; max_attempts: number
 }
 interface Question {
   id: string; question_ar: string; question_type: string
@@ -20,25 +21,57 @@ export function QuizPage() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
-  const [quiz, setQuiz] = useState<Quiz | null>(null)
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [timeLeft, setTimeLeft] = useState<number | null>(null)
-  const [submitting, setSubmitting] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [quiz,         setQuiz]         = useState<Quiz | null>(null)
+  const [questions,    setQuestions]    = useState<Question[]>([])
+  const [answers,      setAnswers]      = useState<Record<string, string>>({})
+  const [timeLeft,     setTimeLeft]     = useState<number | null>(null)
+  const [submitting,   setSubmitting]   = useState(false)
+  const [loading,      setLoading]      = useState(true)
+  const [unavailable, setUnavailable] = useState<string | null>(null)
   const submittedRef = useRef(false)
 
   useEffect(() => {
-    if (!lessonId) return
-    supabase
+    if (!lessonId || !auth?.profile?.id) return
+
+    ;(supabase as any)
       .from('quizzes')
-      .select('id, title_ar, instructions_ar, duration_min, pass_score')
+      .select('id, title_ar, instructions_ar, duration_min, pass_score, opens_at, closes_at, max_attempts')
       .eq('lesson_id', lessonId)
       .single()
-      .then(({ data: quizData }) => {
+      .then(async ({ data: quizData }: { data: Quiz | null }) => {
         if (!quizData) { setLoading(false); return }
+
+        // Availability window check
+        const now = new Date()
+        if (quizData.opens_at && now < new Date(quizData.opens_at)) {
+          setUnavailable(t('quiz_not_open_yet'))
+          setLoading(false)
+          return
+        }
+        if (quizData.closes_at && now > new Date(quizData.closes_at)) {
+          setUnavailable(t('quiz_closed'))
+          setLoading(false)
+          return
+        }
+
+        // Re-take check
+        const { count } = await supabase
+          .from('quiz_attempts')
+          .select('id', { count: 'exact', head: true })
+          .eq('quiz_id', quizData.id)
+          .eq('student_id', auth!.profile!.id)
+          .eq('is_complete', true)
+
+        const used = count ?? 0
+        if (used >= quizData.max_attempts) {
+          setUnavailable(t('quiz_max_attempts'))
+          setLoading(false)
+          return
+        }
+
         setQuiz(quizData)
         if (quizData.duration_min) setTimeLeft(quizData.duration_min * 60)
+
         supabase
           .from('quiz_questions')
           .select('id, question_ar, question_type, options, correct_answer, points, order_num')
@@ -49,7 +82,7 @@ export function QuizPage() {
             setLoading(false)
           })
       })
-  }, [lessonId])
+  }, [lessonId, auth?.profile?.id])
 
   // countdown timer — ticks once per second
   useEffect(() => {
@@ -57,6 +90,14 @@ export function QuizPage() {
     const id = setTimeout(() => setTimeLeft(t => (t ?? 1) - 1), 1000)
     return () => clearTimeout(id)
   }, [timeLeft])
+
+  // Normalise T/F answers to canonical 'true'/'false' so old Arabic DB values
+  // ('صح'/'خطأ') and new canonical values both compare correctly regardless of UI language.
+  function normaliseTF(s: string): string {
+    if (s === 'true'  || s === 'صح') return 'true'
+    if (s === 'false' || s === 'خطأ') return 'false'
+    return s
+  }
 
   const handleSubmit = useCallback(async () => {
     if (!quiz || !auth?.profile?.id || submittedRef.current) return
@@ -67,7 +108,10 @@ export function QuizPage() {
     let score = 0
     const answerRows = questions.map(q => {
       const ans = answers[q.id] ?? ''
-      const isCorrect = q.correct_answer !== null && ans === q.correct_answer
+      const isCorrect = q.correct_answer !== null &&
+        (q.question_type === 'true_false'
+          ? normaliseTF(ans) === normaliseTF(q.correct_answer)
+          : ans === q.correct_answer)
       if (isCorrect) score += q.points
       return { question_id: q.id, answer_text: ans, is_correct: isCorrect }
     })
@@ -113,6 +157,16 @@ export function QuizPage() {
     </PageWrapper>
   )
 
+  if (unavailable) return (
+    <PageWrapper>
+      <AppBar title={t('quiz')} onBack={() => navigate(-1)} />
+      <div className="flex flex-col items-center justify-center py-20 gap-3 px-8 text-center">
+        <span className="text-5xl">🔒</span>
+        <p className={`${fa} text-gray-600 text-sm`}>{unavailable}</p>
+      </div>
+    </PageWrapper>
+  )
+
   if (!quiz) return (
     <PageWrapper>
       <AppBar title={t('quiz')} onBack={() => navigate(-1)} />
@@ -153,15 +207,15 @@ export function QuizPage() {
 
             {q.question_type === 'true_false' ? (
               <div className="flex gap-3 justify-end">
-                {[t('t_true'), t('t_false')].map(opt => (
+                {(['true', 'false'] as const).map(val => (
                   <button
-                    key={opt}
-                    onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))}
+                    key={val}
+                    onClick={() => setAnswers(prev => ({ ...prev, [q.id]: val }))}
                     className={`flex-1 py-3 rounded-xl ${fa} font-bold text-sm transition-colors ${
-                      answers[q.id] === opt ? 'bg-teal text-white' : 'bg-gray-100 text-gray-700'
+                      answers[q.id] === val ? 'bg-teal text-white' : 'bg-gray-100 text-gray-700'
                     }`}
                   >
-                    {opt}
+                    {val === 'true' ? t('t_true') : t('t_false')}
                   </button>
                 ))}
               </div>

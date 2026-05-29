@@ -164,7 +164,10 @@ const translations: T = {
   submitting:     { ar: 'جاري التسليم...', en: 'Submitting...' },
   pass_score_lbl: { ar: 'درجة النجاح:', en: 'Pass score:' },
   q_answered:     { ar: 'سؤال', en: 'question' },
-  no_quiz:        { ar: 'لا يوجد اختبار لهذا الدرس', en: 'No quiz for this lesson' },
+  no_quiz:             { ar: 'لا يوجد اختبار لهذا الدرس', en: 'No quiz for this lesson' },
+  quiz_not_open_yet:   { ar: 'الاختبار لم يُفتح بعد',    en: 'Quiz is not open yet' },
+  quiz_closed:         { ar: 'انتهى وقت الاختبار',        en: 'This quiz is closed' },
+  quiz_max_attempts:   { ar: 'لقد استنفدت عدد المحاولات المسموح بها', en: 'You have used all allowed attempts' },
   quiz_result:    { ar: 'نتيجة الاختبار', en: 'Quiz Result' },
   passed:         { ar: 'مبروك! اجتزت الاختبار', en: 'Congratulations! You passed' },
   failed:         { ar: 'لم تجتز الاختبار — حاول مرة أخرى', en: "You didn't pass — try again" },
@@ -360,6 +363,8 @@ const translations: T = {
   school_type_combined:   { ar: 'مشترك',     en: 'Combined' },
   school_type_kg:         { ar: 'روضة',      en: 'Kindergarten' },
 
+  no_active_term:         { ar: 'لا يوجد فصل دراسي نشط — لن يتم حفظ الدرجات', en: 'No active term — grades cannot be saved' },
+
   // ── Academic year rollover ────────────────────────────────────
   academic_year:          { ar: 'السنة الدراسية', en: 'Academic Year' },
   academic_year_sub:      { ar: 'إدارة الفصول الدراسية', en: 'Manage terms & rollover' },
@@ -499,6 +504,7 @@ const translations: T = {
   // ── Student grades view ───────────────────────────────────────
   my_grades:         { ar: 'درجاتي',                    en: 'My Grades' },
   my_grades_sub:     { ar: 'درجاتك في جميع المواد',     en: 'Your grades across all subjects' },
+  kg_grades_sub:     { ar: 'تقييماتك الوصفية',          en: 'Your descriptive assessments' },
   no_grades_yet:     { ar: 'لا توجد درجات بعد',         en: 'No grades yet' },
   grade_written:     { ar: 'تحريري',                    en: 'Written' },
   grade_oral:        { ar: 'شفهي',                      en: 'Oral' },

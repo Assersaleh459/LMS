@@ -143,6 +143,12 @@ export function GradebookPage() {
 
       <OfflineBanner />
 
+      {!termId && !isLoading && (
+        <div className={`mx-4 mt-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm ${fa} text-right`}>
+          {t('no_active_term')}
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="flex gap-2 px-4 py-2 bg-white border-b border-gray-100">
         <button
@@ -210,7 +216,7 @@ export function GradebookPage() {
         <button
           type="button"
           onClick={() => saveAll([activeTab])}
-          disabled={saving || isLoading}
+          disabled={saving || isLoading || !termId}
           className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
           {saving ? t('saving') : `${t('save')} ${GRADE_TYPE_LABELS[activeTab]} (${t('out_of')} ${subjectMarks[activeTab] ?? 10})`}

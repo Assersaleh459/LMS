@@ -65,7 +65,7 @@ export function useParentData(selectedStudentId?: string | null) {
         supabase.from('v_student_card').select('*').eq('id', studentId).single(),
         supabase.from('attendance_records').select('*').eq('student_id', studentId)
           .gte('attendance_date', monthAgo).order('attendance_date', { ascending: false }),
-        supabase.from('grade_entries').select('*').eq('student_id', studentId)
+        supabase.from('grade_entries').select('*, subjects(total_marks)').eq('student_id', studentId)
           .order('created_at', { ascending: false }),
         supabase.from('assignments').select('*')
           .gte('due_date', today).order('due_date', { ascending: true }).limit(10),

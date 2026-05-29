@@ -28,7 +28,7 @@ export function CreateQuizPage() {
 
   const emptyTF = (): QuizQuestion => ({
     question_ar: '', question_type: 'true_false',
-    options: [t('t_true'), t('t_false')], correct_index: 0, points: 1,
+    options: ['true', 'false'], correct_index: 0, points: 1,
   })
 
   const [title, setTitle] = useState('')
@@ -187,14 +187,14 @@ export function CreateQuizPage() {
                 </div>
               ) : (
                 <div className="flex gap-2 justify-end">
-                  {[t('t_true'), t('t_false')].map((opt, oIdx) => (
+                  {(['true', 'false'] as const).map((val, oIdx) => (
                     <button
-                      key={opt}
+                      key={val}
                       type="button"
                       onClick={() => updateQ(qIdx, { correct_index: oIdx })}
                       className={`flex-1 py-2 rounded-xl ${fa} font-bold text-sm ${q.correct_index === oIdx ? 'bg-teal text-white' : 'bg-gray-100 text-gray-600'}`}
                     >
-                      {opt}
+                      {val === 'true' ? t('t_true') : t('t_false')}
                     </button>
                   ))}
                 </div>

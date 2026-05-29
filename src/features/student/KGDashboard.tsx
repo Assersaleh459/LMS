@@ -70,7 +70,7 @@ export function KGDashboard() {
       {/* Quick links */}
       <div className="grid grid-cols-2 gap-3 mx-4 mb-2">
         <button
-          onClick={() => navigate('/student/grades')}
+          onClick={() => navigate('/student/grades/kg')}
           className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 active:bg-gray-50 transition-colors"
         >
           <div className="w-9 h-9 rounded-xl bg-teal/10 flex items-center justify-center text-lg">📊</div>

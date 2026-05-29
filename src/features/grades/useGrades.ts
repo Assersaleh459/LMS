@@ -43,7 +43,7 @@ export function useGrades(
   }
 
   async function saveAll(gradeTypes: GradeType[]) {
-    if (!auth?.profile?.id) return
+    if (!auth?.profile?.id || !termId) return
     setSaving(true)
 
     const enterable = ['written', 'oral', 'practical', 'activity'] as const
