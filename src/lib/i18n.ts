@@ -419,6 +419,30 @@ const translations: T = {
   audit_log_sub:     { ar: 'آخر ٢٠٠ تغيير',       en: 'Last 200 changes' },
   by_teacher:        { ar: 'بواسطة',              en: 'by' },
 
+  // ── Permissions & custom roles ───────────────────────────────
+  feat_attendance:    { ar: 'الحضور',               en: 'Attendance' },
+  feat_grades:        { ar: 'الدرجات',               en: 'Grades' },
+  feat_assignments:   { ar: 'الواجبات',              en: 'Assignments' },
+  feat_courses:       { ar: 'الكورسات',              en: 'Courses' },
+  feat_conduct:       { ar: 'السلوك',                en: 'Conduct' },
+  feat_timetable:     { ar: 'الجدول الدراسي',        en: 'Timetable' },
+  feat_announcements: { ar: 'الإعلانات',             en: 'Announcements' },
+  feat_messages:      { ar: 'الرسائل',               en: 'Messages' },
+  feat_notifications: { ar: 'الإشعارات',             en: 'Notifications' },
+  feat_analytics:     { ar: 'التحليلات',             en: 'Analytics' },
+  feat_user_mgmt:     { ar: 'إدارة المستخدمين',      en: 'User Management' },
+  feat_settings:      { ar: 'إعدادات المدرسة',       en: 'School Settings' },
+  feat_audit_log:     { ar: 'سجل المراجعة',          en: 'Audit Log' },
+  feat_permissions:   { ar: 'الصلاحيات',             en: 'Permissions' },
+  custom_role_add:    { ar: '+ دور جديد',            en: '+ New Role' },
+  custom_role_title:  { ar: 'اسم الدور (عربي)',       en: 'Role name (Arabic)' },
+  custom_role_en:     { ar: 'اسم الدور (إنجليزي)',    en: 'Role name (English)' },
+  custom_role_base:   { ar: 'مبني على دور',           en: 'Based on role' },
+  custom_role_create: { ar: 'إنشاء الدور',            en: 'Create Role' },
+  custom_roles_title: { ar: 'الأدوار المخصصة',        en: 'Custom Roles' },
+  custom_role_del:    { ar: 'حذف',                   en: 'Delete' },
+  base_roles_title:   { ar: 'الأدوار الأساسية',       en: 'Base Roles' },
+
   // ── System audit log ─────────────────────────────────────────
   audit_system:         { ar: 'سجل النظام الشامل',         en: 'System Audit Log' },
   audit_system_sub:     { ar: 'جميع الإجراءات في المنصة',  en: 'All platform actions' },
@@ -578,6 +602,11 @@ const translations: T = {
   chain_teachers:    { ar: 'إجمالي المعلمين',           en: 'Total Teachers' },
   chain_attendance:  { ar: 'معدل الحضور العام',         en: 'Overall Attendance' },
   view_school:       { ar: 'عرض المدرسة',               en: 'View School' },
+
+  // ── Time labels ──────────────────────────────────────────────
+  today:      { ar: 'اليوم',       en: 'Today' },
+  yesterday:  { ar: 'أمس',         en: 'Yesterday' },
+  days_ago:   { ar: 'يوم',         en: 'days ago' },
 
   // ── IT admin ─────────────────────────────────────────────────
   it_dashboard:      { ar: 'لوحة تقنية المعلومات',      en: 'IT Admin' },

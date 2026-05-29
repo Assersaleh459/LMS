@@ -113,7 +113,7 @@ export function ChainDashboard() {
                       {toArabicNumerals(s.attendance_rate)}%
                     </span>
                     <span className={`text-xs text-gray-400 ${fa}`}>
-                      {toArabicNumerals(s.student_count)} طالب
+                      {toArabicNumerals(s.student_count)} {t('students')}
                     </span>
                   </div>
                   <div className="text-right">

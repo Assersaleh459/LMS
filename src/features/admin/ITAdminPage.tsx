@@ -55,9 +55,9 @@ export function ITAdminPage() {
 
   function timeAgo(iso: string) {
     const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)
-    if (days === 0) return 'اليوم'
-    if (days === 1) return 'أمس'
-    return `منذ ${days} يوم`
+    if (days === 0) return t('today')
+    if (days === 1) return t('yesterday')
+    return `${days} ${t('days_ago')}`
   }
 
   return (
