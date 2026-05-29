@@ -72,6 +72,23 @@ export async function enterGrade(params: {
   enteredBy:  string
   comment?:   string
 }) {
+  // Try update first; if no existing row, insert.
+  // This avoids relying on expression-based unique index for ON CONFLICT.
+  const { data: updated } = await supabase
+    .from('grade_entries')
+    .update({
+      total_grade:        params.grade,
+      teacher_comment_ar: params.comment ?? null,
+      entered_by:         params.enteredBy,
+    })
+    .eq('student_id', params.studentId)
+    .eq('subject_id', params.subjectId)
+    .eq('term_id',    params.termId)
+    .eq('grade_type', params.gradeType)
+    .select()
+
+  if (updated?.length) return { data: updated[0], error: null }
+
   return supabase
     .from('grade_entries')
     .insert({

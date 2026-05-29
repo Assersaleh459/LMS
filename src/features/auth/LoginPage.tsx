@@ -100,6 +100,17 @@ export function LoginPage() {
           </div>
         </div>
 
+        {/* Forgot password */}
+        <div className={`text-right ${ta}`}>
+          <button
+            type="button"
+            onClick={() => navigate('/reset-password')}
+            className={`text-white/50 text-xs ${fa} hover:text-white/80 transition-colors`}
+          >
+            نسيت كلمة المرور؟
+          </button>
+        </div>
+
         {error && (
           <p className={`text-red-400 text-sm ${fa} ${ta}`}>{t('login_err')}</p>
         )}

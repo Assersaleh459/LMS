@@ -51,11 +51,21 @@ export class OfflineQueue {
           onConflict: 'student_id,attendance_date,period_number',
         })
         break
-      case 'grade':
-        await supabase.from('grade_entries').upsert(p, {
-          onConflict: 'student_id,subject_id,term_id,grade_type',
-        })
+      case 'grade': {
+        // Use update-then-insert to avoid expression-based unique index issue
+        const { data: updated } = await supabase
+          .from('grade_entries')
+          .update({ total_grade: p.total_grade, entered_by: p.entered_by })
+          .eq('student_id', p.student_id)
+          .eq('subject_id', p.subject_id)
+          .eq('term_id',    p.term_id)
+          .eq('grade_type', p.grade_type)
+          .select()
+        if (!updated?.length) {
+          await supabase.from('grade_entries').insert(p)
+        }
         break
+      }
       case 'assignment':
         await supabase.from('assignment_submissions').upsert(p)
         break

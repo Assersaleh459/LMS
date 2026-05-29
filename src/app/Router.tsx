@@ -27,6 +27,7 @@ import { MessagesPage }           from '../features/messages/MessagesPage'
 
 // Phase 1 pages
 import { LoginPage }           from '../features/auth/LoginPage'
+import { ResetPasswordPage }  from '../features/auth/ResetPasswordPage'
 import { AttendancePage }      from '../features/attendance/AttendancePage'
 import { GradebookPage }       from '../features/grades/GradebookPage'
 import { AssignmentListPage }     from '../features/assignments/AssignmentListPage'
@@ -95,8 +96,9 @@ export function Router() {
     <BrowserRouter>
       <Routes>
         {/* Public */}
-        <Route path="/login"  element={<LoginPage />} />
-        <Route path="/parent" element={<ParentDashboard />} />
+        <Route path="/login"          element={<LoginPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/parent"         element={<ParentDashboard />} />
 
         {/* Role redirect */}
         <Route path="/" element={<RoleRedirect />} />
