@@ -25,9 +25,11 @@ export function CoursePage() {
   const { subjectId } = useParams<{ subjectId: string }>()
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
-  const [subject, setSubject] = useState<Subject | null>(null)
-  const [units, setUnits] = useState<Unit[]>([])
-  const [loading, setLoading] = useState(true)
+  const [subject,   setSubject]   = useState<Subject | null>(null)
+  const [units,     setUnits]     = useState<Unit[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [copying,   setCopying]   = useState(false)
+  const [copyDone,  setCopyDone]  = useState(false)
   const isTeacher = auth?.role === 'subject_teacher' || auth?.role === 'homeroom_teacher'
 
   useEffect(() => {
@@ -41,6 +43,60 @@ export function CoursePage() {
       setLoading(false)
     })
   }, [subjectId])
+
+  async function handleCopyCourse() {
+    if (!subjectId || !auth?.profile?.id || copying) return
+    setCopying(true)
+
+    // Fetch all units with lessons and quizzes
+    const { data: existingUnits } = await supabase
+      .from('units').select('*').eq('subject_id', subjectId).order('order_num')
+
+    for (const unit of existingUnits ?? []) {
+      const { data: newUnit } = await supabase
+        .from('units')
+        .insert({ subject_id: subjectId, title_ar: `${unit.title_ar} (نسخة)`, description_ar: unit.description_ar, order_num: unit.order_num, is_published: false })
+        .select('id').single()
+      if (!newUnit) continue
+
+      const { data: lessons } = await supabase
+        .from('lessons').select('*').eq('unit_id', unit.id).order('order_num')
+
+      for (const lesson of lessons ?? []) {
+        const { data: newLesson } = await supabase
+          .from('lessons')
+          .insert({ unit_id: newUnit.id, title_ar: lesson.title_ar, content_type: lesson.content_type, content_url: lesson.content_url, content_text: lesson.content_text, duration_min: lesson.duration_min, order_num: lesson.order_num, is_published: false })
+          .select('id').single()
+        if (!newLesson) continue
+
+        // Copy quiz for this lesson if it exists
+        const { data: quiz } = await supabase
+          .from('quizzes').select('*').eq('lesson_id', lesson.id).single()
+        if (quiz) {
+          const { data: newQuiz } = await supabase
+            .from('quizzes')
+            .insert({ subject_id: subjectId, lesson_id: newLesson.id, created_by: auth.profile!.id, title_ar: quiz.title_ar, instructions_ar: quiz.instructions_ar, duration_min: quiz.duration_min, pass_score: quiz.pass_score, grade_year: quiz.grade_year, section: quiz.section, is_published: false })
+            .select('id').single()
+          if (newQuiz) {
+            const { data: questions } = await supabase
+              .from('quiz_questions').select('*').eq('quiz_id', quiz.id).order('order_num')
+            if (questions?.length) {
+              await supabase.from('quiz_questions').insert(
+                questions.map(q => ({ quiz_id: newQuiz.id, question_ar: q.question_ar, question_type: q.question_type, options: q.options, correct_answer: q.correct_answer, points: q.points, order_num: q.order_num }))
+              )
+            }
+          }
+        }
+      }
+    }
+
+    // Refresh units list
+    const { data: refreshed } = await supabase.from('units').select('*').eq('subject_id', subjectId).order('order_num')
+    if (refreshed) setUnits(refreshed)
+    setCopying(false)
+    setCopyDone(true)
+    setTimeout(() => setCopyDone(false), 3000)
+  }
 
   return (
     <PageWrapper>
@@ -57,12 +113,21 @@ export function CoursePage() {
           {t('discussions')}
         </button>
         {isTeacher && (
-          <button
-            onClick={() => navigate(`/teacher/course/${subjectId}/unit/new`)}
-            className={`flex-1 py-2 rounded-xl bg-teal text-white font-bold ${fa} text-sm`}
-          >
-            {t('add_unit')}
-          </button>
+          <>
+            <button
+              onClick={handleCopyCourse}
+              disabled={copying || units.length === 0}
+              className={`px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 text-xs font-bold ${fa} disabled:opacity-40`}
+            >
+              {copyDone ? '✓ ' + t('course_copied') : copying ? t('saving') : t('course_copy')}
+            </button>
+            <button
+              onClick={() => navigate(`/teacher/course/${subjectId}/unit/new`)}
+              className={`flex-1 py-2 rounded-xl bg-teal text-white font-bold ${fa} text-sm`}
+            >
+              {t('add_unit')}
+            </button>
+          </>
         )}
       </div>
 

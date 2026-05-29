@@ -26,6 +26,8 @@ export function ReportCardPage() {
   const [presentCount, setPresentCount] = useState(0)
   const [absentCount,  setAbsentCount]  = useState(0)
   const [termLabel,    setTermLabel]    = useState('')
+  const [schoolLogoUrl, setSchoolLogoUrl] = useState<string | null>(null)
+  const [moeCode,      setMoeCode]      = useState<string | null>(null)
   const [loading,      setLoading]      = useState(true)
 
   useEffect(() => {
@@ -45,11 +47,15 @@ export function ReportCardPage() {
           supabase.from('grade_entries').select('subject_id, grade_type, total_grade')
             .eq('student_id', studentId),
           supabase.from('attendance_records').select('status').eq('student_id', studentId),
-          supabase.from('schools').select('name_ar').eq('id', schoolId).single(),
+          supabase.from('schools').select('name_ar, logo_url, moe_code').eq('id', schoolId).single(),
         ])
 
         if (termRes.data) setTermLabel(termRes.data.name_ar ?? '')
-        if (schoolRes.data) setSchoolName(schoolRes.data.name_ar ?? '')
+        if (schoolRes.data) {
+          setSchoolName(schoolRes.data.name_ar ?? '')
+          setSchoolLogoUrl((schoolRes.data as any).logo_url ?? null)
+          setMoeCode((schoolRes.data as any).moe_code ?? null)
+        }
 
         const subjects = (subjectsRes.data ?? []) as Subject[]
         const entries  = gradesRes.data ?? []
@@ -114,7 +120,11 @@ export function ReportCardPage() {
 
           {/* School header */}
           <div className="text-center border-b-2 border-navy pb-5 mb-6">
+            {schoolLogoUrl && (
+              <img src={schoolLogoUrl} alt={schoolName} className="h-16 w-auto mx-auto mb-3 object-contain" />
+            )}
             <h1 className={`text-xl font-bold text-navy ${fa}`}>{schoolName}</h1>
+            {moeCode && <p className={`text-xs text-gray-400 ${fa} mt-0.5`}>{t('settings_moe_code')}: {moeCode}</p>}
             <p className={`text-base font-bold text-gray-700 ${fa} mt-1`}>{t('report_card')}</p>
             {termLabel && <p className={`text-sm text-gray-500 ${fa} mt-0.5`}>{termLabel}</p>}
           </div>
@@ -210,6 +220,16 @@ export function ReportCardPage() {
               </p>
               <p className={`text-xs text-gray-500 ${fa}`}>{t('attend_rate')}</p>
             </div>
+          </div>
+
+          {/* Signature lines */}
+          <div className={`mt-8 grid grid-cols-3 gap-6 text-center text-xs text-gray-500 ${fa}`}>
+            {['توقيع المعلم', 'توقيع ولي الأمر', 'توقيع مدير المدرسة'].map(label => (
+              <div key={label}>
+                <div className="border-b border-gray-400 mb-1 h-8" />
+                <span>{label}</span>
+              </div>
+            ))}
           </div>
 
           {/* Footer */}

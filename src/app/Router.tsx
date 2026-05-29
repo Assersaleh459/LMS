@@ -23,6 +23,7 @@ import { ChainDashboard }         from '../features/admin/ChainDashboard'
 import { ITAdminPage }            from '../features/admin/ITAdminPage'
 import { SubjectEnrollmentPage }  from '../features/admin/SubjectEnrollmentPage'
 import { TeacherProfilePage }     from '../features/teacher/TeacherProfilePage'
+import { TeacherDashboard }       from '../features/teacher/TeacherDashboard'
 import { NotificationsPage }      from '../features/notifications/NotificationsPage'
 import { MessagesPage }           from '../features/messages/MessagesPage'
 
@@ -64,8 +65,8 @@ import { ThreadPage }          from '../features/discussions/ThreadPage'
 import { CreateThreadPage }    from '../features/discussions/CreateThreadPage'
 
 const ROLE_ROUTES: Record<UserRole, string> = {
-  subject_teacher:        '/teacher/attendance',
-  homeroom_teacher:       '/teacher/attendance',
+  subject_teacher:        '/teacher',
+  homeroom_teacher:       '/teacher',
   kg_primary_student:     '/student/primary',
   prep_secondary_student: '/student/secondary',
   parent:                 '/parent',
@@ -104,7 +105,8 @@ export function Router() {
         {/* Role redirect */}
         <Route path="/" element={<RoleRedirect />} />
 
-        {/* Teacher — Phase 1 */}
+        {/* Teacher */}
+        <Route path="/teacher"                           element={<RequireAuth><TeacherDashboard /></RequireAuth>} />
         <Route path="/teacher/attendance"        element={<RequireAuth><AttendancePage /></RequireAuth>} />
         <Route path="/teacher/grades"            element={<RequireAuth><GradebookPage /></RequireAuth>} />
         <Route path="/teacher/grades/analytics"  element={<RequireAuth><GradeAnalyticsPage /></RequireAuth>} />

@@ -9,6 +9,7 @@ import { PageWrapper } from '../../components/layout/PageWrapper'
 import { OfflineBanner } from '../../components/ui/OfflineBanner'
 import { GradeTypeTabs } from './GradeTypeTabs'
 import { GradeRow }      from './GradeRow'
+import { KGGradeRow }    from './KGGradeRow'
 import { useGrades }     from './useGrades'
 import { useTeacherSubjects } from '../../hooks/useTeacherSubjects'
 import type { StudentCard } from '../../types/domain'
@@ -88,6 +89,7 @@ export function GradebookPage() {
 
   const isLoading = loadingSubjects || loadingStudents || loadingGrades
   const subjectName = active?.subjectName ?? ''
+  const isKG = students.length > 0 && students[0].stage === 'kg'
 
   function exportGrades() {
     const ws = XLSX.utils.json_to_sheet(students.map(s => ({
@@ -191,13 +193,22 @@ export function GradebookPage() {
         </button>
       </div>
 
-      <GradeTypeTabs active={activeTab} onChange={setActiveTab} />
+      {!isKG && <GradeTypeTabs active={activeTab} onChange={setActiveTab} />}
 
       <div className="bg-white flex-1">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 rounded-full border-2 border-teal border-t-transparent animate-spin" />
           </div>
+        ) : isKG ? (
+          students.map(student => (
+            <KGGradeRow
+              key={student.id}
+              student={student}
+              value={grades[`${student.id}:activity`] ?? ''}
+              onChange={val => setGrade(student.id, 'activity', val)}
+            />
+          ))
         ) : (
           students.map(student => (
             <GradeRow
@@ -215,11 +226,11 @@ export function GradebookPage() {
       <div className="sticky bottom-0 px-4 pb-4 bg-lms-bg border-t border-gray-100 pt-3">
         <button
           type="button"
-          onClick={() => saveAll([activeTab])}
+          onClick={() => saveAll(isKG ? ['activity'] : [activeTab])}
           disabled={saving || isLoading || !termId}
           className={`w-full py-4 rounded-xl bg-teal text-white font-bold ${fa} text-base disabled:opacity-50`}
         >
-          {saving ? t('saving') : `${t('save')} ${GRADE_TYPE_LABELS[activeTab]} (${t('out_of')} ${subjectMarks[activeTab] ?? 10})`}
+          {saving ? t('saving') : isKG ? t('save') : `${t('save')} ${GRADE_TYPE_LABELS[activeTab]} (${t('out_of')} ${subjectMarks[activeTab] ?? 10})`}
         </button>
       </div>
 

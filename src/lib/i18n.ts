@@ -95,6 +95,8 @@ const translations: T = {
   lessons:        { ar: 'الدروس', en: 'Lessons' },
   lesson:         { ar: 'الدرس', en: 'Lesson' },
   add_unit:       { ar: '+ إضافة وحدة جديدة', en: '+ Add Unit' },
+  course_copy:    { ar: 'نسخ المحتوى',         en: 'Copy Content' },
+  course_copied:  { ar: 'تم النسخ',            en: 'Copied' },
   add_lesson:     { ar: '+ إضافة درس جديد', en: '+ Add Lesson' },
   new_unit:       { ar: 'وحدة جديدة', en: 'New Unit' },
   new_lesson:     { ar: 'درس جديد', en: 'New Lesson' },
@@ -282,6 +284,10 @@ const translations: T = {
   monthly_40:     { ar: 'شهري (٤٠%)', en: 'Monthly (40%)' },
   final_60:       { ar: 'نهائي (٦٠%)', en: 'Final (60%)' },
   total_lbl:      { ar: 'المجموع', en: 'Total' },
+
+  // ── Teacher dashboard ────────────────────────────────────────
+  teacher_classes:  { ar: 'فصولي',             en: 'My Classes' },
+  ungraded_subs:    { ar: 'تسليمات غير مصححة', en: 'Ungraded submissions' },
 
   // ── Admin dashboard ──────────────────────────────────────────
   admin_title:      { ar: 'لوحة المدير', en: 'Admin Dashboard' },

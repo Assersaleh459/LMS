@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase'
 import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 import { toArabicNumerals } from '../../lib/arabic'
-import { getMoELetterGrade } from '../../lib/moe'
+import { getMoELetterGrade, calcThanawyWeightedGrade } from '../../lib/moe'
 
 interface SubjectSummary {
   subject_id: string
@@ -46,6 +46,7 @@ export function StudentGradesPage() {
   const auth = useContext(AuthContext)
   const { t, fa } = useLang()
   const navigate = useNavigate()
+  const isSecondary = auth?.role === 'prep_secondary_student'
 
   const [subjects, setSubjects] = useState<SubjectSummary[]>([])
   const [loading,  setLoading]  = useState(true)
@@ -135,11 +136,49 @@ export function StudentGradesPage() {
       ) : (
         <div className="py-4 space-y-3 px-4 pb-24">
           {subjects.map(sub => {
+            if (isSecondary) {
+              // Thanawi: find monthly and final grades
+              const monthly = sub.grades.find(g => g.type === 'monthly')
+              const final   = sub.grades.find(g => g.type === 'final')
+              const weighted = (monthly || final)
+                ? calcThanawyWeightedGrade(
+                    monthly?.score ?? 0, final?.score ?? 0,
+                    monthly?.max ?? 100, final?.max ?? 100
+                  )
+                : 0
+              const letter = weighted > 0 ? getMoELetterGrade(weighted, 100) : null
+              return (
+                <div key={sub.subject_id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
+                    <div className="flex items-center gap-2">
+                      {weighted > 0 && <span className={`text-lg font-bold ${gradeColor(weighted)} ${fa}`}>{toArabicNumerals(weighted)}%</span>}
+                      {letter && <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${weighted >= 65 ? 'bg-green-50 text-green-700' : weighted >= 50 ? 'bg-yellow-50 text-yellow-700' : 'bg-red-50 text-red-600'}`}>{letter.label}</span>}
+                    </div>
+                    <p className={`font-bold text-gray-800 text-sm ${fa}`}>{sub.subject_name}</p>
+                  </div>
+                  <div className="flex divide-x divide-gray-50">
+                    <div className="flex-1 px-4 py-3 text-center">
+                      <p className={`text-xs text-gray-400 ${fa}`}>{t('monthly_40')}</p>
+                      <p className={`font-bold text-gray-800 ${fa}`}>{monthly ? toArabicNumerals(monthly.score) : '—'}</p>
+                    </div>
+                    <div className="flex-1 px-4 py-3 text-center">
+                      <p className={`text-xs text-gray-400 ${fa}`}>{t('final_60')}</p>
+                      <p className={`font-bold text-gray-800 ${fa}`}>{final ? toArabicNumerals(final.score) : '—'}</p>
+                    </div>
+                    <div className="flex-1 px-4 py-3 text-center bg-gray-50">
+                      <p className={`text-xs text-gray-400 ${fa}`}>{t('total_lbl')}</p>
+                      <p className={`font-bold text-navy ${fa}`}>{weighted > 0 ? toArabicNumerals(weighted) : '—'}</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
+            // Primary: existing numeric display
             const p      = pct(sub.total, sub.maxTotal)
             const letter = getMoELetterGrade(p, 100)
             return (
               <div key={sub.subject_id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                {/* Subject header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
                   <div className="flex items-center gap-3">
                     <div className={`text-lg font-bold ${gradeColor(p)} ${fa}`}>{toArabicNumerals(p)}%</div>
@@ -149,8 +188,6 @@ export function StudentGradesPage() {
                   </div>
                   <p className={`font-bold text-gray-800 text-sm ${fa}`}>{sub.subject_name}</p>
                 </div>
-
-                {/* Grade breakdown */}
                 <div className="divide-y divide-gray-50">
                   {sub.grades.map(g => {
                     const gp = pct(g.score, g.max)
@@ -161,10 +198,7 @@ export function StudentGradesPage() {
                             {toArabicNumerals(g.score)}/{toArabicNumerals(g.max)}
                           </span>
                           <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                            <div
-                              className={`h-full rounded-full ${gp >= 65 ? 'bg-teal' : gp >= 50 ? 'bg-yellow-400' : 'bg-red-400'}`}
-                              style={{ width: `${gp}%` }}
-                            />
+                            <div className={`h-full rounded-full ${gp >= 65 ? 'bg-teal' : gp >= 50 ? 'bg-yellow-400' : 'bg-red-400'}`} style={{ width: `${gp}%` }} />
                           </div>
                         </div>
                         <p className={`text-sm text-gray-600 ${fa}`}>{t(TYPE_LABEL[g.type] ?? g.type)}</p>
@@ -172,12 +206,8 @@ export function StudentGradesPage() {
                     )
                   })}
                 </div>
-
-                {/* Total row */}
                 <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50">
-                  <span className={`text-sm font-bold ${gradeColor(p)} ${fa}`}>
-                    {toArabicNumerals(sub.total)}/{toArabicNumerals(sub.maxTotal)}
-                  </span>
+                  <span className={`text-sm font-bold ${gradeColor(p)} ${fa}`}>{toArabicNumerals(sub.total)}/{toArabicNumerals(sub.maxTotal)}</span>
                   <p className={`text-xs font-bold text-gray-500 ${fa}`}>{t('col_total')}</p>
                 </div>
               </div>
