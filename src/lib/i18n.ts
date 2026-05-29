@@ -129,6 +129,19 @@ const translations: T = {
   lessons_done:   { ar: 'درس مكتمل', en: 'lessons done' },
   no_subjects:    { ar: 'لا توجد مواد مسجلة', en: 'No subjects registered' },
 
+  // ── Rubric grading ────────────────────────────────────────────
+  rubric_title:         { ar: 'معايير التقييم',              en: 'Grading Rubric' },
+  rubric_add_criterion: { ar: 'إضافة معيار',                 en: 'Add criterion' },
+  rubric_criterion_ph:  { ar: 'مثال: المحتوى، العرض...', en: 'e.g. Content, Presentation...' },
+  rubric_scale_hint:    { ar: 'مقياس التقييم',               en: 'Scoring scale' },
+
+  // ── Question bank ─────────────────────────────────────────────
+  bank_pick_title:  { ar: 'اختر من بنك الأسئلة',         en: 'Pick from Question Bank' },
+  bank_pick_btn:    { ar: '+ من البنك',                   en: '+ From Bank' },
+  bank_search_ph:   { ar: 'ابحث في الأسئلة...',           en: 'Search questions...' },
+  bank_empty:       { ar: 'لا توجد أسئلة محفوظة لهذه المادة', en: 'No saved questions for this subject' },
+  bank_save_toggle: { ar: 'حفظ الأسئلة الجديدة في البنك', en: 'Save new questions to bank' },
+
   // ── Lesson content types ─────────────────────────────────────
   type_video:     { ar: 'فيديو', en: 'Video' },
   type_pdf:       { ar: 'PDF', en: 'PDF' },
@@ -399,6 +412,13 @@ const translations: T = {
   audit_log:         { ar: 'سجل تعديل الدرجات', en: 'Grade Audit Log' },
   audit_log_sub:     { ar: 'آخر ٢٠٠ تغيير',       en: 'Last 200 changes' },
   by_teacher:        { ar: 'بواسطة',              en: 'by' },
+
+  // ── At-risk early warning ─────────────────────────────────────
+  at_risk_title:       { ar: 'طلاب يحتاجون متابعة',         en: 'Students Needing Follow-up' },
+  at_risk_sub:         { ar: 'انقر للتفاصيل',               en: 'Tap to expand' },
+  at_risk_flag_attend: { ar: 'غياب',                        en: 'Absence' },
+  at_risk_flag_grades: { ar: 'درجات منخفضة',               en: 'Low grades' },
+  at_risk_flag_hw:     { ar: 'واجبات متأخرة',              en: 'Overdue HW' },
 
   // ── Absence report ────────────────────────────────────────────
   absence_report:    { ar: 'تقرير الغياب', en: 'Absence Report' },

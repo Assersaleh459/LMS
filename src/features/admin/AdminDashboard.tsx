@@ -8,6 +8,7 @@ import { PageWrapper }  from '../../components/layout/PageWrapper'
 import { AppBar }       from '../../components/layout/AppBar'
 import { Card }         from '../../components/ui/Card'
 import { SchoolHealthScore } from './SchoolHealthScore'
+import { AtRiskPanel }      from './AtRiskPanel'
 import { useAdminData } from './useAdminData'
 import { toArabicNumerals, formatDateAr } from '../../lib/arabic'
 import { triggerEmergencyBroadcast } from '../../lib/notifications'
@@ -97,6 +98,9 @@ export function AdminDashboard() {
               </Card>
             ))}
           </div>
+
+          {/* At-risk early warning */}
+          <AtRiskPanel />
 
           {/* Quick-action links */}
           <div className="grid grid-cols-2 gap-3 mx-4">

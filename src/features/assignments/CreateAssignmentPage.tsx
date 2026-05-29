@@ -9,6 +9,7 @@ import { TypeSelector }  from '../../components/forms/TypeSelector'
 import { useAssignments } from './useAssignments'
 import { triggerAssignmentNotification } from '../../lib/notifications'
 import { useLang } from '../../app/providers/LangProvider'
+import { RubricBuilder, type RubricCriterion } from './RubricBuilder'
 import type { AssignmentType, GradeType } from '../../types/enums'
 
 export function CreateAssignmentPage() {
@@ -36,6 +37,7 @@ export function CreateAssignmentPage() {
   const [maxGrade,      setMaxGrade]      = useState('10')
   const [dueDate,       setDueDate]       = useState('')
   const [waNotify,      setWaNotify]      = useState(true)
+  const [rubricCriteria, setRubricCriteria] = useState<RubricCriterion[]>([])
   const [submitting,    setSubmitting]    = useState(false)
   const [errors,        setErrors]        = useState<Record<string, string>>({})
 
@@ -85,6 +87,22 @@ export function CreateAssignmentPage() {
       section,
       whatsappNotify: waNotify,
     })
+
+    // Save rubric if criteria were added
+    if (id && rubricCriteria.some(c => c.name_ar.trim())) {
+      const { data: rubric } = await (supabase as any)
+        .from('rubrics')
+        .insert({ assignment_id: id })
+        .select('id')
+        .single()
+      if (rubric) {
+        await (supabase as any).from('rubric_criteria').insert(
+          rubricCriteria
+            .filter(c => c.name_ar.trim())
+            .map((c, idx) => ({ rubric_id: rubric.id, name_ar: c.name_ar.trim(), order_num: idx + 1 }))
+        )
+      }
+    }
 
     setSubmitting(false)
     if (id) {
@@ -157,6 +175,9 @@ export function CreateAssignmentPage() {
             placeholder={t('assign_instr_ph')}
           />
         </div>
+
+        {/* Rubric builder */}
+        <RubricBuilder criteria={rubricCriteria} onChange={setRubricCriteria} />
 
         {/* WhatsApp toggle */}
         <div className="flex items-center justify-between bg-[#25D366]/10 rounded-xl px-4 py-3">

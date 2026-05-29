@@ -6,6 +6,7 @@ import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 import { useLang } from '../../app/providers/LangProvider'
 import { toArabicNumerals } from '../../lib/arabic'
+import { RubricScorer } from './RubricScorer'
 import type { StudentCard } from '../../types/domain'
 
 interface Submission {
@@ -318,6 +319,14 @@ export function SubmissionsPage() {
                   </a>
                 )}
               </div>
+            )}
+
+            {assignmentId && (
+              <RubricScorer
+                assignmentId={assignmentId}
+                submissionId={grading.id}
+                onScored={(total, max) => setGradeVal(String(Math.round((total / max) * (meta?.max_grade ?? 100))))}
+              />
             )}
 
             <div>

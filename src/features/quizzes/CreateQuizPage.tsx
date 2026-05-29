@@ -6,6 +6,7 @@ import { AppBar } from '../../components/layout/AppBar'
 import { PageWrapper } from '../../components/layout/PageWrapper'
 import { ArabicInput } from '../../components/forms/ArabicInput'
 import { useLang } from '../../app/providers/LangProvider'
+import { QuestionBankPicker } from './QuestionBankPicker'
 
 interface QuizQuestion {
   question_ar: string
@@ -38,7 +39,9 @@ export function CreateQuizPage() {
   const [gradeYear, setGradeYear] = useState('')
   const [section, setSection] = useState('')
   const [questions, setQuestions] = useState<QuizQuestion[]>([emptyMCQ()])
-  const [saving, setSaving] = useState(false)
+  const [saving,      setSaving]      = useState(false)
+  const [bankOpen,    setBankOpen]    = useState(false)
+  const [saveToBank,  setSaveToBank]  = useState(true)
 
   function updateQ(idx: number, patch: Partial<QuizQuestion>) {
     setQuestions(prev => prev.map((q, i) => i === idx ? { ...q, ...patch } : q))
@@ -78,21 +81,51 @@ export function CreateQuizPage() {
       .single()
 
     if (quiz) {
-      const rows = questions
-        .filter(q => q.question_ar.trim())
-        .map((q, idx) => ({
-          quiz_id: quiz.id,
-          question_ar: q.question_ar.trim(),
-          question_type: q.question_type,
-          options: q.options.filter(o => o.trim()),
-          correct_answer: q.options[q.correct_index],
-          points: q.points,
-          order_num: idx + 1,
-        }))
+      const validQuestions = questions.filter(q => q.question_ar.trim())
+      const rows = validQuestions.map((q, idx) => ({
+        quiz_id:        quiz.id,
+        question_ar:    q.question_ar.trim(),
+        question_type:  q.question_type,
+        options:        q.options.filter(o => o.trim()),
+        correct_answer: q.options[q.correct_index],
+        points:         q.points,
+        order_num:      idx + 1,
+      }))
       await supabase.from('quiz_questions').insert(rows)
+
+      // Save new questions to the bank (skip ones with a bank_id already set)
+      if (saveToBank && auth?.profile?.id && auth?.schoolId) {
+        const bankRows = validQuestions
+          .filter((q: any) => !q.bank_id)
+          .map(q => ({
+            school_id:      auth.schoolId!,
+            subject_id:     subjectId,
+            created_by:     auth.profile!.id,
+            question_ar:    q.question_ar.trim(),
+            question_type:  q.question_type,
+            options:        q.options.filter((o: string) => o.trim()),
+            correct_answer: q.options[q.correct_index],
+            points:         q.points,
+          }))
+        if (bankRows.length) {
+          await (supabase as any).from('question_bank').insert(bankRows)
+        }
+      }
     }
     setSaving(false)
     navigate(`/course/${subjectId}`, { replace: true })
+  }
+
+  function handleBankPick(q: { id: string; question_ar: string; question_type: string; options: string[] | null; correct_answer: string | null; points: number }) {
+    const picked: any = {
+      question_ar:   q.question_ar,
+      question_type: q.question_type as 'mcq' | 'true_false',
+      options:       q.options ?? (q.question_type === 'true_false' ? ['true', 'false'] : ['', '', '', '']),
+      correct_index: Math.max(0, (q.options ?? []).indexOf(q.correct_answer ?? '')),
+      points:        q.points,
+      bank_id:       q.id,
+    }
+    setQuestions(prev => [...prev, picked])
   }
 
   return (
@@ -218,7 +251,25 @@ export function CreateQuizPage() {
               className={`flex-1 py-3 rounded-xl border-2 border-dashed border-teal/40 text-teal ${fa} text-sm`}>
               {t('add_mcq')}
             </button>
+            {subjectId && (
+              <button type="button" onClick={() => setBankOpen(true)}
+                className={`flex-1 py-3 rounded-xl border-2 border-dashed border-navy/30 text-navy ${fa} text-sm`}>
+                {t('bank_pick_btn')}
+              </button>
+            )}
           </div>
+
+          {/* Save-to-bank toggle */}
+          <label className={`flex items-center justify-end gap-3 cursor-pointer`}>
+            <span className={`text-xs text-gray-500 ${fa}`}>{t('bank_save_toggle')}</span>
+            <button
+              type="button"
+              onClick={() => setSaveToBank(v => !v)}
+              className={`w-10 h-6 rounded-full transition-colors ${saveToBank ? 'bg-teal' : 'bg-gray-200'} relative`}
+            >
+              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${saveToBank ? 'translate-x-4' : 'translate-x-0.5'}`} />
+            </button>
+          </label>
         </div>
 
         <button
@@ -229,6 +280,14 @@ export function CreateQuizPage() {
           {saving ? t('saving') : t('publish_quiz')}
         </button>
       </form>
+
+      {bankOpen && subjectId && (
+        <QuestionBankPicker
+          subjectId={subjectId}
+          onPick={handleBankPick}
+          onClose={() => setBankOpen(false)}
+        />
+      )}
     </PageWrapper>
   )
 }
