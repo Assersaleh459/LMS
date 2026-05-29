@@ -27,3 +27,10 @@ dist-ssr
 
 # Disposable debug/scratch SQL + scripts
 .tmp
+
+# Generated tutorial videos (binary, regenerate with npm run video:generate)
+/videos/
+
+# FFmpeg extracted archives
+/FFmpeg-Builds-latest/
+/ffmpeg-8.1.1/
