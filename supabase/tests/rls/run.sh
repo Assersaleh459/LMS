@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # RLS regression suite — runs against the real Supabase Postgres image in Docker.
 #
-#   bash supabase/tests/rls/run.sh                 # phase2_schema.sql (what prod uses)
-#   bash supabase/tests/rls/run.sh phase2.sql      # the other phase-2 variant
+#   bash supabase/tests/rls/run.sh                     # phase2.sql (what prod uses:
+#                                                      #   has meeting_sessions, no target_grade)
+#   bash supabase/tests/rls/run.sh phase2_schema.sql   # the other phase-2 variant
 #
 # Builds a throwaway container: platform stub → schema.sql → phase2 → every migration
 # → seed.sql → fixtures, then runs 20_tests.sql as each role (anon, student, parent,
@@ -12,7 +13,7 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SB="$(cd "$HERE/../.." && pwd)"
-PHASE2="${1:-phase2_schema.sql}"
+PHASE2="${1:-phase2.sql}"
 VERSION="$(cat "$SB/.temp/postgres-version" 2>/dev/null || echo 17.6.1.121)"
 IMAGE="supabase/postgres:$VERSION"
 C="lms-rls-test-$$"
