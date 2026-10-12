@@ -35,6 +35,8 @@ _Last updated: milestone v1.0.0. This is the complete record of what exists. For
 | 025 | rls_lockdown | Replaces all "any logged-in user" policies with role + school-scoped RLS on every table; `rls_*` helper functions; students can't set grade fields; views `security_invoker`. Tested by `supabase/tests/rls/` |
 | 026 | fix_conduct_audit_and_announcements | `fn_audit_conduct` read nonexistent `entry_type` (→ `category`); `announcements.target_grade` if missing |
 
+025 + 026 applied to production 2026-10-13 (pre-change backup + tested rollback script kept locally in `.tmp/prod-20261013-014604/`, gitignored). Production was built from **`phase2.sql`** (has `meeting_sessions`, had no `announcements.target_grade`) and carried 3 hand-added policies beyond the repo files (43 total before 025, 78 after).
+
 `supabase/seed.sql` seeds مدرسة الفارابي للغات with all roles, subjects, a term, sample grades + attendance.
 
 ## 2. Edge functions (`supabase/functions/`)
