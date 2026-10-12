@@ -55,6 +55,10 @@ npx vercel --prod --yes
 # Run a SQL migration / query against prod (NOT "db execute")
 supabase db query --linked --file supabase/migrations/0XX_name.sql
 
+# RLS regression suite (Docker; builds a throwaway Supabase DB from all migrations).
+# Run after ANY migration that touches tables/policies — must be 0 failed.
+bash supabase/tests/rls/run.sh
+
 # Deploy an edge function (NOT "--linked")
 supabase functions deploy <name> --project-ref mczvgjfreyvbcdypmjpb --use-api
 

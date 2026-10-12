@@ -32,6 +32,8 @@ _Last updated: milestone v1.0.0. This is the complete record of what exists. For
 | 022 | system_audit_log | `system_audit_log` + triggers on users, assignments, conduct, schools |
 | 023 | role_permissions | `role_permissions` (14 features × 9 roles) + default seed |
 | 024 | custom_roles | `custom_roles`, `custom_role_permissions`, `users.custom_role_id` |
+| 025 | rls_lockdown | Replaces all "any logged-in user" policies with role + school-scoped RLS on every table; `rls_*` helper functions; students can't set grade fields; views `security_invoker`. Tested by `supabase/tests/rls/` |
+| 026 | fix_conduct_audit_and_announcements | `fn_audit_conduct` read nonexistent `entry_type` (→ `category`); `announcements.target_grade` if missing |
 
 `supabase/seed.sql` seeds مدرسة الفارابي للغات with all roles, subjects, a term, sample grades + attendance.
 
@@ -82,6 +84,7 @@ _Last updated: milestone v1.0.0. This is the complete record of what exists. For
 2. Real-user testing pass — test banks, rubrics, course copy, at-risk, quiz availability are built but unverified in real use.
 3. PWA push when app closed.
 4. Regenerate `src/types/database.ts` to drop the `(supabase as any)` casts (optional cleanup).
+5. Security follow-ups after 025: quiz `correct_answer` still readable by students and scored client-side (move scoring server-side); `submissions` storage bucket is public; `admin-create-user` can create `chain_admin`/`moe_supervisor`; routes check login only, not role; `emergency-broadcast` / `notify-*` don't verify the caller.
 
 ## 7. Recent milestone commits
 - `a731160` professional user management redesign + admin password reset
